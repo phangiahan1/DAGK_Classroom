@@ -29,7 +29,7 @@ export const CreateClass = () => {
             subject: Subject,
             room: Room
         };
-        axios.post('http://localhost:4000/classroom/addClassroom', newC) 
+        axios.post('http://localhost:5000/classroom', newC) 
         .then(response =>  console.log(newC));
         setCreateClassDialog(false);
     }

@@ -5,7 +5,7 @@ import { Drawer, MyClass } from './components';
 function App() {
   const [createdClasses, setCreatedClasses] = useState([]);
   const fetchItems = async () => {
-    const data = await fetch('//localhost:4000/classroom');
+    const data = await fetch('//localhost:5000/classroom');
     const items = await data.json();
     console.log(items);
     setCreatedClasses(items);
