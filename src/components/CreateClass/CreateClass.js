@@ -24,7 +24,7 @@ export const CreateClass = () => {
     const handleSubmit = e => {
         e.preventDefault();
         const newC = {
-            className: className,
+            classname: className,
             section: Section,
             subject: Subject,
             room: Room

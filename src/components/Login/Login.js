@@ -79,10 +79,10 @@ const Login = ({ classData }) => {
                 <div class="left">
                     <h1>Sign up</h1>
                     
-                    <input type="text" name="username" placeholder="Username"/>
-                    <input type="text" name="email" placeholder="E-mail"/>
-                    <input type="password" name="password" placeholder="Password"/>
-                    <input type="password" name="password2" placeholder="Retype password"/>
+                    <input className="login_input" type="text" name="username" placeholder="Username"/>
+                    <input className="login_input" type="text" name="email" placeholder="E-mail"/>
+                    <input className="login_input" type="password" name="password" placeholder="Password"/>
+                    <input className="login_input" type="password" name="password2" placeholder="Retype password"/>
                     
                     <input class="Signup" type="submit" name="signup_submit" value="Sign me up"/>
                 </div>
