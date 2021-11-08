@@ -1,3 +1,17 @@
+// import { Avatar } from "@material-ui/core";
+// import { FolderOpen, PermContactCalendar } from "@material-ui/icons";
+// import React from "react";
+// import { Link } from "react-router-dom";
+
+// import MyClass from '../MyClass/MyClass'
+// import "./Register.css";
+// import './App.css';
+
+// import { useState } from 'react';
+// import App from '../../App'
+// import { ContextProvider } from '../../context/context';
+
+
 import { FolderOpen, PermContactCalendar } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import ReactFacebookLogin from "react-facebook-login";
@@ -18,8 +32,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const Login = ({ classData }) => {
-    const { loginDialog, setLoginDialog } = useLocalContext();
+
+export const Register = () => {
+    const { registerDialog, setRegisterDialog } = useLocalContext();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [re_password, setRePassword] = useState("");
@@ -87,39 +102,48 @@ const Login = ({ classData }) => {
 
       // end login by google
 
-      //Login by email, password
-      const LoginSubmit = e => {
+      //register by email, password
+      const SignupSubmit = e => {
         e.preventDefault();
         const newUser = {
+            username: username,
             email: email,
-            password: password
+            password: password,
+            status: status
         };
-        axios.get('http://localhost:5000/user/findEmail/:email') 
+        axios.post('http://localhost:5000/user', newUser) 
         .then(response =>  console.log(newUser));
-        setLoginDialog(false);
+        setRegisterDialog(false);
       }
 
+      //login by email, password
+      const loginHandle = e =>{
+      }
     return (
         <div>
         <Dialog
                 fullScreen
-                open={loginDialog}
-                onClose={() => setLoginDialog(false)}
+                open={registerDialog}
+                onClose={() => setRegisterDialog(false)}
                 TransitionComponent={Transition}
             >
             <div className="login">
                 <div className="login__wrapper">
                     <div
                         className="login__wraper2"
-                        onClick={() => setLoginDialog(false)}>
+                        onClick={() => setRegisterDialog(false)}>
                         <Close className="login__svg" />
-                        <div className="login__topHead">Login</div>
+                        <div className="login__topHead">Sign Up</div>
                     </div>
                 </div>
             <div id="login-box">
                 <div class="left">
-                    <h1>Login</h1>
-                    <form onSubmit={LoginSubmit}>
+                    <h1>Sign up</h1>
+                    <form onSubmit={SignupSubmit}>
+                      <input className="login_input" type="text" name="username" placeholder="Username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                      />
                       <input className="login_input" type="text" name="email" placeholder="E-mail"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -128,14 +152,18 @@ const Login = ({ classData }) => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                       />
+                      <input className="login_input" type="password" name="password2" placeholder="Retype password"
+                        value={re_password}
+                        onChange={(e) => setRePassword(e.target.value)}
+                      />
                     
-                      <input class="Signup" type="submit" onClick={LoginSubmit} name="signup_submit" value="Sign up"/>
+                      <input class="Signup" type="submit" onClick={SignupSubmit} name="signup_submit" value="Sign up"/>
                     </form>
-                
+                    
                 </div>
                 
                 <div class="right">
-                    <span class="loginwith">Login with<br/><br/>social network</span>
+                    <span class="loginwith">Sign in with<br/><br/>social network</span>
                     <div class="social-signin ">{fbContent}</div>
 
                     {/* <button class="social-signin twitter">Log in with Twitter</button>
@@ -165,6 +193,5 @@ const Login = ({ classData }) => {
             </Dialog>
         </div>
     );
-};
-
-export default Login;
+}
+export default Register;
