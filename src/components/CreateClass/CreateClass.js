@@ -18,8 +18,7 @@ export const CreateClass = () => {
     const [Section, setSection] = useState("");
     const [Room, setRoom] = useState("");
     const [Subject, setSubject] = useState("");
-    const [fetchedData, setFetchedData] = useState('')
-
+    const [Owner, setOwner] = useState("phanhan226@gmail.com");
 
     const handleSubmit = e => {
         e.preventDefault();
@@ -27,7 +26,8 @@ export const CreateClass = () => {
             classname: className,
             section: Section,
             subject: Subject,
-            room: Room
+            room: Room,
+            owner: Owner
         };
         axios.post('http://localhost:5000/classroom', newC) 
         .then(response =>  console.log(newC));
@@ -49,7 +49,6 @@ export const CreateClass = () => {
                 <form onSubmit={handleSubmit}>
                     <div className="form">
                         <p className="class__title">Create Class</p>
-
                         <div className="form__inputs">
                             <TextField
                                 id="filled-basic"

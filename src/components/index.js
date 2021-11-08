@@ -5,3 +5,4 @@ export {default as MyClass} from "./MyClass/MyClass";
 export {default as JoinClass} from "./JoinClass/JoinClass";
 export {default as Login} from "./Login/Login";
 export {default as Register} from "./Login/Register";
+export {default as MainClass} from "./MainClass/MainClass";

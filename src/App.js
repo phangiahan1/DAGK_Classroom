@@ -1,6 +1,9 @@
+//import { Switch } from '@mui/material';
 import React from 'react';
 import { useState, useEffect } from "react";
-import { Drawer, MyClass } from './components';
+//import { Route } from 'react-router';
+import { Drawer, MyClass , MainClass} from './components';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 function App() {
   const [createdClasses, setCreatedClasses] = useState([]);
@@ -19,14 +22,25 @@ function App() {
   }
   );
   return (
-    <div className="App">
-      <Drawer />
-      <ol className="joined">
-        {createdClasses.map((item) => (
-          <MyClass classData={item} />
+    <Router>
+      <Switch>
+        {createdClasses.map((item, index) => (
+          <Route key={index} exact path={`/${item._id}`}>
+            <Drawer />
+            <MainClass classData={item}/>
+          </Route>
         ))}
-      </ol>
-    </div>
+        <div className="App">
+          <Drawer />
+          <ol className="joined">
+            {createdClasses.map((item) => (
+              <MyClass classData={item} />
+            ))}
+          </ol>
+        </div>
+      </Switch>
+    </Router>
+
   );
 }
 
