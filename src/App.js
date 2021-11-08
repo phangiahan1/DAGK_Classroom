@@ -7,7 +7,7 @@ function App() {
   const fetchItems = async () => {
     const data = await fetch('//localhost:5000/classroom');
     const items = await data.json();
-    console.log(items);
+    //console.log(items);
     setCreatedClasses(items);
   };
   // useEffect(() => {

@@ -11,7 +11,7 @@ const MyClass = ({ classData }) => {
                     <div className="joined__imgWrapper" />
                     <div className="joined__image" />
                     <div className="joined__content">
-                        <h2 className="joined__title">{classData.className}</h2>
+                        <h2 className="joined__title">{classData.classname}</h2>
                         <h3 className="joined__title">{classData.section}</h3>
                     </div>
                 </div>

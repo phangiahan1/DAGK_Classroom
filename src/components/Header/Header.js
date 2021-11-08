@@ -1,8 +1,8 @@
-import { AppBar, Toolbar, Typography, Avatar, Menu , MenuItem } from '@mui/material';
+import { AppBar, Toolbar, Typography, Avatar, Menu, MenuItem } from '@mui/material';
 import { Add, Apps } from "@mui/icons-material";
 import React from 'react';
 import { useStyles } from './style';
-import { CreateClass } from '..';
+import { CreateClass, JoinClass } from '..';
 import { useLocalContext } from "../../context/context";
 const Header = ({ children }) => {
     const classes = useStyles();
@@ -10,13 +10,19 @@ const Header = ({ children }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const handleClick = (event) => setAnchorEl(event.currentTarget);
     const handleClose = () => setAnchorEl(null);
-
-    const {createClassDialog, setCreateClassDialog} = useLocalContext();
+    //create class dialog
+    const { createClassDialog, setCreateClassDialog } = useLocalContext();
+    //create join class
+    const { joinClassDialog, setJoinClassDialog } = useLocalContext();
     const handleCreate = () => {
         handleClose();
         setCreateClassDialog(true);
-      };
-    
+    };
+    const handleJoin = () => {
+        handleClose();
+        setJoinClassDialog(true);
+    };
+
     return (
         <div className={classes.root}>
             <AppBar className={classes.appBar} position="static">
@@ -41,7 +47,7 @@ const Header = ({ children }) => {
                             open={Boolean(anchorEl)}
                             onClose={handleClose}
                         >
-                            <MenuItem >Join Class</MenuItem>
+                            <MenuItem onClick={handleJoin}>Join Class</MenuItem>
                             <MenuItem onClick={handleCreate}>Create Class</MenuItem>
 
                         </Menu>
@@ -51,7 +57,8 @@ const Header = ({ children }) => {
                     </div>
                 </Toolbar>
             </AppBar>
-            <CreateClass/>
+            <CreateClass />
+            <JoinClass />
         </div>
     )
 }

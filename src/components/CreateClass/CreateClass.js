@@ -31,6 +31,10 @@ export const CreateClass = () => {
         };
         axios.post('http://localhost:5000/classroom', newC) 
         .then(response =>  console.log(newC));
+        setClassName("");
+        setSection("");
+        setRoom("");
+        setSubject("");
         setCreateClassDialog(false);
     }
     return (
