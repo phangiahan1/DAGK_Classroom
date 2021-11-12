@@ -2,10 +2,15 @@ import { Avatar, Button, TextField } from "@material-ui/core";
 import React, { useState } from "react";
 import "./style.css";
 import { useLocalContext } from "../../context/context";
+import { Drawer } from '..'; 
 
 export const MainClass = ({ classData }) => {
     const [showInput, setShowInput] = useState(false);
+    const { createTabs, setCreateTabs } = useLocalContext();
+    setCreateTabs(true)
     return (
+        <>
+        <Drawer />
         <div className="main">
             <div className="main__wrapper">
                 <div className="main__content">
@@ -41,17 +46,13 @@ export const MainClass = ({ classData }) => {
                                             id="filled-multiline-flexible"
                                             multiline
                                             label="Announce Something to class"
-                                            variant="filled"
-                                            //value={inputValue}
-                                            //onChange={(e) => setInput(e.target.value)}
-                                        />
+                                            variant="filled" />
                                         <div className="main__buttons">
                                             <input
                                                 //onChange={handleChange}
                                                 variant="outlined"
                                                 color="primary"
-                                                type="file"
-                                            />
+                                                type="file" />
 
                                             <div>
                                                 <Button>
@@ -59,7 +60,7 @@ export const MainClass = ({ classData }) => {
                                                 </Button>
 
                                                 <Button
-                                                    
+
                                                     color="primary"
                                                     variant="contained"
                                                 >
@@ -83,6 +84,7 @@ export const MainClass = ({ classData }) => {
                 </div>
             </div>
         </div>
+        </>
     )
 }
 export default MainClass;

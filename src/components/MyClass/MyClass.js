@@ -3,7 +3,11 @@ import { FolderOpen, PermContactCalendar } from "@material-ui/icons";
 import React from "react";
 import { Link } from "react-router-dom";
 import "./style.css";
+import { useLocalContext } from "../../context/context";
 const MyClass = ({ classData }) => {
+
+    const { createTabs, setCreateTabs } = useLocalContext();
+    setCreateTabs(false);
     return (
         <li className="joined__list">
             <div className="joined__wrapper">
@@ -11,7 +15,8 @@ const MyClass = ({ classData }) => {
                     <div className="joined__imgWrapper" />
                     <div className="joined__image" />
                     <div className="joined__content">
-                        <Link className="joined__title" to={`/${classData._id}`}>
+                        <Link className="joined__title" to={`/${classData._id}`}
+                            >
                             <h2>{classData.classname}</h2>
                         </Link>
                         <h3 className="joined__owner">{classData.section}</h3>

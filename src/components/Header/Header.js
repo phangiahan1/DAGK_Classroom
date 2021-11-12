@@ -1,16 +1,17 @@
 import { AppBar, Toolbar, Typography, Avatar, Menu, MenuItem } from '@mui/material';
 import { Add, Apps } from "@mui/icons-material";
-import React from 'react';
+import {React, useState} from 'react';
 import { useStyles } from './style';
 import { CreateClass, JoinClass, Login, Register } from '..';
 import Fade from '@mui/material/Fade';
-import { Button } from '@material-ui/core';
+import { Button, Tabs, Tab } from '@material-ui/core';
 import { useLocalContext } from "../../context/context";
+import { Link } from "react-router-dom";
 const Header = ({ children }) => {
     const classes = useStyles();
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const [anchorEl2, setAnchorEl2] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorEl2, setAnchorEl2] = useState(null);
     const handleClick = (event) => setAnchorEl(event.currentTarget);
     const handleClickAvatar = (event) => setAnchorEl2(event.currentTarget);
     const handleClose = () => setAnchorEl(null);
@@ -23,6 +24,15 @@ const Header = ({ children }) => {
     const { loginDialog, setLoginDialog } = useLocalContext();
     //create register
     const { registerDialog, setRegisterDialog } = useLocalContext();
+    //tab value
+    const {tabValue, setTabValue} = useLocalContext();
+    //create tab bar
+    const { createTabs, setCreateTabs } = useLocalContext();
+
+    const handleChangeTab = (event, newValue) => {
+        setTabValue(newValue);
+    };
+
     const open = Boolean(anchorEl2);
     const handleCreate = () => {
         handleClose();
@@ -52,8 +62,20 @@ const Header = ({ children }) => {
                             alt="Classroom"
                         /> */}
                         <Typography variant="h6" className={classes.title}>
-                            Classroom
+                            <Link to='/' style={{ textDecoration: 'none' }}>
+                                Classroom
+                            </Link>
                         </Typography>
+                    </div>
+                    <div>
+                        {createTabs ?
+                            <Tabs value={tabValue} onChange={handleChangeTab} centered>
+                                <Tab label="Stream" />
+                                <Tab label="Classwork" />
+                                <Tab label="People" />
+                                <Tab label="Marks" />
+                            </Tabs>
+                            : null}
                     </div>
                     <div className={classes.header__wrapper__right}>
                         <Add onClick={handleClick} className={classes.icon} />
@@ -92,8 +114,8 @@ const Header = ({ children }) => {
             </AppBar>
             <CreateClass />
             <JoinClass />
-            <Login/>
-            <Register/>
+            <Login />
+            <Register />
         </div>
     )
 }

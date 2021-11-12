@@ -10,11 +10,15 @@ export function ContextProvider({ children }) {
     const [joinClassDialog, setJoinClassDialog] = useState(false);
     const [loginDialog, setLoginDialog] = useState(false);
     const [registerDialog, setRegisterDialog] = useState(false);
+    const [createTabs, setCreateTabs] = useState(false);
+    const [tabValue, setTabValue] = useState(0);
     const value = {
         createClassDialog, setCreateClassDialog,
         joinClassDialog, setJoinClassDialog,
         loginDialog, setLoginDialog,
-        registerDialog, setRegisterDialog
+        registerDialog, setRegisterDialog,
+        createTabs, setCreateTabs,
+        tabValue, setTabValue
     };
     return (
         <AddContext.Provider value={value}>{children}</AddContext.Provider>
