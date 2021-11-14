@@ -1,10 +1,12 @@
-import { useState, useEffect ,React} from "react";
-import { Drawer, MyClass, MainClass } from './components';
+import { useState, useEffect, React } from "react";
+import { MyClass, MainClass, MainClassUser, Header, MainClassClassWork, MainClassMarks } from './components';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useLocalContext } from './context/context';
 
 function App() {
+  //tabs value render
   const { createTabs, setCreateTabs } = useLocalContext();
+  const { tabValue, setTabValue } = useLocalContext();
 
 
   const [createdClasses, setCreatedClasses] = useState([]);
@@ -26,13 +28,34 @@ function App() {
       <Switch>
         {createdClasses.map((item, index) => (
           <Route key={index} exact path={`/${item._id}`}>
-            <MainClass classData={item} />
+            <Header classData={item} />
+            <MainClass classData={item} ></MainClass>
+          </Route>
+        ))}
+
+        {createdClasses.map((item, index) => (
+          <Route key={index} exact path={`/${item._id}/people`}>
+            <Header classData={item} />
+            <MainClassUser classData={item} />
+          </Route>
+        ))}
+
+        {createdClasses.map((item, index) => (
+          <Route key={index} exact path={`/${item._id}/classwork`}>
+            <Header classData={item} />
+            <MainClassClassWork classData={item} />
+          </Route>
+        ))}
+        {createdClasses.map((item, index) => (
+          <Route key={index} exact path={`/${item._id}/marks`}>
+            <Header classData={item} />
+            <MainClassMarks classData={item} />
           </Route>
         ))}
 
         <Route exact path="/" >
           <div className="App">
-            <Drawer/>
+            <Header />
             <ol className="joined">
               {createdClasses.map((item) => (
                 <MyClass classData={item} />

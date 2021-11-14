@@ -2,15 +2,14 @@ import { Avatar, Button, TextField } from "@material-ui/core";
 import React, { useState } from "react";
 import "./style.css";
 import { useLocalContext } from "../../context/context";
-import { Drawer } from '..'; 
+import { Header } from '..'; 
 
 export const MainClass = ({ classData }) => {
     const [showInput, setShowInput] = useState(false);
     const { createTabs, setCreateTabs } = useLocalContext();
-    setCreateTabs(true)
+    setCreateTabs(true);
     return (
         <>
-        <Drawer />
         <div className="main">
             <div className="main__wrapper">
                 <div className="main__content">

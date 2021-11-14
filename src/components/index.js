@@ -6,3 +6,6 @@ export {default as JoinClass} from "./JoinClass/JoinClass";
 export {default as Login} from "./Login/Login";
 export {default as Register} from "./Login/Register";
 export {default as MainClass} from "./MainClass/MainClass";
+export {default as MainClassMarks} from "./MainClassMarks/MainClassMarks";
+export {default as MainClassClassWork} from "./MainClassClassWork/MainClassClassWork";
+export {default as MainClassUser} from "./MainClassUser/MainClassUser";

@@ -15,8 +15,9 @@ const MyClass = ({ classData }) => {
                     <div className="joined__imgWrapper" />
                     <div className="joined__image" />
                     <div className="joined__content">
-                        <Link className="joined__title" to={`/${classData._id}`}
-                            >
+                        <Link className="joined__title"
+                            to={`/${classData._id}`}
+                        >
                             <h2>{classData.classname}</h2>
                         </Link>
                         <h3 className="joined__owner">{classData.section}</h3>
