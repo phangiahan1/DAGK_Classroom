@@ -2,7 +2,13 @@ import { AppBar, Toolbar, Typography, Avatar, Menu, MenuItem } from '@mui/materi
 import { Add, Apps } from "@mui/icons-material";
 import { React, useState } from 'react';
 import { useStyles } from './style';
-import { Drawer, CreateClass, JoinClass, Login, MainClassUser, Register, MainClass, MainClassClassWork, MainClassMarks } from '..';
+import {
+    Drawer,
+    CreateClass,
+    JoinClass,
+    Login,
+    Register
+} from '..';
 import { Button, Tabs, Tab } from '@material-ui/core';
 import { useLocalContext } from "../../context/context";
 import { Link } from "react-router-dom";

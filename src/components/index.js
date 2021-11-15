@@ -9,3 +9,4 @@ export {default as MainClass} from "./MainClass/MainClass";
 export {default as MainClassMarks} from "./MainClassMarks/MainClassMarks";
 export {default as MainClassClassWork} from "./MainClassClassWork/MainClassClassWork";
 export {default as MainClassUser} from "./MainClassUser/MainClassUser";
+export {default as InviteTeacher} from "./InviteTeacher/InviteTeacher";

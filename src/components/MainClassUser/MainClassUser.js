@@ -3,11 +3,12 @@ import { useState, useEffect, React } from "react";
 import { useLocalContext } from "../../context/context";
 import "./style.css";
 import IconButton from '@mui/material/IconButton';
-import { styled } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
 import ListItemButton from '@mui/material/ListItemButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-
+import AddIcon from '@mui/icons-material/Add';
+import {
+    InviteTeacher
+} from '..';
 
 const MainClassUser = ({ classData }) => {
     const { createTabs, setCreateTabs } = useLocalContext();
@@ -15,18 +16,12 @@ const MainClassUser = ({ classData }) => {
 
     const [ownerClass, setOwerClass] = useState();
 
-    // const url1 = '//localhost:5000/user/findEmail/' + classData.owner;
-    // const data1 =  fetch(url1);
-    // const items1 = data1.json();
-    // setOwerClass(items1);
-    //console.log(items);
-
     const fetchItems1 = async () => {
         const url = '//localhost:5000/user/findEmail/' + classData.owner + '';
         const data = await fetch(url);
         const items = await data.json();
         setOwerClass(items);
-        console.log(items);
+        //console.log(items);
     };
 
     const [createdClassesPeople, setCreatedClassesPeople] = useState([]);
@@ -57,11 +52,30 @@ const MainClassUser = ({ classData }) => {
 
         setChecked(newChecked);
     };
+
+    //phan invite giao vien
+    const [anchorEl, setAnchorEl] = useState(null);
+    const handleClose = () => setAnchorEl(null);
+
+    //create invite teacher
+    const { createInviteTeacherDialog, setcreateInviteTeacherDialog } = useLocalContext();
+    const handleInviteTeacher = () => {
+        setcreateInviteTeacherDialog(true);
+    };
     return (
         <div className='divcenter'>
-            <div>
-                <h1>Teachers</h1>
-            </div>
+            <Grid container spacing={2}>
+                <Grid item xs={10}>
+                    <h1>Teachers</h1>
+                </Grid>
+                <Grid item xs={2}>
+                    <div className='tf'>
+                        <IconButton color="primary" aria-label="invite teacher">
+                            <AddIcon onClick={handleInviteTeacher} />
+                        </IconButton>
+                    </div>
+                </Grid>
+            </Grid>
             <Divider />
             <List sx={{ width: '100%', bgcolor: 'background.paper', margin: 2 }}>
                 {ownerClass ?
@@ -75,16 +89,22 @@ const MainClassUser = ({ classData }) => {
                     </ListItem>
                     : null}
             </List>
-            {/* <div>
-                <h1>Students</h1>
-                <h2>{createdClassesPeople.length} student</h2>
-            </div> */}
+
             <Grid container spacing={2}>
-                <Grid item xs={10}>
+                <Grid item xs={9}>
                     <h1>Students</h1>
                 </Grid>
                 <Grid item xs={2}>
-                    <div className='tf'><h3>{createdClassesPeople.length} student</h3></div>
+                    <div className='tf'>
+                        <h3>{createdClassesPeople.length} student</h3>
+                    </div>
+                </Grid>
+                <Grid item xs={1}>
+                    <div className='tf'>
+                        <IconButton color="primary" aria-label="invite teacher">
+                            <AddIcon />
+                        </IconButton>
+                    </div>
                 </Grid>
             </Grid>
             <Divider />
@@ -120,6 +140,7 @@ const MainClassUser = ({ classData }) => {
                     );
                 })}
             </List>
+            <InviteTeacher/>
         </div>
     )
 }
