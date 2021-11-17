@@ -178,6 +178,7 @@ export const Register = () => {
             setTokenData(response.data);
             localStorage.setItem('tokenData', JSON.stringify(response.data));
             console.log(localStorage.getItem('tokenData'))
+            window.location.reload(true)
           })
           .catch(error => {
             console.log(error.response);
@@ -222,20 +223,20 @@ export const Register = () => {
                         <div className="login__topHead">Sign Up</div>
                     </div>
                 </div>
+              {
+                MessageError?(
+                  <Alert severity="error">
+                    <AlertTitle placeholder="bjhbfjs">Error</AlertTitle>
+                       {MessageError}
+                    </Alert>
+                     ):(
+                     <div></div>
+                    )
+                 }
             <div id="login-box">
                 <div class="left">
                     <h1>Sign up</h1>
                     <form onSubmit={SignupSubmit}>
-                      {
-                        MessageError?(
-                          <Alert severity="error">
-                            <AlertTitle placeholder="bjhbfjs">Error</AlertTitle>
-                              {MessageError}
-                          </Alert>
-                        ):(
-                          <div></div>
-                        )
-                      }
                       <input className="login_input" type="text" name="username" placeholder="Username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}

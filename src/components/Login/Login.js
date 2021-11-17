@@ -111,13 +111,13 @@ const Login = () => {
             setTokenData(response.data);
             localStorage.setItem('tokenData', JSON.stringify(response.data));
             console.log(localStorage.getItem('tokenData'))
+            window.location.reload(true);
         })
         .catch(error=>{
-          alert("Please check email and password")
-          // setMessageError(error.response.data.message);
+          // alert("Please check email and password")
+          setMessageError(error.response.data.message);
           console.log(error)
         })
-          
         // setLoginDialog(false);
       }
 
@@ -140,20 +140,20 @@ const Login = () => {
                         <div className="login__topHead">Login</div>
                     </div>
                 </div>
+                {
+                  MessageError?(
+                    <Alert severity="error">
+                      <AlertTitle placeholder="bjhbfjs">Error</AlertTitle>
+                        {MessageError}
+                      </Alert>
+                     ):(
+                      <div></div>
+                    )
+                  }
             <div id="login-box">
                 <div class="left">
                     <h1>Login</h1>
                     <form onSubmit={LoginSubmit}>
-                      {
-                        MessageError?(
-                          <Alert severity="error">
-                            <AlertTitle placeholder="bjhbfjs">Error</AlertTitle>
-                              {MessageError}
-                          </Alert>
-                        ):(
-                          <div></div>
-                        )
-                      }
                       <input className="login_input" type="text" name="email" placeholder="E-mail"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
