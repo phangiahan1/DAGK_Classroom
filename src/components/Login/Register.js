@@ -24,6 +24,7 @@ import { ContextProvider } from '../../context/context';
 import axios from "axios";
 import React, { useState } from "react";
 import { Avatar, Button, Dialog, Slide, TextField } from "@material-ui/core";
+import { Alert, AlertTitle } from "@mui/material";
 import { useLocalContext } from "../../context/context";
 import { Close } from "@material-ui/icons";
 import "./style.css";
@@ -40,6 +41,12 @@ export const Register = () => {
     const [re_password, setRePassword] = useState("");
     const [email, setEmail] = useState("");
     const [status, setStatus] = useState(true);
+    const [MessageError, setMessageError] = useState("");
+    const [tokenData, setTokenData ] = useState(
+      localStorage.getItem('tokenData')
+    ? JSON.parse(localStorage.getItem('tokenData'))
+    : null
+  );
 
     let fbContent = null;
     const [state, setState] = React.useState({
@@ -56,18 +63,21 @@ export const Register = () => {
     const componentClicked =()=>console.log('clicked');
 
     //login by Facebook
-    if(state.isLoginIn){
+    const handleLoginFb = _ =>{
+      if(state.isLoginIn){
         // <MyClass/>
-    }else{
-        fbContent =(
-            <ReactFacebookLogin
-                appId="1510139052705581"
-                autoLoad={true}
-                fields="name,email,picture"
-                onClick={componentClicked}
-                callback={responseFacebook} />
-        )
+      }else{
+          fbContent =(
+              <ReactFacebookLogin
+                  appId="1510139052705581"
+                  autoLoad={true}
+                  fields="name,email,picture"
+                  onClick={componentClicked}
+                  callback={responseFacebook} />
+          )
+      }
     }
+
 
     // begin login by google
     const [loginData, setLoginData] = useState(
@@ -90,11 +100,57 @@ export const Register = () => {
             'Content-Type': 'application/json',
           },
         });
-    
+        
         const data = await res.json();
         setLoginData(data);
-        localStorage.setItem('loginData', JSON.stringify(data));
+        console.log(data)
+        const newUser = {
+          username: data.name,
+          email: data.email,
+          password:" password",
+          status: status
       };
+      axios.post('http://localhost:5000/user', newUser) 
+      .then(error =>  {if (error.response){
+
+        //do something
+        
+        }else if(error.request){
+        
+        //do something else
+        
+        }else if(error.message){
+        
+        //do something other than the other two
+        
+        }
+      });
+
+      localStorage.setItem('loginData', JSON.stringify(data));
+        
+      // window.location.reload(true);
+      };
+
+      // const handleLogin = async (googleData) => {
+      //   const res = await fetch('http://localhost:5000/user', {
+      //     method: 'POST',
+      //     body: JSON.stringify({
+      //       // username: googleData.name,
+      //       // email: googleData.email,
+      //       token: googleData.tokenId,
+      //     }),
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //     },
+      //   });
+        
+      //   const data = await res.json();
+      //   setLoginData(data);
+      //   localStorage.setItem('loginData', JSON.stringify(data));
+        
+      //   window.location.reload(true);
+      // };
+
       const handleLogout = () => {
         localStorage.removeItem('loginData');
         setLoginData(null);
@@ -105,17 +161,47 @@ export const Register = () => {
       //register by email, password
       const SignupSubmit = e => {
         e.preventDefault();
-        const newUser = {
-            username: username,
-            email: email,
-            password: password,
-            status: status
-        };
-        axios.post('http://localhost:5000/user', newUser) 
-        .then(response =>  console.log(newUser));
-        setRegisterDialog(false);
+        if(password !== re_password){
+          setMessageError("Password not compare re-pasword")
+        }
+        else{
+          const newUser = {
+              username: username,
+              email: email,
+              password: password,
+              status: status
+          };
+          axios.post('http://localhost:5000/user', newUser) 
+          .then(response =>  {
+            alert("SignUp successful")
+            setMessageError("Signup successful");
+            setTokenData(response.data);
+            localStorage.setItem('tokenData', JSON.stringify(response.data));
+            console.log(localStorage.getItem('tokenData'))
+          })
+          .catch(error => {
+            console.log(error.response);
+            setMessageError(error.response.data.message);
+            console.log(error.response.data.message);
+          })
+        // setRegisterDialog(false);
+      }
       }
 
+      //   //push account gg
+      // const SignupSubmitGoogle = (e,loginData) => {
+      //   e.preventDefault();
+      //   const username = document.getElementsByName("usernameGG");
+      //   const email = document.getElementsByName("emailGG");
+      //   const newUser = {
+      //       username: loginData.name,
+      //       email: loginData.name
+      //   };
+      //   console.log(username)
+      //   axios.post('http://localhost:5000/user', newUser) 
+      //   .then(response =>  console.log(newUser));
+      //   setRegisterDialog(false);
+      // }
       //login by email, password
       const loginHandle = e =>{
       }
@@ -140,6 +226,16 @@ export const Register = () => {
                 <div class="left">
                     <h1>Sign up</h1>
                     <form onSubmit={SignupSubmit}>
+                      {
+                        MessageError?(
+                          <Alert severity="error">
+                            <AlertTitle placeholder="bjhbfjs">Error</AlertTitle>
+                              {MessageError}
+                          </Alert>
+                        ):(
+                          <div></div>
+                        )
+                      }
                       <input className="login_input" type="text" name="username" placeholder="Username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
@@ -164,18 +260,41 @@ export const Register = () => {
                 
                 <div class="right">
                     <span class="loginwith">Sign in with<br/><br/>social network</span>
-                    <div class="social-signin ">{fbContent}</div>
+                    <div class="social-signin " onClick={handleLoginFb}>
+                      <ReactFacebookLogin
+                        appId="1510139052705581"
+                        fields="name,email,picture"
+                        />
+                    </div>
 
                     {/* <button class="social-signin twitter">Log in with Twitter</button>
                     <button class="social-signin google">Log in with Google+</button> */}
                     <div class="social-signin">
                         {
-                            loginData ? (
-                            <div>
-                            <h3>You logged in as {loginData.email}</h3>
-                            <button onClick={handleLogout}>Logout</button>
-                            </div>  
-                        ) :
+                             loginData ? 
+                            (
+                              <form  >
+                                {/* <input name="usernameGG" type="hidden">loginData.name</input>
+                                <input name="emailGG"  type="hidden">loginData.email</input>
+                                <input className="login_input" type="password" name="password" placeholder="Password"
+                                  value={password}
+                                  onChange={(e) => setPassword(e.target.value)}
+                                />
+                                <input className="login_input" type="password" name="password2" placeholder="Retype password"
+                                  value={re_password}
+                                  onChange={(e) => setRePassword(e.target.value)}
+                                /> */}
+                                <GoogleLogin
+                                clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                                buttonText="LOG IN WITH GOOGLE"
+                                onSuccess={handleLogin}
+                                onFailure={handleFailure}
+                                cookiePolicy={'single_host_origin'}
+                              ></GoogleLogin>
+                                {/* <Button type="hidden" autoLoad={SignupSubmitGoogle} name="signup_submit" value="Sign up"/>  */}
+                              </form>
+                              
+                        ) : 
                         (
                             <GoogleLogin
                             clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
