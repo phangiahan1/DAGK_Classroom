@@ -1,12 +1,9 @@
 import { FolderOpen, PermContactCalendar } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import ReactFacebookLogin from "react-facebook-login";
-import MyClass from '../MyClass/MyClass'
 import "./Login.css";
 import './App.css';
 import GoogleLogin from 'react-google-login';
-import App from '../../App'
-import { ContextProvider } from '../../context/context';
 import axios from "axios";
 import React, { useState } from "react";
 import { Avatar, Button, Dialog, Slide, TextField } from "@material-ui/core";

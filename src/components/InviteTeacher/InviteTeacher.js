@@ -44,7 +44,7 @@ export const InviteTeacher = () => {
                         <div className="form__inputs">
                             <TextField
                                 id="filled-basic"
-                                label="Type a name or email"
+                                label="Type email"
                                 className="form__input"
                                 variant="filled"
                                 value={Email}
