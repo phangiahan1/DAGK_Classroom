@@ -2,16 +2,12 @@ import { AppBar, Toolbar, Typography, Avatar, Menu, MenuItem } from '@mui/materi
 import { Add, Apps } from "@mui/icons-material";
 import { React, useState } from 'react';
 import { useStyles } from './style';
-import {
-    Drawer,
-    CreateClass,
-    JoinClass,
-    Login,
-    Register
-} from '..';
+import { Drawer, CreateClass, JoinClass, Login, Register, Profile } from '..';
 import { Button, Tabs, Tab } from '@material-ui/core';
 import { useLocalContext } from "../../context/context";
 import { Link } from "react-router-dom";
+import axios from 'axios';
+
 
 const Header = ({ classData }) => {
     const classes = useStyles();
@@ -34,6 +30,8 @@ const Header = ({ classData }) => {
     const { tabValue, setTabValue } = useLocalContext();
     //create tab bar
     const { createTabs, setCreateTabs } = useLocalContext();
+        //create profile
+        const { profileDialog, setProfileDialog } = useLocalContext();
 
     const handleChangeTab = (event, newValue) => {
         setTabValue(newValue);
@@ -55,6 +53,61 @@ const Header = ({ classData }) => {
     const handleRegister = () => {
         handleClose();
         setRegisterDialog(true);
+    };
+
+    function parseJwt (token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+    
+        return JSON.parse(jsonPayload);
+    };
+
+    const [loginData, setLoginData] = useState(
+        localStorage.getItem('loginData')
+          ? JSON.parse(localStorage.getItem('loginData'))
+          : null
+      );
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [tokenData, setTokenData ] = useState(
+        localStorage.getItem('tokenData')
+      ? JSON.parse(localStorage.getItem('tokenData'))
+      : null
+    );
+    //   const handleFailure = (result) => {
+    //     alert(result);
+    //   };
+    
+    //   const handleLoginGoogle = async (googleData) => {
+    //     const res = await fetch('/api/google-login', {
+    //       method: 'POST',
+    //       body: JSON.stringify({
+    //         token: googleData.tokenId,
+    //       }),
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //     });
+    
+    //     const data = await res.json();
+    //     setLoginData(data);
+    //     localStorage.setItem('loginData', JSON.stringify(data));
+    //   };
+
+    const handleProfile = () => {
+        handleClose();
+        setProfileDialog(true);
+    }
+
+    const handleLogout = () => {
+        localStorage.removeItem('loginData');
+        localStorage.removeItem('tokenData');
+        setLoginData(null);
+        setTokenData(null);
     };
 
     return (
@@ -101,24 +154,39 @@ const Header = ({ classData }) => {
                             <MenuItem onClick={handleCreate}>Create Class</MenuItem>
 
                         </Menu>
-                        <Button
-                            id="fade-button"
-                            aria-controls="fade-menu"
-                            aria-haspopup="true"
-                            aria-expanded={open ? 'true' : undefined}
-                            onClick={handleLogin}
-                        >
-                            Login
-                        </Button>
-                        <Button
-                            id="fade-button"
-                            aria-controls="fade-menu"
-                            aria-haspopup="true"
-                            aria-expanded={open ? 'true' : undefined}
-                            onClick={handleRegister}
-                        >
-                            Sign Up
-                        </Button>
+                                                
+                        {/* <div>{tokenData}</div> */}
+                        {
+                            tokenData ? (
+                            <div>
+                                <div>{parseJwt(tokenData).username}</div>
+                                <button onClick={handleProfile}>Profile</button>
+                                <button onClick={handleLogout}>Logout</button>
+                            </div> 
+                            ):(
+                                <div>
+                                <Button
+                                    id="fade-button"
+                                    aria-controls="fade-menu"
+                                    aria-haspopup="true"
+                                    aria-expanded={open ? 'true' : undefined}
+                                    onClick={handleLogin}
+                                >
+                                    Login
+                                </Button>
+                                <Button
+                                    id="fade-button"
+                                    aria-controls="fade-menu"
+                                    aria-haspopup="true"
+                                    aria-expanded={open ? 'true' : undefined}
+                                    onClick={handleRegister}
+                                >
+                                Register
+                                </Button>
+                                </div>
+                            )
+                        }
+                        
                     </div>
                 </Toolbar>
             </AppBar>
@@ -126,6 +194,7 @@ const Header = ({ classData }) => {
             <JoinClass />
             <Login />
             <Register />
+            <Profile/>
         </div>
     )
 }
