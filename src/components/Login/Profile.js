@@ -47,6 +47,16 @@ export const Profile = () => {
       }
     const componentClicked =()=>console.log('clicked');
 
+    function parseJwt (token) {
+      var base64Url = token.split('.')[1];
+      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+  
+      return JSON.parse(jsonPayload);
+  };
+
     //login by Facebook
     const handleLoginFb = _ =>{
       if(state.isLoginIn){
@@ -74,7 +84,7 @@ export const Profile = () => {
 
       // end login by google
 
-      //profile by email, password
+      //change profile 
       const changeProfile = e => {
         e.preventDefault();
         const newUser = {
@@ -83,8 +93,13 @@ export const Profile = () => {
             password: password,
             status: status
         };
-        axios.put('http://localhost:5000/user', newUser) 
-        .then(response =>  console.log(newUser));
+
+        console.log(username)
+        axios.put('http://localhost:5000/user/' + parseJwt(tokenData).id, newUser) 
+        .then(response =>  {
+          console.log(newUser);
+          // localStorage.setItem('tokenData',JSON.stringify(response.data))
+        });
         setProfileDialog(false);
       }
 
@@ -107,18 +122,26 @@ export const Profile = () => {
       }
 
       const addStudentId = e =>{
-
+        e.preventDefault();
+        const user = {
+            studentId: studentId
+        };
+        axios.put('http://localhost:5000/user/studentId/'+parseJwt(tokenData).id,user) 
+        .then(response => { 
+            alert("Login successful")
+            // setMessageError("Login successful");
+            // setTokenData(response.data);
+            // localStorage.setItem('tokenData', JSON.stringify(response.data));
+            console.log(parseJwt(tokenData).id)
+        })
+        .catch(error=>{
+          alert("Please check student id")
+          // setMessageError(error.response.data.message);
+          console.log(error)
+        })
       }
       
-      function parseJwt (token) {
-        var base64Url = token.split('.')[1];
-        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-    
-        return JSON.parse(jsonPayload);
-    };
+
 
     return (
         <div>
@@ -145,15 +168,15 @@ export const Profile = () => {
                         <form onSubmit={changeProfile}>
                           <input className="login_input" type="text" name="username" placeholder={loginData.name}
                             value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            onChange={(e) => setUsername(e.target.value?e.target.value:loginData.name)}
                           />
                           <input className="login_input" type="text" name="email" placeholder={loginData.email}
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e) => setEmail(e.target.value?e.target.value:loginData.email)}
                           />
                           <input className="login_input" type="password" name="password" placeholder={loginData.password}
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e) => setPassword(e.target.value?e.target.value:loginData.password)}
                           />
                           <input className="login_input" type="password" name="password2" placeholder="Retype password"
                             value={re_password}
@@ -171,7 +194,7 @@ export const Profile = () => {
                         <form onSubmit={changeProfile}>
                           <input className="login_input" type="text" name="username" placeholder={parseJwt (tokenData).username}
                             value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            onChange={(e) => setUsername(e.target.value?e.target.value:parseJwt (tokenData).username)}
                           />
                           <input className="login_input" type="text" name="email" placeholder={parseJwt (tokenData).email}
                             value={email}
@@ -194,10 +217,10 @@ export const Profile = () => {
                     }
                 </div>
                 
-                <div class="right"> 
+                <div class="right-profile"> 
                     <input className="login_input" type="text" name="studentId" placeholder="studentId"
                         value={studentId}
-                        onChange={(e) => setRePassword(e.target.value)}
+                        onChange={(e) => setStudentId(e.target.value)}
                     />
                     <input class="Signup" type="submit" onClick={addStudentId} name="signup_submit" value="Add"/>
                 </div>
