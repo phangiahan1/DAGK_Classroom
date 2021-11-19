@@ -41,6 +41,7 @@ export const Register = () => {
     const [re_password, setRePassword] = useState("");
     const [email, setEmail] = useState("");
     const [status, setStatus] = useState(true);
+    const [image, setImage] = useState("");
     const [MessageError, setMessageError] = useState("");
     const [tokenData, setTokenData ] = useState(
       localStorage.getItem('tokenData')
@@ -107,24 +108,23 @@ export const Register = () => {
         const newUser = {
           username: data.name,
           email: data.email,
-          password:" password",
+          password: data.email,
           status: status
       };
       axios.post('http://localhost:5000/user', newUser) 
-      .then(error =>  {if (error.response){
-
-        //do something
+      .then(res =>  {
+        console.log(res.data)
+        localStorage.setItem('tokenData', JSON.stringify(res.data));
+      }
+        // }else if(error.request){
         
-        }else if(error.request){
+        // //do something else
         
-        //do something else
+        // }else if(error.message){
         
-        }else if(error.message){
+        // //do something other than the other two
         
-        //do something other than the other two
-        
-        }
-      });
+      );
 
       localStorage.setItem('loginData', JSON.stringify(data));
         
@@ -174,7 +174,7 @@ export const Register = () => {
           axios.post('http://localhost:5000/user', newUser) 
           .then(response =>  {
             alert("SignUp successful")
-            setMessageError("Signup successful");
+            // setMessageError("Signup successful");
             setTokenData(response.data);
             localStorage.setItem('tokenData', JSON.stringify(response.data));
             console.log(localStorage.getItem('tokenData'))
