@@ -81,12 +81,26 @@ const Login = () => {
             'Content-Type': 'application/json',
           },
         });
-    
+        
         const data = await res.json();
         setLoginData(data);
-        localStorage.setItem('loginData', JSON.stringify(data));
-        // window.location.href="/";
+        const newUser = {
+          username: data.name,
+          email: data.email,
+          password:data.email,
+          status: status
       };
+      axios.post('http://localhost:5000/user/', newUser) 
+      .then(res =>  {
+        console.log(res.data)
+        localStorage.setItem('tokenData', JSON.stringify(res.data));
+      })
+      
+      localStorage.setItem('loginData', JSON.stringify(data));
+        
+      window.location.reload(true);
+      };
+
       const handleLogout = () => {
         localStorage.removeItem('loginData');
         setLoginData(null);
@@ -104,7 +118,7 @@ const Login = () => {
         axios.post('http://localhost:5000/user/login',user) 
         .then(response => { 
             alert("Login successful")
-            setMessageError("Login successful");
+            // setMessageError("Login successful");
             setTokenData(response.data);
             localStorage.setItem('tokenData', JSON.stringify(response.data));
             console.log(localStorage.getItem('tokenData'))

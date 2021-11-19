@@ -94,12 +94,21 @@ export const Profile = () => {
             status: status
         };
 
-        console.log(username)
-        axios.put('http://localhost:5000/user/' + parseJwt(tokenData).id, newUser) 
-        .then(response =>  {
-          console.log(newUser);
-          // localStorage.setItem('tokenData',JSON.stringify(response.data))
-        });
+        if(tokenData){
+          axios.put('http://localhost:5000/user/' + parseJwt(tokenData).id, newUser) 
+          .then(response =>  {
+            console.log(newUser);
+            // localStorage.setItem('tokenData',JSON.stringify(response.data))
+          });
+        }
+        else if(loginData){
+          console.log(loginData)
+          axios.put('http://localhost:5000/user/' + loginData.id, newUser) 
+          .then(response =>  {
+            console.log(newUser);
+            // localStorage.setItem('tokenData',JSON.stringify(response.data))
+          });
+        }
         setProfileDialog(false);
       }
 
@@ -126,19 +135,38 @@ export const Profile = () => {
         const user = {
             studentId: studentId
         };
-        axios.put('http://localhost:5000/user/studentId/'+parseJwt(tokenData).id,user) 
-        .then(response => { 
-            alert("Login successful")
-            // setMessageError("Login successful");
-            // setTokenData(response.data);
-            // localStorage.setItem('tokenData', JSON.stringify(response.data));
-            console.log(parseJwt(tokenData).id)
-        })
-        .catch(error=>{
-          alert("Please check student id")
-          // setMessageError(error.response.data.message);
-          console.log(error)
-        })
+        
+        if(tokenData){
+          axios.put('http://localhost:5000/user/studentId/'+parseJwt(tokenData).id,user) 
+          .then(response => { 
+              alert("Add student id successful")
+              // setMessageError("Login successful");
+              // setTokenData(response.data);
+              // localStorage.setItem('tokenData', JSON.stringify(response.data));
+              console.log(parseJwt(tokenData).id)
+          })
+          .catch(error=>{
+            alert("Please check student id")
+            // setMessageError(error.response.data.message);
+            console.log(error)
+          })
+        }
+        else if(loginData){
+          console.log(loginData)
+          axios.put('http://localhost:5000/user/studentId/'+ loginData.id,user) 
+          .then(response => { 
+              alert("Add student id successful")
+              // setMessageError("Login successful");
+              // setTokenData(response.data);
+              // localStorage.setItem('tokenData', JSON.stringify(response.data));
+              console.log(parseJwt(tokenData).id)
+          })
+          .catch(error=>{
+            alert("Please check student id")
+            // setMessageError(error.response.data.message);
+            console.log(error)
+          })
+        }
       }
       
 
