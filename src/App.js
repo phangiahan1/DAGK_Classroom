@@ -8,21 +8,35 @@ function App() {
   const { createTabs, setCreateTabs } = useLocalContext();
   const { tabValue, setTabValue } = useLocalContext();
 
+  const [tokenData, setTokenData] = useState(
+    localStorage.getItem('tokenData')
+      ? JSON.parse(localStorage.getItem('tokenData'))
+      : null
+  );
+  const [loginData, setLoginData] = useState(
+    localStorage.getItem('loginData')
+      ? JSON.parse(localStorage.getItem('loginData'))
+      : null
+  );
+
+  console.log("tokenData:" + tokenData);
+  console.log("loginData:" + loginData.email);
 
   const [createdClasses, setCreatedClasses] = useState([]);
   const fetchItems = async () => {
-    const data = await fetch('//localhost:5000/classroom');
+    const data = await fetch('//localhost:5000/classroom/'+loginData.email);
+    //const data = await fetch('//localhost:5000/classroom/phanhan2261@gmail.com');
     const items = await data.json();
     setCreatedClasses(items);
   };
-  // useEffect(() => {
-  //   fetchItems();
-  // },[]
-  // );
   useEffect(() => {
     fetchItems();
-  }
+  },[loginData.email]
   );
+  // useEffect(() => {
+  //   fetchItems();
+  // }
+  //);
 
 
   return (
