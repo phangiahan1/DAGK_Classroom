@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import { useLocalContext } from "../../context/context";
 import {
     Button,
@@ -14,11 +14,45 @@ import axios from 'axios';
 export const CreateClass = () => {
     const { createClassDialog, setCreateClassDialog } = useLocalContext();
 
+    const [tokenData, setTokenData] = useState(
+        localStorage.getItem('tokenData')
+          ? JSON.parse(localStorage.getItem('tokenData'))
+          : null
+      );
+      const [loginData, setLoginData] = useState(
+        localStorage.getItem('loginData')
+          ? JSON.parse(localStorage.getItem('loginData'))
+          : null
+      );
+
+      function parseJwt(token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+    
+        return JSON.parse(jsonPayload);
+      };
+
     const [className, setClassName] = useState("");
     const [Section, setSection] = useState("");
     const [Room, setRoom] = useState("");
     const [Subject, setSubject] = useState("");
-    const [Owner, setOwner] = useState("phanhan226@gmail.com");
+    const [Owner, setOwner] = useState("");
+
+    useEffect(() => {
+        if (loginData) {
+            setOwner(loginData.email);
+        }
+    }, [loginData]
+    );
+    useEffect(() => {
+        if (tokenData) {
+            setOwner(parseJwt(tokenData).email);
+        }
+    }, [tokenData]
+    );
 
     const handleSubmit = e => {
         e.preventDefault();
@@ -36,6 +70,7 @@ export const CreateClass = () => {
         setRoom("");
         setSubject("");
         setCreateClassDialog(false);
+        window.location.reload(true);
     }
     return (
         <div>
