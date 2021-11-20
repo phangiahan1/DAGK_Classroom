@@ -19,19 +19,29 @@ function App() {
       : null
   );
 
-  console.log("tokenData:" + tokenData);
-  console.log("loginData:" + loginData.email);
+  // console.log("tokenData:" + tokenData);
+  // console.log("loginData:" + loginData.email);
 
   const [createdClasses, setCreatedClasses] = useState([]);
-  const fetchItems = async () => {
-    const data = await fetch('//localhost:5000/classroom/'+loginData.email);
+  const fetchItemsCreate = async () => {
+    const data = await fetch('//localhost:5000/classroom/' + loginData.email);
     //const data = await fetch('//localhost:5000/classroom/phanhan2261@gmail.com');
     const items = await data.json();
     setCreatedClasses(items);
   };
+
+  const [joinedClasses, setJoinedClasses] = useState([]);
+  const fetchItemsoJoin = async () => {
+    const data = await fetch('//localhost:5000/classroom/' + loginData.email + '/joined');
+    const items = await data.json();
+    setJoinedClasses(items);
+  };
   useEffect(() => {
-    fetchItems();
-  },[loginData.email]
+    if (loginData) {
+      fetchItemsCreate();
+      fetchItemsoJoin();
+    }
+  }, [loginData]
   );
   // useEffect(() => {
   //   fetchItems();
@@ -69,11 +79,41 @@ function App() {
           </Route>
         ))}
 
+        {joinedClasses.map((item, index) => (
+          <Route key={index} exact path={`/${item._id}`}>
+            <Header classData={item} />
+            <MainClass classData={item} ></MainClass>
+          </Route>
+        ))}
+
+        {joinedClasses.map((item, index) => (
+          <Route key={index} exact path={`/${item._id}/people`}>
+            <Header classData={item} />
+            <MainClassUser classData={item} />
+          </Route>
+        ))}
+
+        {joinedClasses.map((item, index) => (
+          <Route key={index} exact path={`/${item._id}/classwork`}>
+            <Header classData={item} />
+            <MainClassClassWork classData={item} />
+          </Route>
+        ))}
+        {joinedClasses.map((item, index) => (
+          <Route key={index} exact path={`/${item._id}/marks`}>
+            <Header classData={item} />
+            <MainClassMarks classData={item} />
+          </Route>
+        ))}
+
         <Route exact path="/" >
           <div className="App">
             <Header />
             <ol className="joined">
               {createdClasses.map((item) => (
+                <MyClass classData={item} />
+              ))}
+              {joinedClasses.map((item) => (
                 <MyClass classData={item} />
               ))}
             </ol>
