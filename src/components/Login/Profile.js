@@ -137,44 +137,7 @@ export const Profile = () => {
   const loginHandle = e => {
   }
 
-  const addStudentId = e => {
-    e.preventDefault();
-    const user = {
-      studentId: studentId
-    };
 
-    if (tokenData) {
-      axios.put('http://localhost:5000/user/studentId/' + parseJwt(tokenData).id, user)
-        .then(response => {
-          alert("Add student id successful")
-          // setMessageError("Login successful");
-          // setTokenData(response.data);
-          // localStorage.setItem('tokenData', JSON.stringify(response.data));
-          console.log(parseJwt(tokenData).id)
-        })
-        .catch(error => {
-          alert("Please check student id")
-          // setMessageError(error.response.data.message);
-          console.log(error)
-        })
-    }
-    else if (loginData) {
-      console.log(loginData)
-      axios.put('http://localhost:5000/user/studentId/' + loginData.id, user)
-        .then(response => {
-          alert("Add student id successful")
-          // setMessageError("Login successful");
-          // setTokenData(response.data);
-          // localStorage.setItem('tokenData', JSON.stringify(response.data));
-          console.log(parseJwt(tokenData).id)
-        })
-        .catch(error => {
-          alert("Please check student id")
-          // setMessageError(error.response.data.message);
-          console.log(error)
-        })
-    }
-  }
 
       //change username 
       const changeUsername = e => {
@@ -284,47 +247,85 @@ export const Profile = () => {
       //   setProfileDialog(false);
       // }
       //login by email, password
-      const loginHandle = e =>{
-      }
+      // const loginHandle = e =>{
+      // }
 
-      const addStudentId = e =>{
+      // const addStudentId = e =>{
+      //   e.preventDefault();
+      //   const user = {
+      //       studentId: studentId
+      //   };
+        
+      //   if(tokenData){
+      //     axios.put('http://localhost:5000/user/studentId/'+parseJwt(tokenData).email,user) 
+      //     .then(response => { 
+      //         alert("Add student id successful")
+      //         // setMessageError("Login successful");
+      //         // setTokenData(response.data);
+      //         // localStorage.setItem('tokenData', JSON.stringify(response.data));
+      //         console.log(parseJwt(tokenData).id)
+      //     })
+      //     .catch(error=>{
+      //       alert("Please check student id")
+      //       // setMessageError(error.response.data.message);
+      //       console.log(error)
+      //     })
+      //   }
+      //   else if(loginData){
+      //     axios.put('http://localhost:5000/user/studentId/email/'+ loginData.email,user) 
+      //     .then(response => { 
+      //         alert("Add student id successful")
+      //         // setMessageError("Login successful");
+      //         // setTokenData(response.data);
+      //         // localStorage.setItem('tokenData', JSON.stringify(response.data));
+      //         // console.log(loginData.email)
+      //     })
+      //     .catch(error=>{
+      //       alert("Please check student id")
+      //       // setMessageError(error.response.data.message);
+      //       console.log(error)
+      //     })
+      //   }
+      // }
+      
+      const addStudentId = e => {
         e.preventDefault();
         const user = {
-            studentId: studentId
+          studentId: studentId
         };
-        
-        if(tokenData){
-          axios.put('http://localhost:5000/user/studentId/'+parseJwt(tokenData).id,user) 
-          .then(response => { 
+    
+        if (tokenData) {
+          axios.put('http://localhost:5000/user/studentId/' + parseJwt(tokenData).email, user)
+            .then(response => {
               alert("Add student id successful")
               // setMessageError("Login successful");
               // setTokenData(response.data);
               // localStorage.setItem('tokenData', JSON.stringify(response.data));
               console.log(parseJwt(tokenData).id)
-          })
-          .catch(error=>{
-            alert("Please check student id")
-            // setMessageError(error.response.data.message);
-            console.log(error)
-          })
+            })
+            .catch(error => {
+              alert("Please check student id")
+              // setMessageError(error.response.data.message);
+              console.log(error)
+            })
         }
-        else if(loginData){
-          axios.put('http://localhost:5000/user/studentId/email/'+ loginData.email,user) 
-          .then(response => { 
+        else if (loginData) {
+          console.log(loginData)
+          axios.put('http://localhost:5000/user/studentId/' + loginData.email, user)
+            .then(response => {
               alert("Add student id successful")
               // setMessageError("Login successful");
               // setTokenData(response.data);
               // localStorage.setItem('tokenData', JSON.stringify(response.data));
-              // console.log(loginData.email)
-          })
-          .catch(error=>{
-            alert("Please check student id")
-            // setMessageError(error.response.data.message);
-            console.log(error)
-          })
+              console.log(parseJwt(tokenData).email)
+            })
+            .catch(error => {
+              alert("Please check student id")
+              // setMessageError(error.response.data.message);
+              console.log(error)
+            })
         }
       }
-      
       const handleClick = () => {
         setShow(!show);
       };

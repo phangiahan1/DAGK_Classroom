@@ -72,16 +72,16 @@ const Login = () => {
     alert("fail: "+result);
   };
 
-    // begin login by google
-    const [loginData, setLoginData] = useState(
-        localStorage.getItem('loginData')
-          ? JSON.parse(localStorage.getItem('loginData'))
-          : null
-      );
+    // // begin login by google
+    // const [loginData, setLoginData] = useState(
+    //     localStorage.getItem('loginData')
+    //       ? JSON.parse(localStorage.getItem('loginData'))
+    //       : null
+    //   );
     
-      const handleFailure = (result) => {
-        alert(result);
-      };
+    //   const handleFailure = (result) => {
+    //     alert(result);
+    //   };
     
       const handleLogin = async (googleData) => {
         const res = await fetch('/api/google-login', {
