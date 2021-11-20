@@ -11,3 +11,4 @@ export {default as MainClassClassWork} from "./MainClassClassWork/MainClassClass
 export {default as MainClassUser} from "./MainClassUser/MainClassUser";
 export {default as InviteTeacher} from "./InviteTeacher/InviteTeacher";
 export {default as Profile} from "./Login/Profile"
+export {default as InviteClass} from "./InviteClass/InviteClass"

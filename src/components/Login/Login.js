@@ -17,18 +17,18 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const Login = () => {
-    const { loginDialog, setLoginDialog } = useLocalContext();
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [re_password, setRePassword] = useState("");
-    const [email, setEmail] = useState("");
-    const [status, setStatus] = useState(true);
-    const [MessageError, setMessageError] = useState("");
-    const [picture, setPicture] = useState("");
-    const [tokenData, setTokenData ] = useState(
-      localStorage.getItem('TokenData')
-    ? JSON.parse(localStorage.getItem('TokenData'))
-    : null
+  const { loginDialog, setLoginDialog } = useLocalContext();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [re_password, setRePassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState(true);
+  const [MessageError, setMessageError] = useState("");
+  const [picture, setPicture] = useState("");
+  const [tokenData, setTokenData] = useState(
+    localStorage.getItem('TokenData')
+      ? JSON.parse(localStorage.getItem('TokenData'))
+      : null
   );
 
   let fbContent = null;
@@ -69,42 +69,42 @@ const Login = () => {
   );
 
   const handleFailure = (result) => {
-    alert("fail: "+result);
+    alert("fail: " + result);
   };
 
-    // // begin login by google
-    // const [loginData, setLoginData] = useState(
-    //     localStorage.getItem('loginData')
-    //       ? JSON.parse(localStorage.getItem('loginData'))
-    //       : null
-    //   );
-    
-    //   const handleFailure = (result) => {
-    //     alert(result);
-    //   };
-    
-      const handleLogin = async (googleData) => {
-        const res = await fetch('/api/google-login', {
-          method: 'POST',
-          body: JSON.stringify({
-            token: googleData.tokenId,
-          }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        
-        const data = await res.json();
-        setLoginData(data);
-        const newUser = {
-          username: data.name,
-          email: data.email,
-          password:data.email,
-          status: status,
-          picture: data.picture
-      };
-      axios.post('http://localhost:5000/user/', newUser) 
-      .then(res =>  {
+  // // begin login by google
+  // const [loginData, setLoginData] = useState(
+  //     localStorage.getItem('loginData')
+  //       ? JSON.parse(localStorage.getItem('loginData'))
+  //       : null
+  //   );
+
+  //   const handleFailure = (result) => {
+  //     alert(result);
+  //   };
+
+  const handleLogin = async (googleData) => {
+    const res = await fetch('/api/google-login', {
+      method: 'POST',
+      body: JSON.stringify({
+        token: googleData.tokenId,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await res.json();
+    setLoginData(data);
+    const newUser = {
+      username: data.name,
+      email: data.email,
+      password: data.email,
+      status: status,
+      picture: data.picture
+    };
+    axios.post('http://localhost:5000/user/', newUser)
+      .then(res => {
         console.log(res.data)
         localStorage.setItem('tokenData', JSON.stringify(res.data));
       })
@@ -185,7 +185,6 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-
                 <input class="Signup" type="submit" onClick={LoginSubmit} name="signup_submit" value="Login" />
               </form>
 

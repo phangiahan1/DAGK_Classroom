@@ -14,6 +14,10 @@ export function ContextProvider({ children }) {
     const [tabValue, setTabValue] = useState(0);
     const [createInviteTeacherDialog, setcreateInviteTeacherDialog] = useState(false);
     const [profileDialog, setProfileDialog] = useState(false);
+    const [openDialogCofirmInvite, setOpenDialogCofirmInvite] = useState(false);
+    const [CofirmInvite, setCofirmInvite]= useState(false);
+    const [idC, setidC] = useState("");
+
     const value = {
         createClassDialog, setCreateClassDialog,
         joinClassDialog, setJoinClassDialog,
@@ -22,7 +26,10 @@ export function ContextProvider({ children }) {
         createTabs, setCreateTabs,
         tabValue, setTabValue,
         createInviteTeacherDialog, setcreateInviteTeacherDialog,
-        profileDialog, setProfileDialog
+        profileDialog, setProfileDialog,
+        openDialogCofirmInvite, setOpenDialogCofirmInvite,
+        CofirmInvite, setCofirmInvite,
+        idC, setidC
     };
     return (
         <AddContext.Provider value={value}>{children}</AddContext.Provider>

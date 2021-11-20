@@ -1,12 +1,16 @@
 import { useState, useEffect, React } from "react";
-import { MyClass, MainClass, MainClassUser, Header, MainClassClassWork, MainClassMarks } from './components';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { MyClass, MainClass, MainClassUser, Header, MainClassClassWork, MainClassMarks, InviteClass, InviteTeacher } from './components';
+import { BrowserRouter as Router, Switch, Route, useParams, Redirect  } from "react-router-dom";
 import { useLocalContext } from './context/context';
 
 function App() {
+
+  const { loginDialog, setLoginDialog } = useLocalContext();
   //tabs value render
   const { createTabs, setCreateTabs } = useLocalContext();
   const { tabValue, setTabValue } = useLocalContext();
+  const { openDialogCofirmInvite, setOpenDialogCofirmInvite } = useLocalContext();
+  const { CofirmInvite, setCofirmInvite } = useLocalContext();
 
   const [tokenData, setTokenData] = useState(
     localStorage.getItem('tokenData')
@@ -66,11 +70,40 @@ function App() {
     }
   }, [tokenData]
   );
-  // useEffect(() => {
-  //   fetchItems();
-  // }
-  //);
 
+
+  const {idC, setidC} = useLocalContext();
+
+  function Child() {
+    let { idClass } = useParams();
+    const a = { idClass };
+    setidC(a.idClass);
+    setLoginDialog(true);
+    useEffect(() => {
+      if (tokenData) {
+        setLoginDialog(false);
+      }
+    }, [tokenData]
+    );
+    useEffect(() => {
+      if (loginData) {
+        setLoginDialog(false);
+      }
+    }, [loginData]
+    );
+    setOpenDialogCofirmInvite(true);
+    useEffect(() => {
+      if (CofirmInvite) {
+        setOpenDialogCofirmInvite(false);
+      }
+    }, [CofirmInvite]
+    );
+    return (
+      <div>
+        {/* <h3>ID: {idC}</h3> */}
+      </div>
+    );
+  }
 
   return (
     <Router>
@@ -132,7 +165,7 @@ function App() {
         <Route exact path="/" >
           <div className="App">
             <Header />
-            {loginData||tokenData ? <ol className="joined">
+            {loginData || tokenData ? <ol className="joined">
               {createdClasses.map((item) => (
                 <MyClass classData={item} />
               ))}
@@ -140,13 +173,18 @@ function App() {
                 <MyClass classData={item} />
               ))}
             </ol> : <h1>Login to use app</h1>}
-            
+
           </div>
         </Route>
 
+        <Route path="/:idClass/invite_teacher">
+          <Header />
+          <Child />
+          <InviteClass/>
+          {CofirmInvite? <Redirect to="/"/> : null}
+        </Route>
       </Switch>
     </Router>
-
   );
 }
 

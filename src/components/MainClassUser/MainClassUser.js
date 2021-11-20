@@ -15,8 +15,17 @@ import MenuItem from '@mui/material/MenuItem';
 const MainClassUser = ({ classData }) => {
     const { createTabs, setCreateTabs } = useLocalContext();
     setCreateTabs(true);
-
+    //owner toi cao
     const [ownerClass, setOwerClass] = useState();
+
+    //coop owner
+    const [coopOwner, setCoopOwner] = useState([]);
+    const fetchItemsCoopOwner = async () => {
+        const url = '//localhost:5000/classroom/' + classData._id + '/allteacher'
+        const data = await fetch(url);
+        const items = await data.json();
+        setCoopOwner(items);
+    };
 
     const fetchItems1 = async () => {
         const url = '//localhost:5000/user/findEmail/' + classData.owner + '';
@@ -37,6 +46,7 @@ const MainClassUser = ({ classData }) => {
     useEffect(() => {
         fetchItems();
         fetchItems1();
+        fetchItemsCoopOwner();
     }, []
     );
 
@@ -111,6 +121,54 @@ const MainClassUser = ({ classData }) => {
                         </ListItemButton>
                     </ListItem>
                     : null}
+                {coopOwner.map((item, value) => {
+                    const labelId = `checkbox-list-label-${value}`;
+                    return (
+                        <ListItem
+                            key={item}
+                            secondaryAction={
+                                <div>
+                                    <IconButton edge="end" aria-label="comments"
+                                        aria-controls="demo-positioned-menu"
+                                        aria-haspopup="true"
+                                        aria-expanded={open ? 'true' : undefined}
+                                        onClick={handleClick}>
+                                        <MoreVertIcon />
+                                    </IconButton>
+                                    <Menu
+                                        id="demo-positioned-menu"
+                                        aria-labelledby="demo-positioned-button"
+                                        anchorEl={anchorEl}
+                                        open={open}
+                                        onClose={handleClose}
+                                        anchorOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'left',
+                                        }}
+                                        transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'left',
+                                        }}
+                                    >
+                                        <MenuItem onClick={handleClose}>LeaveClass</MenuItem>
+                                        <MenuItem onClick={handleClose}>Delete</MenuItem>
+                                        <MenuItem onClick={handleClose}>Hide</MenuItem>
+                                    </Menu>
+
+                                </div>
+                            }
+                            disablePadding
+                        >
+                            <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
+                                <ListItemAvatar>
+                                    <Avatar />
+                                </ListItemAvatar>
+                                <ListItemText id={labelId} primary={item.idUser.username} />
+                            </ListItemButton>
+                        </ListItem>
+                    );
+                })}
+
             </List>
 
             <Grid container spacing={2}>
@@ -206,7 +264,7 @@ const MainClassUser = ({ classData }) => {
                     );
                 })}
             </List>
-            <InviteTeacher classData ={ classData } />
+            <InviteTeacher classData={classData} />
         </div>
     )
 }
