@@ -65,6 +65,16 @@ div {
     box-shadow: 0 2px 4px rgb(0 0 0 / 40%);
 }
 
+#login-box-profile {
+    position: relative;
+    margin: 5% auto;
+    width: 600px;
+    height: 550px;
+    background: #FFF;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 40%);
+}
+
 .login_input[type="text"], .login_input[type="password"] {
     display: block;
     box-sizing: border-box;
@@ -84,6 +94,22 @@ div {
     -webkit-text-security: disc !important;
     padding: 1px 2px;
 }
+
+.login_input_studentid[type="text"], .login_input_studentid[type="password"] {
+    display: block;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    padding: 4px;
+    width: 200px;
+    height: 32px;
+    border: none;
+    border-bottom: 1px solid #AAA;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+    transition: 0.2s ease;
+}
+
 h1 {
     margin: 0 0 20px 0;
     font-weight: 300;
@@ -143,6 +169,14 @@ button.social-signin.facebook {
     height: 50px;
     background: #32508E;
     text-transform: uppercase;
+    color:#fff;
+    font-size: 15px;
+}
+
+.profile{
+    width: 200px;
+    height: 50px;
+    background: #32508E;
     color:#fff;
     font-size: 15px;
 }

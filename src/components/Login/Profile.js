@@ -9,7 +9,7 @@ import App from '../../App'
 import { ContextProvider } from '../../context/context';
 import axios from "axios";
 import React, { useState } from "react";
-import { Avatar, Button, Dialog, Slide, TextField } from "@material-ui/core";
+import { Avatar, Button, Dialog, Slide, TextField, Box, Portal } from "@material-ui/core";
 import { useLocalContext } from "../../context/context";
 import { Close } from "@material-ui/icons";
 import "./style.css";
@@ -20,9 +20,16 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 
 export const Profile = () => {
+    const [show, setShow] = React.useState(false);
+    const [showPassword, setShowPassword] = React.useState(false);
+    const [showName, setShowName] = React.useState(false);
+    const container1 = React.useRef(null);
+    const container2 = React.useRef(null);
+    const container3 = React.useRef(null);
     const { profileDialog, setProfileDialog } = useLocalContext();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
     const [re_password, setRePassword] = useState("");
     const [email, setEmail] = useState("");
     const [status, setStatus] = useState(true);
@@ -112,6 +119,99 @@ export const Profile = () => {
         setProfileDialog(false);
       }
 
+      //change username 
+      const changeUsername = e => {
+        e.preventDefault();
+        const newUser = {
+            username: username,
+        };
+
+        if(tokenData){
+          axios.put('http://localhost:5000/user/updateUsername/' + parseJwt(tokenData).email, newUser) 
+          .then(response =>  {
+            console.log(newUser);
+            // localStorage.setItem('tokenData',JSON.stringify(response.data))
+          });
+        }
+        else if(loginData){
+          console.log(loginData)
+          axios.put('http://localhost:5000/user/updateUsername/' + loginData.email, newUser) 
+          .then(response =>  {
+            console.log(newUser);
+            // localStorage.setItem('tokenData',JSON.stringify(response.data))
+          });
+        }
+        // setProfileDialog(false);
+      }
+
+
+            //change pass
+      const changePassword = e => {
+        e.preventDefault();
+        if(newPassword !== re_password){
+          alert("Password not compare re-pasword")
+        }else{
+          const newUser = {
+              password: password,
+          };
+
+
+          if(tokenData){
+            axios.post('http://localhost:5000/user/updatePasswordCheck/' + parseJwt(tokenData).email, newUser) 
+            .then(response =>  {
+                const newPass = {
+                  password: newPassword
+                }
+                console.log(newPass.password)
+              axios.put('http://localhost:5000/user/updatePassword/' + parseJwt(tokenData).email, newPass) 
+              .then(res => console.log(res))
+              .catch(console.error())
+              // localStorage.setItem('tokenData',JSON.stringify(response.data))
+          })
+        }
+          else
+           if(loginData){
+            axios.post('http://localhost:5000/user/updatePasswordCheck/' + loginData.email, newUser) 
+            .then(response =>  {
+                const newPass = {
+                  password: newPassword
+                }
+                console.log(newPass.password)
+              axios.put('http://localhost:5000/user/updatePassword/' + loginData.email, newPass) 
+              .then(res => console.log(res))
+              .catch(console.error())
+              // localStorage.setItem('tokenData',JSON.stringify(response.data))
+            })
+            .catch(console.error());
+          }
+        // setProfileDialog(false);
+        }
+      }
+      //change username 
+      // const changeUsername = e => {
+      //   e.preventDefault();
+      //   const newUser = {
+      //       username: username,
+      //   };
+
+      //   if(tokenData){
+      //     axios.put('http://localhost:5000/user/updateUsername/' + parseJwt(tokenData).id, newUser) 
+      //     .then(response =>  {
+      //       console.log(newUser);
+      //       // localStorage.setItem('tokenData',JSON.stringify(response.data))
+      //     });
+      //   }
+      //   else if(loginData){
+      //     console.log(loginData)
+      //     axios.put('http://localhost:5000/user/updateUsername/' + loginData.email, newUser) 
+      //     .then(response =>  {
+      //       console.log(newUser);
+      //       // localStorage.setItem('tokenData',JSON.stringify(response.data))
+      //     });
+      //   }
+      //   // setProfileDialog(false);
+      // }
+
       //   //push account gg
       // const changeProfileGoogle = (e,loginData) => {
       //   e.preventDefault();
@@ -152,14 +252,13 @@ export const Profile = () => {
           })
         }
         else if(loginData){
-          console.log(loginData)
-          axios.put('http://localhost:5000/user/studentId/'+ loginData.id,user) 
+          axios.put('http://localhost:5000/user/studentId/email/'+ loginData.email,user) 
           .then(response => { 
               alert("Add student id successful")
               // setMessageError("Login successful");
               // setTokenData(response.data);
               // localStorage.setItem('tokenData', JSON.stringify(response.data));
-              console.log(parseJwt(tokenData).id)
+              // console.log(loginData.email)
           })
           .catch(error=>{
             alert("Please check student id")
@@ -169,7 +268,17 @@ export const Profile = () => {
         }
       }
       
+      const handleClick = () => {
+        setShow(!show);
+      };
 
+      const handleClickPassword = () => {
+        setShowPassword(!showPassword);
+      };
+
+      const handleClickName = () => {
+        setShowName(!showName);
+      };
 
     return (
         <div>
@@ -179,6 +288,8 @@ export const Profile = () => {
                 onClose={() => setProfileDialog(false)}
                 TransitionComponent={Transition}
             >
+            
+      {loginData?(
             <div className="login">
                 <div className="login__wrapper">
                     <div
@@ -188,10 +299,34 @@ export const Profile = () => {
                         <div className="login__topHead">Profile</div>
                     </div>
                 </div>
-            <div id="login-box">
+            <div id="login-box-profile">
                 <div class="left">
-                    <h1>Profile</h1>
-                    {
+
+                    <button class="profile" type="button" onClick={handleClickPassword}>
+                      {showPassword ? 'Password' : 'Change Password'}
+                    </button>
+                    <Box sx={{ p: 1, my: 1, border: '1px solid' }}>
+                      Password: ***********
+                      {showPassword ? (
+                        <Portal container={container2.current}>
+                          <input className="login_input_studentid" type="password" name="password" placeholder="old password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                          />
+                          <input className="login_input_studentid" type="password" name="newpassword" placeholder="new password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                          />
+                          <input className="login_input_studentid" type="password" name="password2" placeholder="Retype password"
+                            value={re_password}
+                            onChange={(e) => setRePassword(e.target.value)}
+                          />
+                        <input class="profile" type="submit" onClick={changePassword} name="signup_submit" value="Add"/>
+                        </Portal>
+                      ) : null}
+                    </Box>
+                    <Box sx={{ p: 1, my: 1, border: '1px solid' }} ref={container2} />
+                    {/* {
                       loginData?(
                         <form onSubmit={changeProfile}>
                           <input className="login_input" type="text" name="username" placeholder={loginData.name}
@@ -201,8 +336,8 @@ export const Profile = () => {
                           <input className="login_input" type="text" name="email" placeholder={loginData.email}
                             value={email}
                             onChange={(e) => setEmail(e.target.value?e.target.value:loginData.email)}
-                          />
-                          <input className="login_input" type="password" name="password" placeholder={loginData.password}
+                          /> 
+                           <input className="login_input" type="password" name="password" placeholder={loginData.password}
                             value={password}
                             onChange={(e) => setPassword(e.target.value?e.target.value:loginData.password)}
                           />
@@ -216,8 +351,8 @@ export const Profile = () => {
                       ):(
                         <div></div>
                       )
-                    }
-                    {
+                    } */}
+                    {/* {
                       tokenData?(
                         <form onSubmit={changeProfile}>
                           <input className="login_input" type="text" name="username" placeholder={parseJwt (tokenData).username}
@@ -237,24 +372,204 @@ export const Profile = () => {
                             onChange={(e) => setRePassword(e.target.value)}
                           />
                         
+                          <input class="profile" type="submit" onClick={changeProfile} name="signup_submit" value="Change Profile"/>
+                        </form>
+                      ):(
+                        <div></div>
+                      )
+                    } */}
+                </div>
+                
+                <div class="right-profile"> 
+                  {/* {loginData?(
+                        <Avatar sx={{ height: '70px', width: '70px' }} scr={loginData.picture} ></Avatar>
+                      ):tokenData?(
+                        <Avatar sx={{ height: '70px', width: '70px' }} scr={parseJwt (tokenData).picture} ></Avatar>
+                      ):(
+                        <Avatar >T</Avatar>
+                      )
+                    } */}
+                    <button class="profile" type="button" onClick={handleClickName}>
+                      {showName ? 'Fullname' : 'Change Fullname'}
+                    </button>
+                    <Box sx={{ p: 1, my: 1, border: '1px solid' }}>
+                      Fullname:{
+                        loginData.name
+                      }
+                      {showName ? (
+                        <Portal container={container1.current}>
+                          <input className="login_input_studentid" type="text" name="username" placeholder="New fullname"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                          />
+                        <input class="profile" type="submit" onClick={changeUsername} name="signup_submit" value="Change"/>
+                        </Portal>
+                      ) : null}
+                    </Box>
+                    <Box sx={{ p: 1, my: 1, border: '1px solid' }} ref={container1} />
+                    <button class="profile" type="button" onClick={handleClick}>
+                      {show ? 'Hide Change StudentID' : 'Change StudentID'}
+                    </button>
+                    <Box sx={{ p: 1, my: 1, border: '1px solid' }}>
+                      Student ID:{
+                        studentId
+                      }
+                      {show ? (
+                        <Portal container={container3.current}>
+                          <input className="login_input_studentid" type="text" name="studentId" placeholder="studentId"
+                          value={studentId}
+                          onChange={(e) => setStudentId(e.target.value)}
+                        />
+                        <input class="profile" type="submit" onClick={addStudentId} name="signup_submit" value="Add"/>
+                        </Portal>
+                      ) : null}
+                    </Box>
+                    <Box sx={{ p: 1, my: 1, border: '1px solid' }} ref={container3} />
+                </div>
+                <div class="or">AND</div>
+            </div>
+            </div>
+            ):tokenData?(<div>
+              <div className="login">
+                <div className="login__wrapper">
+                    <div
+                        className="login__wraper2"
+                        onClick={() => setProfileDialog(false)}>
+                        <Close className="login__svg" />
+                        <div className="login__topHead">Profile</div>
+                    </div>
+                </div>
+            <div id="login-box-profile">
+                <div class="left">
+
+                    <button class="profile" type="button" onClick={handleClickPassword}>
+                      {showPassword ? 'Password' : 'Change Password'}
+                    </button>
+                    <Box sx={{ p: 1, my: 1, border: '1px solid' }}>
+                      Password: ***********
+                      {showPassword ? (
+                        <Portal container={container2.current}>
+                          <input className="login_input_studentid" type="password" name="password" placeholder="old password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                          />
+                          <input className="login_input_studentid" type="password" name="newpassword" placeholder="new password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                          />
+                          <input className="login_input_studentid" type="password" name="password2" placeholder="Retype password"
+                            value={re_password}
+                            onChange={(e) => setRePassword(e.target.value)}
+                          />
+                        <input class="profile" type="submit" onClick={changePassword} name="signup_submit" value="Add"/>
+                        </Portal>
+                      ) : null}
+                    </Box>
+                    <Box sx={{ p: 1, my: 1, border: '1px solid' }} ref={container2} />
+                    {/* {
+                      loginData?(
+                        <form onSubmit={changeProfile}>
+                          <input className="login_input" type="text" name="username" placeholder={loginData.name}
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value?e.target.value:loginData.name)}
+                          />
+                          <input className="login_input" type="text" name="email" placeholder={loginData.email}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value?e.target.value:loginData.email)}
+                          /> 
+                           <input className="login_input" type="password" name="password" placeholder={loginData.password}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value?e.target.value:loginData.password)}
+                          />
+                          <input className="login_input" type="password" name="password2" placeholder="Retype password"
+                            value={re_password}
+                            onChange={(e) => setRePassword(e.target.value)}
+                          />
+                        
                           <input class="Signup" type="submit" onClick={changeProfile} name="signup_submit" value="Change Profile"/>
                         </form>
                       ):(
                         <div></div>
                       )
-                    }
+                    } */}
+                    {/* {
+                      tokenData?(
+                        <form onSubmit={changeProfile}>
+                          <input className="login_input" type="text" name="username" placeholder={parseJwt (tokenData).username}
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value?e.target.value:parseJwt (tokenData).username)}
+                          />
+                          <input className="login_input" type="text" name="email" placeholder={parseJwt (tokenData).email}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                          />
+                          <input className="login_input" type="password" name="password" placeholder={parseJwt (tokenData).password}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                          />
+                          <input className="login_input" type="password" name="password2" placeholder="Retype password"
+                            value={re_password}
+                            onChange={(e) => setRePassword(e.target.value)}
+                          />
+                        
+                          <input class="profile" type="submit" onClick={changeProfile} name="signup_submit" value="Change Profile"/>
+                        </form>
+                      ):(
+                        <div></div>
+                      )
+                    } */}
                 </div>
                 
                 <div class="right-profile"> 
-                    <input className="login_input" type="text" name="studentId" placeholder="studentId"
-                        value={studentId}
-                        onChange={(e) => setStudentId(e.target.value)}
-                    />
-                    <input class="Signup" type="submit" onClick={addStudentId} name="signup_submit" value="Add"/>
+                  {/* {loginData?(
+                        <Avatar sx={{ height: '70px', width: '70px' }} scr={loginData.picture} ></Avatar>
+                      ):tokenData?(
+                        <Avatar sx={{ height: '70px', width: '70px' }} scr={parseJwt (tokenData).picture} ></Avatar>
+                      ):(
+                        <Avatar >T</Avatar>
+                      )
+                    } */}
+                    <button class="profile" type="button" onClick={handleClickName}>
+                      {showName ? 'Fullname' : 'Change Fullname'}
+                    </button>
+                    <Box sx={{ p: 1, my: 1, border: '1px solid' }}>
+                      Fullname:{
+                        parseJwt (tokenData).username
+                      }
+                      {showName ? (
+                        <Portal container={container1.current}>
+                          <input className="login_input_studentid" type="text" name="username" placeholder="New fullname"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                          />
+                        <input class="profile" type="submit" onClick={changeUsername} name="signup_submit" value="Change"/>
+                        </Portal>
+                      ) : null}
+                    </Box>
+                    <Box sx={{ p: 1, my: 1, border: '1px solid' }} ref={container1} />
+                    <button class="profile" type="button" onClick={handleClick}>
+                      {show ? 'Hide Change StudentID' : 'Change StudentID'}
+                    </button>
+                    <Box sx={{ p: 1, my: 1, border: '1px solid' }}>
+                      Student ID:{
+                        studentId
+                      }
+                      {show ? (
+                        <Portal container={container3.current}>
+                          <input className="login_input_studentid" type="text" name="studentId" placeholder="studentId"
+                          value={studentId}
+                          onChange={(e) => setStudentId(e.target.value)}
+                        />
+                        <input class="profile" type="submit" onClick={addStudentId} name="signup_submit" value="Add"/>
+                        </Portal>
+                      ) : null}
+                    </Box>
+                    <Box sx={{ p: 1, my: 1, border: '1px solid' }} ref={container3} />
                 </div>
                 <div class="or">AND</div>
             </div>
             </div>
+            </div>):(<div></div>)}
             </Dialog>
         </div>
     );

@@ -27,6 +27,7 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [status, setStatus] = useState(true);
     const [MessageError, setMessageError] = useState("");
+    const [picture, setPicture] = useState("");
     const [tokenData, setTokenData ] = useState(
       localStorage.getItem('TokenData')
     ? JSON.parse(localStorage.getItem('TokenData'))
@@ -91,7 +92,8 @@ const Login = () => {
           username: data.name,
           email: data.email,
           password:data.email,
-          status: status
+          status: status,
+          picture: data.picture
       };
       axios.post('http://localhost:5000/user/', newUser) 
       .then(res =>  {

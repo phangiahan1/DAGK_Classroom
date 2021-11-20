@@ -182,7 +182,8 @@ const Header = ({ classData }) => {
                                 <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
                                     <Tooltip title="Account settings">
                                     <IconButton onClick={handleClick3} size="small" sx={{ ml: 2 }}>
-                                        <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+                                        {/* <Avatar sx={{ width: 32, height: 32 }} src="/public/user.png"/> */}
+                                        <Avatar sx={{ width: 32, height: 32 }} src= {parseJwt(tokenData).picture}/>
                                     </IconButton>
                                     </Tooltip>
                                 </Box>
@@ -254,7 +255,7 @@ const Header = ({ classData }) => {
                                 <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
                                     <Tooltip title="Account settings">
                                     <IconButton onClick={handleClick3} size="small" sx={{ ml: 2 }}>
-                                        <Avatar sx={{ width: 32, height: 32 }} src="/public/user.png"/>
+                                        <Avatar sx={{ width: 32, height: 32 }} src={loginData.picture}/>
                                     </IconButton>
                                     </Tooltip>
                                 </Box>

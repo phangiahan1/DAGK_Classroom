@@ -41,7 +41,7 @@ export const Register = () => {
     const [re_password, setRePassword] = useState("");
     const [email, setEmail] = useState("");
     const [status, setStatus] = useState(true);
-    const [image, setImage] = useState("");
+    const [picture, setPicture] = useState("");
     const [MessageError, setMessageError] = useState("");
     const [tokenData, setTokenData ] = useState(
       localStorage.getItem('tokenData')
@@ -109,7 +109,8 @@ export const Register = () => {
           username: data.name,
           email: data.email,
           password: data.email,
-          status: status
+          status: status,
+          picture: data.picture
       };
       axios.post('http://localhost:5000/user', newUser) 
       .then(res =>  {
@@ -169,7 +170,8 @@ export const Register = () => {
               username: username,
               email: email,
               password: password,
-              status: status
+              status: status,
+              picture: "/public/user.png"
           };
           axios.post('http://localhost:5000/user', newUser) 
           .then(response =>  {
