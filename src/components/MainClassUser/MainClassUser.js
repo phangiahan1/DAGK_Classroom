@@ -9,6 +9,8 @@ import AddIcon from '@mui/icons-material/Add';
 import {
     InviteTeacher
 } from '..';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
 const MainClassUser = ({ classData }) => {
     const { createTabs, setCreateTabs } = useLocalContext();
@@ -39,6 +41,7 @@ const MainClassUser = ({ classData }) => {
     );
 
     const [checked, setChecked] = useState([0]);
+    const [checkedAll, setCheckedAll] = useState(true);
 
     const handleToggle = (value) => () => {
         const currentIndex = checked.indexOf(value);
@@ -51,17 +54,37 @@ const MainClassUser = ({ classData }) => {
         }
 
         setChecked(newChecked);
+        console.log(newChecked);
     };
 
-    //phan invite giao vien
-    const [anchorEl, setAnchorEl] = useState(null);
-    const handleClose = () => setAnchorEl(null);
+    const handleToggleall = () => {
+        setCheckedAll(!checkedAll);
+        const newChecked = [];
+        if (checkedAll) {
+            for (let i = 0; i < createdClassesPeople.length; i++) {
+                newChecked.push(i);
+            }
+        }
+        setChecked(newChecked);
+        console.log(newChecked);
+    };
 
     //create invite teacher
     const { createInviteTeacherDialog, setcreateInviteTeacherDialog } = useLocalContext();
     const handleInviteTeacher = () => {
         setcreateInviteTeacherDialog(true);
     };
+
+    //Set more icon open menu 
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     return (
         <div className='divcenter'>
             <Grid container spacing={2}>
@@ -108,16 +131,59 @@ const MainClassUser = ({ classData }) => {
                 </Grid>
             </Grid>
             <Divider />
+
             <List sx={{ width: '100%', bgcolor: 'background.paper', margin: 2 }}>
+                <ListItem
+                    //key={item}
+                    disablePadding
+                >
+                    <ListItemButton role={undefined} onClick={handleToggleall} dense>
+                        <ListItemIcon>
+                            <Checkbox
+                                edge="start"
+                                //checked={checked.indexOf(value) !== -1}
+                                tabIndex={-1}
+                                disableRipple
+                            //inputProps={{ 'aria-labelledby': labelId }}
+                            />
+                        </ListItemIcon>
+                    </ListItemButton>
+                </ListItem>
                 {createdClassesPeople.map((item, value) => {
                     const labelId = `checkbox-list-label-${value}`;
                     return (
                         <ListItem
                             key={item}
                             secondaryAction={
-                                <IconButton edge="end" aria-label="comments">
-                                    <MoreVertIcon />
-                                </IconButton>
+                                <div>
+                                    <IconButton edge="end" aria-label="comments"
+                                        aria-controls="demo-positioned-menu"
+                                        aria-haspopup="true"
+                                        aria-expanded={open ? 'true' : undefined}
+                                        onClick={handleClick}>
+                                        <MoreVertIcon />
+                                    </IconButton>
+                                    <Menu
+                                        id="demo-positioned-menu"
+                                        aria-labelledby="demo-positioned-button"
+                                        anchorEl={anchorEl}
+                                        open={open}
+                                        onClose={handleClose}
+                                        anchorOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'left',
+                                        }}
+                                        transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'left',
+                                        }}
+                                    >
+                                        <MenuItem onClick={handleClose}>Send Email</MenuItem>
+                                        <MenuItem onClick={handleClose}>Delete</MenuItem>
+                                        <MenuItem onClick={handleClose}>Hide</MenuItem>
+                                    </Menu>
+
+                                </div>
                             }
                             disablePadding
                         >
@@ -140,7 +206,7 @@ const MainClassUser = ({ classData }) => {
                     );
                 })}
             </List>
-            <InviteTeacher/>
+            <InviteTeacher classData ={ classData } />
         </div>
     )
 }

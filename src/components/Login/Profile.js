@@ -15,7 +15,7 @@ import { Close } from "@material-ui/icons";
 import "./style.css";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
+  return <Slide direction="up" ref={ref} {...props} />;
 });
 
 
@@ -40,84 +40,141 @@ export const Profile = () => {
     : null
   );
 
-    let fbContent = null;
-    const [state, setState] = React.useState({
-        isLoginIn: false,
-        userID: '',
-        name: '',
-        email: '',
-        picture:''
-      });
-    
-    const responseFacebook = response=>{
-          console.log(response);
-      }
-    const componentClicked =()=>console.log('clicked');
+  let fbContent = null;
+  const [state, setState] = React.useState({
+    isLoginIn: false,
+    userID: '',
+    name: '',
+    email: '',
+    picture: ''
+  });
 
-    function parseJwt (token) {
-      var base64Url = token.split('.')[1];
-      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-  
-      return JSON.parse(jsonPayload);
+  const responseFacebook = response => {
+    console.log(response);
+  }
+  const componentClicked = () => console.log('clicked');
+
+  function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
   };
 
-    //login by Facebook
-    const handleLoginFb = _ =>{
-      if(state.isLoginIn){
-        // <MyClass/>
-      }else{
-          fbContent =(
-              <ReactFacebookLogin
-                  appId="1510139052705581"
-                  autoLoad={true}
-                  fields="name,email,picture"
-                  onClick={componentClicked}
-                  callback={responseFacebook} />
-          )
-      }
+  //login by Facebook
+  const handleLoginFb = _ => {
+    if (state.isLoginIn) {
+      // <MyClass/>
+    } else {
+      fbContent = (
+        <ReactFacebookLogin
+          appId="1510139052705581"
+          autoLoad={true}
+          fields="name,email,picture"
+          onClick={componentClicked}
+          callback={responseFacebook} />
+      )
     }
+  }
 
 
-    // begin login by google
-    const [loginData, setLoginData] = useState(
-        localStorage.getItem('loginData')
-          ? JSON.parse(localStorage.getItem('loginData'))
-          : null
-      );
-    
+  // begin login by google
+  const [loginData, setLoginData] = useState(
+    localStorage.getItem('loginData')
+      ? JSON.parse(localStorage.getItem('loginData'))
+      : null
+  );
+  // end login by google
 
-      // end login by google
 
-      //change profile 
-      const changeProfile = e => {
-        e.preventDefault();
-        const newUser = {
-            username: username,
-            email: email,
-            password: password,
-            status: status
-        };
 
-        if(tokenData){
-          axios.put('http://localhost:5000/user/' + parseJwt(tokenData).id, newUser) 
-          .then(response =>  {
-            console.log(newUser);
-            // localStorage.setItem('tokenData',JSON.stringify(response.data))
-          });
-        }
-        else if(loginData){
-          console.log(loginData)
-          axios.put('http://localhost:5000/user/' + loginData.id, newUser) 
-          .then(response =>  {
-            console.log(newUser);
-            // localStorage.setItem('tokenData',JSON.stringify(response.data))
-          });
-        }
-        setProfileDialog(false);
-      }
+  //change profile 
+  const changeProfile = e => {
+    e.preventDefault();
+    const newUser = {
+      username: username,
+      email: email,
+      password: password,
+      status: status
+    };
+
+    if (tokenData) {
+      axios.put('http://localhost:5000/user/' + parseJwt(tokenData).id, newUser)
+        .then(response => {
+          console.log(newUser);
+          // localStorage.setItem('tokenData',JSON.stringify(response.data))
+        });
+    }
+    else if (loginData) {
+      //console.log(loginData)
+      axios.put('http://localhost:5000/user/' + loginData.id, newUser)
+        .then(response => {
+          console.log(newUser);
+          // localStorage.setItem('tokenData',JSON.stringify(response.data))
+        });
+    }
+    setProfileDialog(false);
+  }
+
+  //   //push account gg
+  // const changeProfileGoogle = (e,loginData) => {
+  //   e.preventDefault();
+  //   const username = document.getElementsByName("usernameGG");
+  //   const email = document.getElementsByName("emailGG");
+  //   const newUser = {
+  //       username: loginData.name,
+  //       email: loginData.name
+  //   };
+  //   console.log(username)
+  //   axios.post('http://localhost:5000/user', newUser) 
+  //   .then(response =>  console.log(newUser));
+  //   setProfileDialog(false);
+  // }
+  //login by email, password
+  const loginHandle = e => {
+  }
+
+  const addStudentId = e => {
+    e.preventDefault();
+    const user = {
+      studentId: studentId
+    };
+
+    if (tokenData) {
+      axios.put('http://localhost:5000/user/studentId/' + parseJwt(tokenData).id, user)
+        .then(response => {
+          alert("Add student id successful")
+          // setMessageError("Login successful");
+          // setTokenData(response.data);
+          // localStorage.setItem('tokenData', JSON.stringify(response.data));
+          console.log(parseJwt(tokenData).id)
+        })
+        .catch(error => {
+          alert("Please check student id")
+          // setMessageError(error.response.data.message);
+          console.log(error)
+        })
+    }
+    else if (loginData) {
+      console.log(loginData)
+      axios.put('http://localhost:5000/user/studentId/' + loginData.id, user)
+        .then(response => {
+          alert("Add student id successful")
+          // setMessageError("Login successful");
+          // setTokenData(response.data);
+          // localStorage.setItem('tokenData', JSON.stringify(response.data));
+          console.log(parseJwt(tokenData).id)
+        })
+        .catch(error => {
+          alert("Please check student id")
+          // setMessageError(error.response.data.message);
+          console.log(error)
+        })
+    }
+  }
 
       //change username 
       const changeUsername = e => {
@@ -429,7 +486,8 @@ export const Profile = () => {
                 <div class="or">AND</div>
             </div>
             </div>
-            ):tokenData?(<div>
+            ):tokenData?(
+            <div>
               <div className="login">
                 <div className="login__wrapper">
                     <div
@@ -568,10 +626,21 @@ export const Profile = () => {
                 </div>
                 <div class="or">AND</div>
             </div>
+
+            <div class="right-profile">
+              <input className="login_input" type="text" name="studentId" placeholder="studentId"
+                value={studentId}
+                onChange={(e) => setStudentId(e.target.value)}
+              />
+              <input class="Signup" type="submit" onClick={addStudentId} name="signup_submit" value="Add" />
             </div>
-            </div>):(<div></div>)}
-            </Dialog>
-        </div>
-    );
+            </div>
+            </div>)
+            :(<div></div>)}
+            {/* </Dialog> */}
+        {/* </div> */}
+      </Dialog>
+    </div>
+  );
 }
 export default Profile;
