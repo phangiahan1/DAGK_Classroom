@@ -21,6 +21,16 @@ const MyClass = ({ classData }) => {
             ? JSON.parse(localStorage.getItem('loginData'))
             : null
     );
+    function parseJwt(token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+    
+        return JSON.parse(jsonPayload);
+      };
+
 
     const [owner, setOwner] = useState(false);
 
@@ -32,6 +42,14 @@ const MyClass = ({ classData }) => {
             }
         }
     }, [loginData]
+    );
+    useEffect(() => {
+        if (tokenData) {
+            if (classData.owner == parseJwt(tokenData).email) {
+                setOwner(true);
+            }
+        }
+    }, [tokenData]
     );
 
     // if (loginData && classData.owner == loginData.email) {

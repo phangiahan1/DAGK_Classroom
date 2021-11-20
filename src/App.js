@@ -19,12 +19,25 @@ function App() {
       : null
   );
 
+  function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+  };
+
   // console.log("tokenData:" + tokenData);
   // console.log("loginData:" + loginData.email);
 
   const [createdClasses, setCreatedClasses] = useState([]);
   const fetchItemsCreate = async () => {
-    const data = await fetch('//localhost:5000/classroom/' + loginData.email);
+    let email;
+    if (loginData) email = loginData.email;
+    if (tokenData) email = parseJwt(tokenData).email;
+    const data = await fetch('//localhost:5000/classroom/' + email);
     //const data = await fetch('//localhost:5000/classroom/phanhan2261@gmail.com');
     const items = await data.json();
     setCreatedClasses(items);
@@ -32,7 +45,10 @@ function App() {
 
   const [joinedClasses, setJoinedClasses] = useState([]);
   const fetchItemsoJoin = async () => {
-    const data = await fetch('//localhost:5000/classroom/' + loginData.email + '/joined');
+    let email;
+    if (loginData) email = loginData.email;
+    if (tokenData) email = parseJwt(tokenData).email;
+    const data = await fetch('//localhost:5000/classroom/' + email + '/joined');
     const items = await data.json();
     setJoinedClasses(items);
   };
@@ -42,6 +58,13 @@ function App() {
       fetchItemsoJoin();
     }
   }, [loginData]
+  );
+  useEffect(() => {
+    if (tokenData) {
+      fetchItemsCreate();
+      fetchItemsoJoin();
+    }
+  }, [tokenData]
   );
   // useEffect(() => {
   //   fetchItems();
@@ -109,14 +132,15 @@ function App() {
         <Route exact path="/" >
           <div className="App">
             <Header />
-            <ol className="joined">
+            {loginData||tokenData ? <ol className="joined">
               {createdClasses.map((item) => (
                 <MyClass classData={item} />
               ))}
               {joinedClasses.map((item) => (
                 <MyClass classData={item} />
               ))}
-            </ol>
+            </ol> : <h1>Login to use app</h1>}
+            
           </div>
         </Route>
 

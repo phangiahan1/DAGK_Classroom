@@ -117,6 +117,7 @@ const Header = ({ classData }) => {
         localStorage.removeItem('tokenData');
         setLoginData(null);
         setTokenData(null);
+        window.location.reload(true);
     };
 
 
@@ -158,7 +159,7 @@ const Header = ({ classData }) => {
                             : null}
                     </div>
                     <div className={classes.header__wrapper__right}>
-                        {!createTabs ?
+                        {!createTabs && (loginData||tokenData) ?
                             <Add onClick={handleClick} className={classes.icon} />
                             : null}
                         <Apps className={classes.icon} />
