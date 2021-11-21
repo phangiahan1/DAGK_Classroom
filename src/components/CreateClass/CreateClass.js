@@ -118,9 +118,12 @@ export const CreateClass = () => {
                                 onChange={(e) => setRoom(e.target.value)}
                             />
                         </div>
-                        <Button type="submit">
-                            Create
-                        </Button>
+                        <DialogActions>
+                            <Button autoFocus onClick={() => setCreateClassDialog(false)}>
+                                Cancel
+                            </Button>
+                            <Button type="submit">Create</Button>
+                        </DialogActions>
                     </div>
                 </form>
             </Dialog>
