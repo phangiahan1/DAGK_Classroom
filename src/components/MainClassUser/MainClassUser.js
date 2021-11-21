@@ -6,17 +6,54 @@ import IconButton from '@mui/material/IconButton';
 import ListItemButton from '@mui/material/ListItemButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
-import {
-    InviteTeacher
-} from '..';
+// import {
+//     InviteTeacher,
+//     InviteStudent
+// } from '..';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import InviteStudent from '../InviteDialog/InviteStudent';
+import InviteTeacher from '../InviteDialog/InviteTeacher';
 
 const MainClassUser = ({ classData }) => {
+    //for login 
+    const [tokenData, setTokenData] = useState(
+        localStorage.getItem('tokenData')
+            ? JSON.parse(localStorage.getItem('tokenData'))
+            : null
+    );
+    const [loginData, setLoginData] = useState(
+        localStorage.getItem('loginData')
+            ? JSON.parse(localStorage.getItem('loginData'))
+            : null
+    );
+
+    let email;
+    if (loginData) email = loginData.email;
+    if (tokenData) email = parseJwt(tokenData).email;
+
+
+    const { idC, setidC } = useLocalContext();
+
+    function parseJwt(token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    };
+    //end login
+
     const { createTabs, setCreateTabs } = useLocalContext();
     setCreateTabs(true);
     //owner toi cao
     const [ownerClass, setOwerClass] = useState();
+    //Tim vai tro cua Ban trong lop
+    const [position, setPosition] = useState("");
+    ////1 owner
+    ////2 coop
+    ////3 student
 
     //coop owner
     const [coopOwner, setCoopOwner] = useState([]);
@@ -25,6 +62,13 @@ const MainClassUser = ({ classData }) => {
         const data = await fetch(url);
         const items = await data.json();
         setCoopOwner(items);
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].idUser.email == email) {
+                console.log("items[i].idUser.email");
+                setPosition("coop");
+                console.log(position);
+            }
+        }
     };
 
     const fetchItems1 = async () => {
@@ -32,7 +76,11 @@ const MainClassUser = ({ classData }) => {
         const data = await fetch(url);
         const items = await data.json();
         setOwerClass(items);
-        //console.log(items);
+
+        if (items[0].email == email) {
+            setPosition("owner");
+            console.log(position);
+        }
     };
 
     const [createdClassesPeople, setCreatedClassesPeople] = useState([]);
@@ -41,7 +89,13 @@ const MainClassUser = ({ classData }) => {
         const data = await fetch(url);
         const items = await data.json();
         setCreatedClassesPeople(items);
-        //console.log(items);
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].idUser.email == email) {
+                //console.log("items[i].idUser.emailMET MOI ");
+                setPosition("student");
+                console.log(position);
+            }
+        }
     };
     useEffect(() => {
         fetchItems();
@@ -85,6 +139,12 @@ const MainClassUser = ({ classData }) => {
         setcreateInviteTeacherDialog(true);
     };
 
+    //create invite student
+    const { createInviteStudentDialog, setcreateInviteStudentDialog } = useLocalContext();
+    const handleInviteStudent = () => {
+        setcreateInviteStudentDialog(true);
+    };
+
     //Set more icon open menu 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -95,6 +155,7 @@ const MainClassUser = ({ classData }) => {
         setAnchorEl(null);
     };
 
+    //console.log("NGU NGOC");
     return (
         <div className='divcenter'>
             <Grid container spacing={2}>
@@ -103,9 +164,9 @@ const MainClassUser = ({ classData }) => {
                 </Grid>
                 <Grid item xs={2}>
                     <div className='tf'>
-                        <IconButton color="primary" aria-label="invite teacher">
+                        {position=="student" ? null:<IconButton color="primary" aria-label="invite teacher">
                             <AddIcon onClick={handleInviteTeacher} />
-                        </IconButton>
+                        </IconButton>}
                     </div>
                 </Grid>
             </Grid>
@@ -133,7 +194,7 @@ const MainClassUser = ({ classData }) => {
                                         aria-haspopup="true"
                                         aria-expanded={open ? 'true' : undefined}
                                         onClick={handleClick}>
-                                        <MoreVertIcon />
+                                        {position=="student" ? null:<MoreVertIcon />}
                                     </IconButton>
                                     <Menu
                                         id="demo-positioned-menu"
@@ -182,9 +243,9 @@ const MainClassUser = ({ classData }) => {
                 </Grid>
                 <Grid item xs={1}>
                     <div className='tf'>
-                        <IconButton color="primary" aria-label="invite teacher">
-                            <AddIcon />
-                        </IconButton>
+                        {position=="student" ? null:<IconButton color="primary" aria-label="invite teacher">
+                            <AddIcon onClick={handleInviteStudent} />
+                        </IconButton>}
                     </div>
                 </Grid>
             </Grid>
@@ -196,7 +257,7 @@ const MainClassUser = ({ classData }) => {
                     disablePadding
                 >
                     <ListItemButton role={undefined} onClick={handleToggleall} dense>
-                        <ListItemIcon>
+                        {position=="student" ? null:<ListItemIcon>
                             <Checkbox
                                 edge="start"
                                 //checked={checked.indexOf(value) !== -1}
@@ -204,7 +265,7 @@ const MainClassUser = ({ classData }) => {
                                 disableRipple
                             //inputProps={{ 'aria-labelledby': labelId }}
                             />
-                        </ListItemIcon>
+                        </ListItemIcon>}
                     </ListItemButton>
                 </ListItem>
                 {createdClassesPeople.map((item, value) => {
@@ -219,7 +280,7 @@ const MainClassUser = ({ classData }) => {
                                         aria-haspopup="true"
                                         aria-expanded={open ? 'true' : undefined}
                                         onClick={handleClick}>
-                                        <MoreVertIcon />
+                                        {position=="student" ? null:<MoreVertIcon />}
                                     </IconButton>
                                     <Menu
                                         id="demo-positioned-menu"
@@ -246,7 +307,7 @@ const MainClassUser = ({ classData }) => {
                             disablePadding
                         >
                             <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
-                                <ListItemIcon>
+                                {position=="student" ? null:<ListItemIcon>
                                     <Checkbox
                                         edge="start"
                                         checked={checked.indexOf(value) !== -1}
@@ -254,17 +315,18 @@ const MainClassUser = ({ classData }) => {
                                         disableRipple
                                         inputProps={{ 'aria-labelledby': labelId }}
                                     />
-                                </ListItemIcon>
+                                </ListItemIcon>}
                                 <ListItemAvatar>
                                     <Avatar />
                                 </ListItemAvatar>
-                                <ListItemText id={labelId} primary={item.idUser.email} />
+                                <ListItemText id={labelId} primary={item.idUser.username} />
                             </ListItemButton>
                         </ListItem>
                     );
                 })}
             </List>
             <InviteTeacher classData={classData} />
+            <InviteStudent classData={classData} />
         </div>
     )
 }

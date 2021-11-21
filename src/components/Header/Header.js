@@ -6,15 +6,11 @@ import { Drawer, CreateClass, JoinClass, Login, Register, Profile } from '..';
 import { Button, Tabs, Tab } from '@material-ui/core';
 import { useLocalContext } from "../../context/context";
 import { Link } from "react-router-dom";
-import axios from 'axios';
 
 import Box from '@mui/material/Box';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import PersonAdd from '@mui/icons-material/PersonAdd';
-import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 
 
@@ -28,19 +24,19 @@ const Header = ({ classData }) => {
     const handleClose = () => setAnchorEl(null);
     const handleCloseAvatar = () => setAnchorEl2(null);
     //create class dialog
-    const { createClassDialog, setCreateClassDialog } = useLocalContext();
+    const { setCreateClassDialog } = useLocalContext();
     //create join class
-    const { joinClassDialog, setJoinClassDialog } = useLocalContext();
+    const { setJoinClassDialog } = useLocalContext();
     //create login
-    const { loginDialog, setLoginDialog } = useLocalContext();
+    const { setLoginDialog } = useLocalContext();
     //create register
-    const { registerDialog, setRegisterDialog } = useLocalContext();
+    const { setRegisterDialog } = useLocalContext();
     //tab value
     const { tabValue, setTabValue } = useLocalContext();
     //create tab bar
     const { createTabs, setCreateTabs } = useLocalContext();
-        //create profile
-        const { profileDialog, setProfileDialog } = useLocalContext();
+    //create profile
+    const { setProfileDialog } = useLocalContext();
 
     const handleChangeTab = (event, newValue) => {
         setTabValue(newValue);
@@ -64,33 +60,33 @@ const Header = ({ classData }) => {
         setRegisterDialog(true);
     };
 
-    function parseJwt (token) {
+    function parseJwt(token) {
         var base64Url = token.split('.')[1];
         var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
-    
+
         return JSON.parse(jsonPayload);
     };
 
     const [loginData, setLoginData] = useState(
         localStorage.getItem('loginData')
-          ? JSON.parse(localStorage.getItem('loginData'))
-          : null
-      );
+            ? JSON.parse(localStorage.getItem('loginData'))
+            : null
+    );
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [tokenData, setTokenData ] = useState(
+    const [tokenData, setTokenData] = useState(
         localStorage.getItem('tokenData')
-      ? JSON.parse(localStorage.getItem('tokenData'))
-      : null
+            ? JSON.parse(localStorage.getItem('tokenData'))
+            : null
     );
     //   const handleFailure = (result) => {
     //     alert(result);
     //   };
-    
+
     //   const handleLoginGoogle = async (googleData) => {
     //     const res = await fetch('/api/google-login', {
     //       method: 'POST',
@@ -101,7 +97,7 @@ const Header = ({ classData }) => {
     //         'Content-Type': 'application/json',
     //       },
     //     });
-    
+
     //     const data = await res.json();
     //     setLoginData(data);
     //     localStorage.setItem('loginData', JSON.stringify(data));
@@ -122,13 +118,13 @@ const Header = ({ classData }) => {
 
 
     const [anchorE3, setAnchorE3] = useState(null);
-  const open3 = Boolean(anchorE3);
-  const handleClick3 = (event) => {
-    setAnchorE3(event.currentTarget);
-  };
-  const handleClose3 = () => {
-    setAnchorE3(null);
-  };
+    const open3 = Boolean(anchorE3);
+    const handleClick3 = (event) => {
+        setAnchorE3(event.currentTarget);
+    };
+    const handleClose3 = () => {
+        setAnchorE3(null);
+    };
 
     return (
         <div className={classes.root}>
@@ -142,7 +138,7 @@ const Header = ({ classData }) => {
                         /> */}
                         <Typography variant="h6" className={classes.title}>
                             <Link to='/' style={{ textDecoration: 'none' }}>
-                                Classroom
+                                TH Classroom
                             </Link>
                         </Typography>
                     </div>
@@ -159,7 +155,7 @@ const Header = ({ classData }) => {
                             : null}
                     </div>
                     <div className={classes.header__wrapper__right}>
-                        {!createTabs && (loginData||tokenData) ?
+                        {!createTabs && (loginData || tokenData) ?
                             <Add onClick={handleClick} className={classes.icon} />
                             : null}
                         <Apps className={classes.icon} />
@@ -174,58 +170,58 @@ const Header = ({ classData }) => {
                             <MenuItem onClick={handleCreate}>Create Class</MenuItem>
 
                         </Menu>
-                                                
+
                         {/* <div>{tokenData}</div> */}
                         {
-                            tokenData? (
-                            <div>
-                                {/* <div>{parseJwt(tokenData).username}</div> */}
-                                <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-                                    <Tooltip title="Account settings">
-                                    <IconButton onClick={handleClick3} size="small" sx={{ ml: 2 }}>
-                                        {/* <Avatar sx={{ width: 32, height: 32 }} src="/public/user.png"/> */}
-                                        <Avatar sx={{ width: 32, height: 32 }} src= {parseJwt(tokenData).picture}/>
-                                    </IconButton>
-                                    </Tooltip>
-                                </Box>
-                                <Menu
-                                    anchorEl={anchorE3}
-                                    open={open3}
-                                    onClose={handleClose3}
-                                    onClick={handleClose3}
-                                    PaperProps={{
-                                    elevation: 0,
-                                    sx: {
-                                        overflow: 'visible',
-                                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                                        mt: 1.5,
-                                        '& .MuiAvatar-root': {
-                                        width: 32,
-                                        height: 32,
-                                        ml: -0.5,
-                                        mr: 1,
-                                        },
-                                        '&:before': {
-                                        content: '""',
-                                        display: 'block',
-                                        position: 'absolute',
-                                        top: 0,
-                                        right: 14,
-                                        width: 10,
-                                        height: 10,
-                                        bgcolor: 'background.paper',
-                                        transform: 'translateY(-50%) rotate(45deg)',
-                                        zIndex: 0,
-                                        },
-                                    },
-                                    }}
-                                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                                >
-                                    <MenuItem onClick={handleProfile}>
-                                    <Avatar /> Profile
-                                    </MenuItem>
-                                    {/* <MenuItem>
+                            tokenData ? (
+                                <div>
+                                    {/* <div>{parseJwt(tokenData).username}</div> */}
+                                    <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+                                        <Tooltip title="Account settings">
+                                            <IconButton onClick={handleClick3} size="small" sx={{ ml: 2 }}>
+                                                {/* <Avatar sx={{ width: 32, height: 32 }} src="/public/user.png"/> */}
+                                                <Avatar sx={{ width: 32, height: 32 }} src={parseJwt(tokenData).picture} />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Box>
+                                    <Menu
+                                        anchorEl={anchorE3}
+                                        open={open3}
+                                        onClose={handleClose3}
+                                        onClick={handleClose3}
+                                        PaperProps={{
+                                            elevation: 0,
+                                            sx: {
+                                                overflow: 'visible',
+                                                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                                                mt: 1.5,
+                                                '& .MuiAvatar-root': {
+                                                    width: 32,
+                                                    height: 32,
+                                                    ml: -0.5,
+                                                    mr: 1,
+                                                },
+                                                '&:before': {
+                                                    content: '""',
+                                                    display: 'block',
+                                                    position: 'absolute',
+                                                    top: 0,
+                                                    right: 14,
+                                                    width: 10,
+                                                    height: 10,
+                                                    bgcolor: 'background.paper',
+                                                    transform: 'translateY(-50%) rotate(45deg)',
+                                                    zIndex: 0,
+                                                },
+                                            },
+                                        }}
+                                        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                                    >
+                                        <MenuItem onClick={handleProfile}>
+                                            <Avatar /> Profile
+                                        </MenuItem>
+                                        {/* <MenuItem>
                                     <Avatar /> My account
                                     </MenuItem>
                                     <Divider />
@@ -241,94 +237,93 @@ const Header = ({ classData }) => {
                                     </ListItemIcon>
                                     Settings
                                     </MenuItem> */}
-                                    <MenuItem  onClick={handleLogout}>
-                                    <ListItemIcon>
-                                        <Logout fontSize="small" />
-                                    </ListItemIcon>
-                                    Logout
-                                    </MenuItem>
-                                </Menu>
-                            </div> 
-                            ):
-                            loginData?(
-                            <div>
-                                {/* <div>{parseJwt(tokenData).username}</div> */}
-                                <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-                                    <Tooltip title="Account settings">
-                                    <IconButton onClick={handleClick3} size="small" sx={{ ml: 2 }}>
-                                        <Avatar sx={{ width: 32, height: 32 }} src={loginData.picture}/>
-                                    </IconButton>
-                                    </Tooltip>
-                                </Box>
-                                <Menu
-                                    anchorEl={anchorE3}
-                                    open={open3}
-                                    onClose={handleClose3}
-                                    onClick={handleClose3}
-                                    PaperProps={{
-                                    elevation: 0,
-                                    sx: {
-                                        overflow: 'visible',
-                                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                                        mt: 1.5,
-                                        '& .MuiAvatar-root': {
-                                        width: 32,
-                                        height: 32,
-                                        ml: -0.5,
-                                        mr: 1,
-                                        },
-                                        '&:before': {
-                                        content: '""',
-                                        display: 'block',
-                                        position: 'absolute',
-                                        top: 0,
-                                        right: 14,
-                                        width: 10,
-                                        height: 10,
-                                        bgcolor: 'background.paper',
-                                        transform: 'translateY(-50%) rotate(45deg)',
-                                        zIndex: 0,
-                                        },
-                                    },
-                                    }}
-                                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                                >
-                                    <MenuItem onClick={handleProfile}>
-                                    <Avatar /> Profile
-                                    </MenuItem>
-                                    <MenuItem  onClick={handleLogout}>
-                                    <ListItemIcon>
-                                        <Logout fontSize="small" />
-                                    </ListItemIcon>
-                                    Logout
-                                    </MenuItem>
-                                </Menu>
-                            </div> 
-                            ):(
-                                <div>
-                                <Button
-                                    id="fade-button"
-                                    aria-controls="fade-menu"
-                                    aria-haspopup="true"
-                                    aria-expanded={open ? 'true' : undefined}
-                                    onClick={handleLogin}
-                                >
-                                    Login
-                                </Button>
-                                <Button
-                                    id="fade-button"
-                                    aria-controls="fade-menu"
-                                    aria-haspopup="true"
-                                    aria-expanded={open ? 'true' : undefined}
-                                    onClick={handleRegister}
-                                >
-                                Register
-                                </Button>
+                                        <MenuItem onClick={handleLogout}>
+                                            <ListItemIcon>
+                                                <Logout fontSize="small" />
+                                            </ListItemIcon>
+                                            Logout
+                                        </MenuItem>
+                                    </Menu>
                                 </div>
-                            )
+                            ) :
+                                loginData ? (
+                                    <div>
+                                        {/* <div>{parseJwt(tokenData).username}</div> */}
+                                        <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+                                            <Tooltip title="Account settings">
+                                                <IconButton onClick={handleClick3} size="small" sx={{ ml: 2 }}>
+                                                    <Avatar sx={{ width: 32, height: 32 }} src={loginData.picture} />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Box>
+                                        <Menu
+                                            anchorEl={anchorE3}
+                                            open={open3}
+                                            onClose={handleClose3}
+                                            onClick={handleClose3}
+                                            PaperProps={{
+                                                elevation: 0,
+                                                sx: {
+                                                    overflow: 'visible',
+                                                    filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                                                    mt: 1.5,
+                                                    '& .MuiAvatar-root': {
+                                                        width: 32,
+                                                        height: 32,
+                                                        ml: -0.5,
+                                                        mr: 1,
+                                                    },
+                                                    '&:before': {
+                                                        content: '""',
+                                                        display: 'block',
+                                                        position: 'absolute',
+                                                        top: 0,
+                                                        right: 14,
+                                                        width: 10,
+                                                        height: 10,
+                                                        bgcolor: 'background.paper',
+                                                        transform: 'translateY(-50%) rotate(45deg)',
+                                                        zIndex: 0,
+                                                    },
+                                                },
+                                            }}
+                                            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                                        >
+                                            <MenuItem onClick={handleProfile}>
+                                                <Avatar /> Profile
+                                            </MenuItem>
+                                            <MenuItem onClick={handleLogout}>
+                                                <ListItemIcon>
+                                                    <Logout fontSize="small" />
+                                                </ListItemIcon>
+                                                Logout
+                                            </MenuItem>
+                                        </Menu>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <Button
+                                            id="fade-button"
+                                            aria-controls="fade-menu"
+                                            aria-haspopup="true"
+                                            aria-expanded={open ? 'true' : undefined}
+                                            onClick={handleLogin}
+                                        >
+                                            Login
+                                        </Button>
+                                        <Button
+                                            id="fade-button"
+                                            aria-controls="fade-menu"
+                                            aria-haspopup="true"
+                                            aria-expanded={open ? 'true' : undefined}
+                                            onClick={handleRegister}
+                                        >
+                                            Register
+                                        </Button>
+                                    </div>
+                                )
                         }
-                        
                     </div>
                 </Toolbar>
             </AppBar>
@@ -336,7 +331,7 @@ const Header = ({ classData }) => {
             <JoinClass />
             <Login />
             <Register />
-            <Profile/>
+            <Profile />
         </div>
     )
 }

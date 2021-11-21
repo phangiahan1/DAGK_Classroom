@@ -25,9 +25,10 @@ export const InviteTeacher = ({ classData }) => {
     const handleSubmit = e => {
         e.preventDefault();
         const newC = {
-            owner: Owner,
+            owner: classData.owner,
             email: Email,
-            classname: classData.classname
+            classname: classData.classname,
+            idclass: classData._id
         };
         axios.post('http://localhost:5000/send_mail_teacher', newC)
             .then(response => console.log(newC));

@@ -1,5 +1,5 @@
 import { useState, useEffect, React } from "react";
-import { MyClass, MainClass, MainClassUser, Header, MainClassClassWork, MainClassMarks, InviteClass, InviteTeacher } from './components';
+import { MyClass, MainClass, MainClassUser, Header, MainClassClassWork, MainClassMarks, InviteClass, InviteTeacher, InviteClassStudent } from './components';
 import { BrowserRouter as Router, Switch, Route, useParams, Redirect  } from "react-router-dom";
 import { useLocalContext } from './context/context';
 
@@ -9,8 +9,13 @@ function App() {
   //tabs value render
   const { createTabs, setCreateTabs } = useLocalContext();
   const { tabValue, setTabValue } = useLocalContext();
+
+  //for teacher confirm email
   const { openDialogCofirmInvite, setOpenDialogCofirmInvite } = useLocalContext();
+  const { openDialogCofirmInviteStudent, setOpenDialogCofirmInviteStudent } = useLocalContext();
+
   const { CofirmInvite, setCofirmInvite } = useLocalContext();
+  //for student confirm email 
 
   const [tokenData, setTokenData] = useState(
     localStorage.getItem('tokenData')
@@ -32,9 +37,6 @@ function App() {
 
     return JSON.parse(jsonPayload);
   };
-
-  // console.log("tokenData:" + tokenData);
-  // console.log("loginData:" + loginData.email);
 
   const [createdClasses, setCreatedClasses] = useState([]);
   const fetchItemsCreate = async () => {
@@ -71,7 +73,6 @@ function App() {
   }, [tokenData]
   );
 
-
   const {idC, setidC} = useLocalContext();
 
   function Child() {
@@ -98,6 +99,39 @@ function App() {
     useEffect(() => {
       if (CofirmInvite) {
         setOpenDialogCofirmInvite(false);
+      }
+    }, [CofirmInvite]
+    );
+    return (
+      <div>
+        {/* <h3>ID: {idC}</h3> */}
+      </div>
+    );
+  }
+  function ChildStudent() {
+    let { idClass } = useParams();
+    const a = { idClass };
+    setidC(a.idClass);
+    setLoginDialog(true);
+    useEffect(() => {
+      if (tokenData) {
+        setLoginDialog(false);
+        setOpenDialogCofirmInviteStudent(true);
+
+      }
+    }, [tokenData]
+    );
+    useEffect(() => {
+      if (loginData) {
+        setLoginDialog(false);
+        setOpenDialogCofirmInviteStudent(true);
+
+      }
+    }, [loginData]
+    );
+    useEffect(() => {
+      if (CofirmInvite) {
+        setOpenDialogCofirmInviteStudent(false);
       }
     }, [CofirmInvite]
     );
@@ -184,6 +218,12 @@ function App() {
           <Header />
           <Child />
           <InviteClass/>
+          {CofirmInvite? <Redirect to="/"/> : null}
+        </Route>
+        <Route path="/:idClass/invite_student">
+          <Header />
+          <ChildStudent />
+          <InviteClassStudent/>
           {CofirmInvite? <Redirect to="/"/> : null}
         </Route>
       </Switch>

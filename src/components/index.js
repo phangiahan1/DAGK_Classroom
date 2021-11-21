@@ -9,6 +9,8 @@ export {default as MainClass} from "./MainClass/MainClass";
 export {default as MainClassMarks} from "./MainClassMarks/MainClassMarks";
 export {default as MainClassClassWork} from "./MainClassClassWork/MainClassClassWork";
 export {default as MainClassUser} from "./MainClassUser/MainClassUser";
-export {default as InviteTeacher} from "./InviteTeacher/InviteTeacher";
+export {default as InviteTeacher} from "./InviteDialog/InviteTeacher"; //Trang khi người dùng chọn gửi mail
+export {default as InviteStudent} from "./InviteDialog/InviteStudent"; //Trang khi người dùng chọn gửi mail
 export {default as Profile} from "./Login/Profile"
 export {default as InviteClass} from "./InviteClass/InviteClass"
+export {default as InviteClassStudent} from "./InviteClass/InviteClassStudent"
