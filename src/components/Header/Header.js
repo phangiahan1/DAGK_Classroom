@@ -5,7 +5,7 @@ import { useStyles } from './style';
 import { Drawer, CreateClass, JoinClass, Login, Register, Profile } from '..';
 import { Button, Tabs, Tab } from '@material-ui/core';
 import { useLocalContext } from "../../context/context";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 import Box from '@mui/material/Box';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -113,7 +113,7 @@ const Header = ({ classData }) => {
         localStorage.removeItem('tokenData');
         setLoginData(null);
         setTokenData(null);
-        window.location.reload(true);
+        window.location.href = "/";
     };
 
 

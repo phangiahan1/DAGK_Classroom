@@ -49,6 +49,16 @@ export const Profile = () => {
     picture: ''
   });
 
+  const [user , setUser] = useState({
+    id: '',
+    username: '',
+    email: '',
+    picture: '',
+    password:'',
+    studentId:''
+  });
+
+
   const responseFacebook = response => {
     console.log(response);
   }
@@ -257,7 +267,7 @@ export const Profile = () => {
         };
         
         if(tokenData){
-          axios.put('http://localhost:5000/user/studentId/'+parseJwt(tokenData).email,user) 
+          axios.put('http://localhost:5000/user/studentId/email/'+parseJwt(tokenData).email,user) 
           .then(response => { 
               alert("Add student id successful")
               // setMessageError("Login successful");
@@ -337,6 +347,33 @@ export const Profile = () => {
       const handleClickName = () => {
         setShowName(!showName);
       };
+
+      if(tokenData)
+      axios.get('http://localhost:5000/user/findEmail/' + parseJwt(tokenData).email)
+            .then(response => {
+              setUser({
+                username: response.data[0].username,
+                email: response.data[0].email,
+                picture: response.data[0].picture,
+                password: response.data[0].password,
+                studentId: response.data[0].studentId
+            });
+            console.log(user)
+            console.log(response)
+          })
+      else if(loginData)
+      axios.get('http://localhost:5000/user/findEmail/' + loginData.email)
+            .then(response => {
+              setUser({
+                username: response.data[0].username,
+                email: response.data[0].email,
+                picture: response.data[0].picture,
+                password: response.data[0].password,
+                studentId: response.data[0].studentId
+            });
+            // console.log(response)
+          });
+    
 
     return (
         <div>
@@ -452,7 +489,7 @@ export const Profile = () => {
                     </button>
                     <Box sx={{ p: 1, my: 1, border: '1px solid' }}>
                       Fullname:{
-                        loginData.name
+                        user.username
                       }
                       {showName ? (
                         <Portal container={container1.current}>
@@ -470,7 +507,7 @@ export const Profile = () => {
                     </button>
                     <Box sx={{ p: 1, my: 1, border: '1px solid' }}>
                       Student ID:{
-                        studentId
+                        user.studentId
                       }
                       {show ? (
                         <Portal container={container3.current}>
@@ -593,7 +630,7 @@ export const Profile = () => {
                     </button>
                     <Box sx={{ p: 1, my: 1, border: '1px solid' }}>
                       Fullname:{
-                        parseJwt (tokenData).username
+                        user.username
                       }
                       {showName ? (
                         <Portal container={container1.current}>
@@ -611,7 +648,7 @@ export const Profile = () => {
                     </button>
                     <Box sx={{ p: 1, my: 1, border: '1px solid' }}>
                       Student ID:{
-                        studentId
+                        user.studentId
                       }
                       {show ? (
                         <Portal container={container3.current}>
@@ -628,13 +665,13 @@ export const Profile = () => {
                 <div class="or">AND</div>
             </div>
 
-            <div class="right-profile">
+            {/* <div class="right-profile">
               <input className="login_input" type="text" name="studentId" placeholder="studentId"
                 value={studentId}
                 onChange={(e) => setStudentId(e.target.value)}
               />
               <input class="Signup" type="submit" onClick={addStudentId} name="signup_submit" value="Add" />
-            </div>
+            </div> */}
             </div>
             </div>)
             :(<div></div>)}
