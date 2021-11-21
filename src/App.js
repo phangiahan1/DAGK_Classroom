@@ -82,16 +82,19 @@ function App() {
     useEffect(() => {
       if (tokenData) {
         setLoginDialog(false);
+        setOpenDialogCofirmInvite(true);
+
       }
     }, [tokenData]
     );
     useEffect(() => {
       if (loginData) {
         setLoginDialog(false);
+        setOpenDialogCofirmInvite(true);
+
       }
     }, [loginData]
     );
-    setOpenDialogCofirmInvite(true);
     useEffect(() => {
       if (CofirmInvite) {
         setOpenDialogCofirmInvite(false);
