@@ -88,7 +88,7 @@ const MainClassUser = ({ classData }) => {
     const [createdClassesPeople, setCreatedClassesPeople] = useState([]);
     const fetchItems = async () => {
         // url = '//localhost:5000/classroom/' + classData._id + '/alluser'
-        url = ' //thclassroom-api-app.herokuapp.com/classroom/' + classData._id + '/alluser'
+        const  url = ' //thclassroom-api-app.herokuapp.com/classroom/' + classData._id + '/alluser'
         const data = await fetch(url);
         const items = await data.json();
         setCreatedClassesPeople(items);
