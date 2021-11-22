@@ -43,8 +43,8 @@ function App() {
     let email;
     if (loginData) email = loginData.email;
     if (tokenData) email = parseJwt(tokenData).email;
-    const data = await fetch('//localhost:5000/classroom/' + email);
-    //const data = await fetch('//localhost:5000/classroom/phanhan2261@gmail.com');
+    const data = await fetch('//thclassroom-api-app.herokuapp.com/classroom/' + email);
+    //const data = await fetch('//thclassroom-api-app.herokuapp.com/classroom/phanhan2261@gmail.com');
     const items = await data.json();
     setCreatedClasses(items);
   };
@@ -54,7 +54,7 @@ function App() {
     let email;
     if (loginData) email = loginData.email;
     if (tokenData) email = parseJwt(tokenData).email;
-    const data = await fetch('//localhost:5000/classroom/' + email + '/joined');
+    const data = await fetch('//thclassroom-api-app.herokuapp.com/classroom/' + email + '/joined');
     const items = await data.json();
     setJoinedClasses(items);
   };

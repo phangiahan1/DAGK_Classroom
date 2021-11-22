@@ -106,7 +106,7 @@ export const Profile = () => {
     };
 
     if (tokenData) {
-      axios.put('http://localhost:5000/user/' + parseJwt(tokenData).id, newUser)
+      axios.put('http://thclassroom-api-app.herokuapp.com/user/' + parseJwt(tokenData).id, newUser)
         .then(response => {
           console.log(newUser);
           // localStorage.setItem('tokenData',JSON.stringify(response.data))
@@ -114,7 +114,7 @@ export const Profile = () => {
     }
     else if (loginData) {
       //console.log(loginData)
-      axios.put('http://localhost:5000/user/' + loginData.id, newUser)
+      axios.put('http://thclassroom-api-app.herokuapp.com/user/' + loginData.id, newUser)
         .then(response => {
           console.log(newUser);
           // localStorage.setItem('tokenData',JSON.stringify(response.data))
@@ -131,7 +131,7 @@ export const Profile = () => {
         };
 
         if(tokenData){
-          axios.put('http://localhost:5000/user/updateUsername/' + parseJwt(tokenData).email, newUser) 
+          axios.put('http://thclassroom-api-app.herokuapp.com/user/updateUsername/' + parseJwt(tokenData).email, newUser) 
           .then(response =>  {
             alert("Successful change username")
             // localStorage.setItem('tokenData',JSON.stringify(response.data))
@@ -139,7 +139,7 @@ export const Profile = () => {
         }
         else if(loginData){
           console.log(loginData)
-          axios.put('http://localhost:5000/user/updateUsername/' + loginData.email, newUser) 
+          axios.put('http://thclassroom-api-app.herokuapp.com/user/updateUsername/' + loginData.email, newUser) 
           .then(response =>  {
             alert("Successful change username")
             console.log(newUser);
@@ -162,12 +162,12 @@ export const Profile = () => {
 
 
           if(tokenData){
-            axios.post('http://localhost:5000/user/updatePasswordCheck/' + parseJwt(tokenData).email, newUser) 
+            axios.post('http://thclassroom-api-app.herokuapp.com/user/updatePasswordCheck/' + parseJwt(tokenData).email, newUser) 
             .then(response =>  {
                 const newPass = {
                   password: newPassword
                 }
-              axios.put('http://localhost:5000/user/updatePassword/' + parseJwt(tokenData).email, newPass) 
+              axios.put('http://thclassroom-api-app.herokuapp.com/user/updatePassword/' + parseJwt(tokenData).email, newPass) 
               .then(res =>{
                 alert("Successful change password")
                 console.log(res)
@@ -178,13 +178,13 @@ export const Profile = () => {
         }
           else
            if(loginData){
-            axios.post('http://localhost:5000/user/updatePasswordCheck/' + loginData.email, newUser) 
+            axios.post('http://thclassroom-api-app.herokuapp.com/user/updatePasswordCheck/' + loginData.email, newUser) 
             .then(response =>  {
                 const newPass = {
                   password: newPassword
                 }
                 console.log(newPass.password)
-              axios.put('http://localhost:5000/user/updatePassword/' + loginData.email, newPass) 
+              axios.put('http://thclassroom-api-app.herokuapp.com/user/updatePassword/' + loginData.email, newPass) 
               .then(res => {
                 alert("Successful change password")
                 console.log(res)
@@ -205,7 +205,7 @@ export const Profile = () => {
         };
         
         if(tokenData){
-          axios.put('http://localhost:5000/user/studentId/email/'+parseJwt(tokenData).email,user) 
+          axios.put('http://thclassroom-api-app.herokuapp.com/user/studentId/email/'+parseJwt(tokenData).email,user) 
           .then(response => { 
               alert("Add student id successful")
           })
@@ -215,7 +215,7 @@ export const Profile = () => {
           })
         }
         else if(loginData){
-          axios.put('http://localhost:5000/user/studentId/email/'+ loginData.email,user) 
+          axios.put('http://thclassroom-api-app.herokuapp.com/user/studentId/email/'+ loginData.email,user) 
           .then(response => { 
               alert("Add student id successful")
           })
@@ -239,7 +239,7 @@ export const Profile = () => {
       };
 
       if(tokenData)
-      axios.get('http://localhost:5000/user/findEmail/' + parseJwt(tokenData).email)
+      axios.get('http://thclassroom-api-app.herokuapp.com/user/findEmail/' + parseJwt(tokenData).email)
             .then(response => {
               setUser({
                 username: response.data[0].username,
@@ -250,7 +250,7 @@ export const Profile = () => {
             });
           })
       else if(loginData)
-      axios.get('http://localhost:5000/user/findEmail/' + loginData.email)
+      axios.get('http://thclassroom-api-app.herokuapp.com/user/findEmail/' + loginData.email)
             .then(response => {
               setUser({
                 username: response.data[0].username,

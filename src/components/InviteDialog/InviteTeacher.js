@@ -30,7 +30,7 @@ export const InviteTeacher = ({ classData }) => {
             classname: classData.classname,
             idclass: classData._id
         };
-        axios.post('http://localhost:5000/send_mail_teacher', newC)
+        axios.post('http://thclassroom-api-app.herokuapp.com/send_mail_teacher', newC)
             .then(response => console.log(newC));
         setEmail("");
         setcreateInviteTeacherDialog(false);

@@ -63,7 +63,7 @@ export const CreateClass = () => {
             room: Room,
             owner: Owner
         };
-        axios.post('http://localhost:5000/classroom', newC) 
+        axios.post('http://thclassroom-api-app.herokuapp.com/classroom', newC) 
         .then(response =>  console.log(newC));
         setClassName("");
         setSection("");
