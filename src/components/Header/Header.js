@@ -5,7 +5,7 @@ import { useStyles } from './style';
 import { Drawer, CreateClass, JoinClass, Login, Register, Profile } from '..';
 import { Button, Tabs, Tab } from '@material-ui/core';
 import { useLocalContext } from "../../context/context";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import Box from '@mui/material/Box';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -15,14 +15,16 @@ import Logout from '@mui/icons-material/Logout';
 
 
 const Header = ({ classData }) => {
+    //use style css
     const classes = useStyles();
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [anchorEl2, setAnchorEl2] = useState(null);
+
+    //
     const handleClick = (event) => setAnchorEl(event.currentTarget);
-    const handleClickAvatar = (event) => setAnchorEl2(event.currentTarget);
     const handleClose = () => setAnchorEl(null);
-    const handleCloseAvatar = () => setAnchorEl2(null);
+
     //create class dialog
     const { setCreateClassDialog } = useLocalContext();
     //create join class
@@ -34,7 +36,7 @@ const Header = ({ classData }) => {
     //tab value
     const { tabValue, setTabValue } = useLocalContext();
     //create tab bar
-    const { createTabs, setCreateTabs } = useLocalContext();
+    const { createTabs } = useLocalContext();
     //create profile
     const { setProfileDialog } = useLocalContext();
 
@@ -66,7 +68,6 @@ const Header = ({ classData }) => {
         var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
-
         return JSON.parse(jsonPayload);
     };
 
@@ -75,33 +76,12 @@ const Header = ({ classData }) => {
             ? JSON.parse(localStorage.getItem('loginData'))
             : null
     );
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+
     const [tokenData, setTokenData] = useState(
         localStorage.getItem('tokenData')
             ? JSON.parse(localStorage.getItem('tokenData'))
             : null
     );
-    //   const handleFailure = (result) => {
-    //     alert(result);
-    //   };
-
-    //   const handleLoginGoogle = async (googleData) => {
-    //     const res = await fetch('/api/google-login', {
-    //       method: 'POST',
-    //       body: JSON.stringify({
-    //         token: googleData.tokenId,
-    //       }),
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //     });
-
-    //     const data = await res.json();
-    //     setLoginData(data);
-    //     localStorage.setItem('loginData', JSON.stringify(data));
-    //   };
 
     const handleProfile = () => {
         handleClose();
@@ -115,7 +95,6 @@ const Header = ({ classData }) => {
         setTokenData(null);
         window.location.href = "/";
     };
-
 
     const [anchorE3, setAnchorE3] = useState(null);
     const open3 = Boolean(anchorE3);
@@ -132,12 +111,8 @@ const Header = ({ classData }) => {
                 <Toolbar className={classes.toolbar}>
                     <div className={classes.headerWrapper}>
                         <Drawer />
-                        {/* <img
-                            src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg"
-                            alt="Classroom"
-                        /> */}
                         <Typography variant="h6" className={classes.title}>
-                            <Link to='/' style={{ textDecoration: 'none' }}>
+                            <Link to='/' style={{ textDecoration: 'none', color: 'white' }}>
                                 TH Classroom
                             </Link>
                         </Typography>
@@ -145,11 +120,11 @@ const Header = ({ classData }) => {
                     <div>
                         {createTabs && classData != null ?
                             <>
-                                <Tabs value={tabValue} onChange={handleChangeTab} centered>
-                                    <Link to={`/${classData._id}/`} style={{ textDecoration: 'none' }}><Tab label="Stream" /></Link>
-                                    <Link to={`/${classData._id}/classwork`} style={{ textDecoration: 'none' }}><Tab label="Classwork" /></Link>
-                                    <Link to={`/${classData._id}/people`} style={{ textDecoration: 'none' }}><Tab label="People" /></Link>
-                                    <Link to={`/${classData._id}/marks`} style={{ textDecoration: 'none' }}><Tab label="Marks" /></Link>
+                                <Tabs value={tabValue} centered>
+                                    <Link to={`/${classData._id}/`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(0) }}><Tab label="Stream" style={{ textTransform: 'none' }} value="0" /></Link>
+                                    <Link to={`/${classData._id}/classwork`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(1) }}><Tab label="Classwork" style={{ textTransform: 'none' }} value="1" /></Link>
+                                    <Link to={`/${classData._id}/people`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(2) }}><Tab label="People" style={{ textTransform: 'none' }} value="2" /></Link>
+                                    <Link to={`/${classData._id}/marks`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(3) }}><Tab label="Marks" style={{ textTransform: 'none' }} value="3" /></Link>
                                 </Tabs>
                             </>
                             : null}
@@ -221,22 +196,7 @@ const Header = ({ classData }) => {
                                         <MenuItem onClick={handleProfile}>
                                             <Avatar /> Profile
                                         </MenuItem>
-                                        {/* <MenuItem>
-                                    <Avatar /> My account
-                                    </MenuItem>
-                                    <Divider />
-                                    <MenuItem>
-                                    <ListItemIcon>
-                                        <PersonAdd fontSize="small" />
-                                    </ListItemIcon>
-                                    Add another account
-                                    </MenuItem>
-                                    <MenuItem>
-                                    <ListItemIcon>
-                                        <Settings fontSize="small" />
-                                    </ListItemIcon>
-                                    Settings
-                                    </MenuItem> */}
+
                                         <MenuItem onClick={handleLogout}>
                                             <ListItemIcon>
                                                 <Logout fontSize="small" />

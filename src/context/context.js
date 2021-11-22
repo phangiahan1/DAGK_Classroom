@@ -11,7 +11,7 @@ export function ContextProvider({ children }) {
     const [loginDialog, setLoginDialog] = useState(false);
     const [registerDialog, setRegisterDialog] = useState(false);
     const [createTabs, setCreateTabs] = useState(false);
-    const [tabValue, setTabValue] = useState(0);
+    const [tabValue, setTabValue] = useState(0);//set tab ban dau la stream
     const [createInviteTeacherDialog, setcreateInviteTeacherDialog] = useState(false);
     const [createInviteStudentDialog, setcreateInviteStudentDialog] = useState(false);
     const [profileDialog, setProfileDialog] = useState(false);
