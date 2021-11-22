@@ -145,8 +145,6 @@ const Header = ({ classData }) => {
                             <MenuItem onClick={handleCreate}>Create Class</MenuItem>
 
                         </Menu>
-
-                        {/* <div>{tokenData}</div> */}
                         {
                             tokenData ? (
                                 <div>
@@ -208,7 +206,6 @@ const Header = ({ classData }) => {
                             ) :
                                 loginData ? (
                                     <div>
-                                        {/* <div>{parseJwt(tokenData).username}</div> */}
                                         <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
                                             <Tooltip title="Account settings">
                                                 <IconButton onClick={handleClick3} size="small" sx={{ ml: 2 }}>

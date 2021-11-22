@@ -2,14 +2,14 @@ import { FolderOpen, PermContactCalendar } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import ReactFacebookLogin from "react-facebook-login";
 import "./Login.css";
-import './App.css';
 import GoogleLogin from 'react-google-login';
 import axios from "axios";
 import React, { useState } from "react";
-import { Avatar, Button, Dialog, Slide, TextField } from "@material-ui/core";
+import { Dialog, Slide, TextField } from "@material-ui/core";
 import { Alert, AlertTitle } from "@mui/material";
 import { useLocalContext } from "../../context/context";
 import { Close } from "@material-ui/icons";
+import Button from '@mui/material/Button'
 import "./style.css";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -17,6 +17,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const Login = () => {
+  const { registerDialog, setRegisterDialog } = useLocalContext();
   const { loginDialog, setLoginDialog } = useLocalContext();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -72,17 +73,6 @@ const Login = () => {
     alert("fail: " + result);
   };
 
-  // // begin login by google
-  // const [loginData, setLoginData] = useState(
-  //     localStorage.getItem('loginData')
-  //       ? JSON.parse(localStorage.getItem('loginData'))
-  //       : null
-  //   );
-
-  //   const handleFailure = (result) => {
-  //     alert(result);
-  //   };
-
   const handleLogin = async (googleData) => {
     const res = await fetch('/api/google-login', {
       method: 'POST',
@@ -111,7 +101,7 @@ const Login = () => {
 
     localStorage.setItem('loginData', JSON.stringify(data));
 
-    window.location.reload(true);
+    window.location.href="/";
   };
 
   const handleLogout = () => {
@@ -131,19 +121,21 @@ const Login = () => {
     axios.post('http://localhost:5000/user/login', user)
       .then(response => {
         alert("Login successful")
-        // setMessageError("Login successful");
         setTokenData(response.data);
 
         localStorage.setItem('tokenData', JSON.stringify(response.data));
         console.log(localStorage.getItem('tokenData'))
-        window.location.reload(true);
+        window.location.href="/";
       })
       .catch(error => {
         // alert("Please check email and password")
         setMessageError(error.response.data.message);
-        console.log(error)
       })
     // setLoginDialog(false);
+  }
+
+  const handleShowRegister =_=>{
+    setRegisterDialog(true)
   }
 
   return (
@@ -185,7 +177,10 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <input class="Signup" type="submit" onClick={LoginSubmit} name="signup_submit" value="Login" />
+                <Button variant="contained" onClick={LoginSubmit}>Login</Button>
+                <div>You haven't accout?  
+                <Button variant="contained" onClick={handleShowRegister}>SignUp</Button>
+                </div>
               </form>
 
             </div>
@@ -217,7 +212,6 @@ const Login = () => {
                   onFailure={handleFailure}
                   cookiePolicy={'single_host_origin'}
                 ></GoogleLogin>
-                {/* )} */}
               </div>
             </div>
             <div class="or">OR</div>

@@ -1,32 +1,18 @@
-// import { Avatar } from "@material-ui/core";
-// import { FolderOpen, PermContactCalendar } from "@material-ui/icons";
-// import React from "react";
-// import { Link } from "react-router-dom";
-
-// import MyClass from '../MyClass/MyClass'
-// import "./Register.css";
-// import './App.css';
-
-// import { useState } from 'react';
-// import App from '../../App'
-// import { ContextProvider } from '../../context/context';
-
-
 import { FolderOpen, PermContactCalendar } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import ReactFacebookLogin from "react-facebook-login";
 import MyClass from '../MyClass/MyClass'
 import "./Login.css";
-import './App.css';
 import GoogleLogin from 'react-google-login';
 import App from '../../App'
 import { ContextProvider } from '../../context/context';
 import axios from "axios";
 import React, { useState } from "react";
-import { Avatar, Button, Dialog, Slide, TextField } from "@material-ui/core";
+import { Avatar, Dialog, Slide, TextField } from "@material-ui/core";
 import { Alert, AlertTitle } from "@mui/material";
 import { useLocalContext } from "../../context/context";
 import { Close } from "@material-ui/icons";
+import Button from '@mui/material/Button'
 import "./style.css";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -79,7 +65,6 @@ export const Register = () => {
       }
     }
 
-
     // begin login by google
     const [loginData, setLoginData] = useState(
         localStorage.getItem('loginData')
@@ -104,7 +89,6 @@ export const Register = () => {
         
         const data = await res.json();
         setLoginData(data);
-        console.log(data)
         const newUser = {
           username: data.name,
           email: data.email,
@@ -114,43 +98,14 @@ export const Register = () => {
       };
       axios.post('http://localhost:5000/user', newUser) 
       .then(res =>  {
-        console.log(res.data)
         localStorage.setItem('tokenData', JSON.stringify(res.data));
       }
-        // }else if(error.request){
-        
-        // //do something else
-        
-        // }else if(error.message){
-        
-        // //do something other than the other two
-        
       );
 
       localStorage.setItem('loginData', JSON.stringify(data));
         
-      // window.location.reload(true);
+      window.location.href="/";
       };
-
-      // const handleLogin = async (googleData) => {
-      //   const res = await fetch('http://localhost:5000/user', {
-      //     method: 'POST',
-      //     body: JSON.stringify({
-      //       // username: googleData.name,
-      //       // email: googleData.email,
-      //       token: googleData.tokenId,
-      //     }),
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //     },
-      //   });
-        
-      //   const data = await res.json();
-      //   setLoginData(data);
-      //   localStorage.setItem('loginData', JSON.stringify(data));
-        
-      //   window.location.reload(true);
-      // };
 
       const handleLogout = () => {
         localStorage.removeItem('loginData');
@@ -176,38 +131,17 @@ export const Register = () => {
           axios.post('http://localhost:5000/user', newUser) 
           .then(response =>  {
             alert("SignUp successful")
-            // setMessageError("Signup successful");
             setTokenData(response.data);
             localStorage.setItem('tokenData', JSON.stringify(response.data));
-            console.log(localStorage.getItem('tokenData'))
-            window.location.reload(true)
+            window.location.href="/"
           })
           .catch(error => {
-            console.log(error.response);
             setMessageError(error.response.data.message);
-            console.log(error.response.data.message);
           })
         // setRegisterDialog(false);
       }
       }
 
-      //   //push account gg
-      // const SignupSubmitGoogle = (e,loginData) => {
-      //   e.preventDefault();
-      //   const username = document.getElementsByName("usernameGG");
-      //   const email = document.getElementsByName("emailGG");
-      //   const newUser = {
-      //       username: loginData.name,
-      //       email: loginData.name
-      //   };
-      //   console.log(username)
-      //   axios.post('http://localhost:5000/user', newUser) 
-      //   .then(response =>  console.log(newUser));
-      //   setRegisterDialog(false);
-      // }
-      //login by email, password
-      const loginHandle = e =>{
-      }
     return (
         <div>
         <Dialog
@@ -255,8 +189,8 @@ export const Register = () => {
                         value={re_password}
                         onChange={(e) => setRePassword(e.target.value)}
                       />
-                    
-                      <input class="Signup" type="submit" onClick={SignupSubmit} name="signup_submit" value="Sign up"/>
+                    <Button variant="contained" onClick={SignupSubmit}>Sign up</Button>
+                      {/* <input class="Signup" type="submit" onClick={SignupSubmit} name="signup_submit" value="Sign up"/> */}
                     </form>
                     
                 </div>
