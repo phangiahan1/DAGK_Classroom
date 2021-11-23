@@ -76,11 +76,21 @@ export const CreateClass = () => {
                     setSubject("");
                     setCreateClassDialog(false);
                     window.location.reload(true);
-                } else {
-                    throw new Error('Fail to create class');
+                // } else {
+                //     throw new Error('Fail to create class');
                 }
             })
-            .then(console.log("da tao"))
+            .then(data => {
+                console.log("da tao");
+                console.log(data);
+                setClassName("");
+                setSection("");
+                setRoom("");
+                setSubject("");
+                setCreateClassDialog(false);
+                window.location.reload(true);
+            }
+            )
             .catch(error => {
                 alert(error + ": "+ 'Fail to create class');
                 setClassName("");
