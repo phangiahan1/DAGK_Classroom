@@ -93,7 +93,7 @@ const Login = () => {
       status: status,
       picture: data.picture
     };
-    axios.post('http://thclassroom-api-app.herokuapp.com/user/', newUser)
+    axios.post('http://thclassroom-api-app.herokuapp.com/user', newUser)
       .then(res => {
         console.log(res.data)
         localStorage.setItem('tokenData', JSON.stringify(res.data));
