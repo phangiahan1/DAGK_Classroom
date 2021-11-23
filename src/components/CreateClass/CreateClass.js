@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState , useEffect} from "react";
+import { useState, useEffect } from "react";
 import { useLocalContext } from "../../context/context";
 import {
     Button,
@@ -16,24 +16,24 @@ export const CreateClass = () => {
 
     const [tokenData, setTokenData] = useState(
         localStorage.getItem('tokenData')
-          ? JSON.parse(localStorage.getItem('tokenData'))
-          : null
-      );
-      const [loginData, setLoginData] = useState(
+            ? JSON.parse(localStorage.getItem('tokenData'))
+            : null
+    );
+    const [loginData, setLoginData] = useState(
         localStorage.getItem('loginData')
-          ? JSON.parse(localStorage.getItem('loginData'))
-          : null
-      );
+            ? JSON.parse(localStorage.getItem('loginData'))
+            : null
+    );
 
-      function parseJwt(token) {
+    function parseJwt(token) {
         var base64Url = token.split('.')[1];
         var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
-    
+
         return JSON.parse(jsonPayload);
-      };
+    };
 
     const [className, setClassName] = useState("");
     const [Section, setSection] = useState("");
@@ -63,14 +63,33 @@ export const CreateClass = () => {
             room: Room,
             owner: Owner
         };
-        axios.post('http://thclassroom-api-app.herokuapp.com/classroom', newC) 
-        .then(response =>  console.log(newC));
-        setClassName("");
-        setSection("");
-        setRoom("");
-        setSubject("");
-        setCreateClassDialog(false);
-        window.location.reload(true);
+        console.log("chua tao");
+        console.log(newC);
+        axios.post('https://thclassroom-api-app.herokuapp.com/classroom', newC)
+            .then(response => {
+                if (response.ok) {
+                    console.log("da tao");
+                    console.log(response);
+                    setClassName("");
+                    setSection("");
+                    setRoom("");
+                    setSubject("");
+                    setCreateClassDialog(false);
+                    window.location.reload(true);
+                } else {
+                    throw new Error('Fail to create class');
+                }
+            })
+            .then(console.log("da tao"))
+            .catch(error => {
+                alert(error + ": "+ 'Fail to create class');
+                setClassName("");
+                setSection("");
+                setRoom("");
+                setSubject("");
+                setCreateClassDialog(false);
+                //window.location.reload(true);
+            });
     }
     return (
         <div>
