@@ -205,13 +205,13 @@ const Login = () => {
                             </div>  
                         ) :
                         ( */}
-                {/* <GoogleLogin
+                <GoogleLogin
                   clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                   buttonText="LOG IN WITH GOOGLE"
                   onSuccess={handleLogin}
                   onFailure={handleFailure}
                   cookiePolicy={'single_host_origin'}
-                ></GoogleLogin> */}
+                ></GoogleLogin>
               </div>
             </div>
             <div class="or">OR</div>
