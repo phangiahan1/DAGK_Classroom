@@ -84,7 +84,7 @@ const MainClassUser = ({ classData }) => {
             console.log(position);
         }
     };
-    // https://thclassroom-api-app.herokuapp.com/
+    // http://thclassroom-api-app.herokuapp.com/
     const [createdClassesPeople, setCreatedClassesPeople] = useState([]);
     const fetchItems = async () => {
         // url = '//localhost:5000/classroom/' + classData._id + '/alluser'

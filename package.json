@@ -1,6 +1,6 @@
 {
   "name": "classroom-react-app",
-  "proxy": "https://thclassroom-api-app.herokuapp.com/",
+  "proxy": "http://thclassroom-api-app.herokuapp.com/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

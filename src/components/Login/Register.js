@@ -97,7 +97,7 @@ export const Register = () => {
       picture: data.picture
     };
     // axios.post('http://localhost:5000/user', newUser) 
-    axios.post('https://thclassroom-api-app.herokuapp.com/user', newUser)
+    axios.post('http://thclassroom-api-app.herokuapp.com/user', newUser)
       .then(res => {
         localStorage.setItem('tokenData', JSON.stringify(res.data));
       }
@@ -130,7 +130,7 @@ export const Register = () => {
         picture: "/public/user.png"
       };
       // axios.post('http://localhost:5000/user', newUser) 
-      axios.post('https://thclassroom-api-app.herokuapp.com/user', newUser)
+      axios.post('http://thclassroom-api-app.herokuapp.com/user', newUser)
         .then(response => {
           alert("SignUp successful")
           setTokenData(response.data);
