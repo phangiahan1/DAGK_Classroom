@@ -22,6 +22,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import Grid from '@mui/material/Grid';
 
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+
 import { blue } from '@mui/material/colors';
 
 import axios from 'axios';
@@ -148,21 +152,11 @@ export const MainClass = ({ classData }) => {
                             <Typography sx={{ fontSize: 16 }} color="text.secondary" gutterBottom>
                                 Grade Constructor
                             </Typography>
-                            <Typography variant="body2">
-                                well meaning and kindly.
-                                <br />
-                                {'"a benevolent smile"'}
-                            </Typography>
+                            {gradeConstructor.map((item) => <ListItem>
+                                <ListItemText primary={item.name} secondary={item.percentage}/>
+                            </ListItem>)}
                         </CardContent>
                     </Card>
-                    <div className="main__announce">
-                        <div className="main__status"
-                            onClick={() => setShowGradeCons(true)}
-                        >
-                            {/* <p>Grade Constructor</p>
-                            <p className="main__subText">No work due</p> */}
-                        </div>
-                    </div>
                 </div>
             </div>
             <div>
@@ -250,7 +244,6 @@ export const MainClass = ({ classData }) => {
                                                 }).catch(error => alert(error))
                                         }
                                     }}><SaveIcon /></IconButton>
-
                                 </CardActions>
                             </Card>
                         </Box>
