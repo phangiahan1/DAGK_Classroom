@@ -59,7 +59,7 @@ const MainClassUser = ({ classData }) => {
     const [coopOwner, setCoopOwner] = useState([]);
     const fetchItemsCoopOwner = async () => {
         // const url = '//localhost:5000/classroom/' + classData._id + '/allteacher'
-        const url = ' //thclassroom-api-app.herokuapp.com/classroom/' + classData._id + '/allteacher'
+        const url = ' //localhost:5000/classroom/' + classData._id + '/allteacher'
         const data = await fetch(url);
         const items = await data.json();
         setCoopOwner(items);
@@ -74,7 +74,7 @@ const MainClassUser = ({ classData }) => {
 
     const fetchItems1 = async () => {
         // const url = '//localhost:5000/user/findEmail/' + classData.owner + '';
-        const url = ' //thclassroom-api-app.herokuapp.com/user/findEmail/' + classData.owner + '';
+        const url = ' //localhost:5000/user/findEmail/' + classData.owner + '';
         const data = await fetch(url);
         const items = await data.json();
         setOwerClass(items);
@@ -84,11 +84,11 @@ const MainClassUser = ({ classData }) => {
             console.log(position);
         }
     };
-    // http://thclassroom-api-app.herokuapp.com/
+    // http://localhost:5000/
     const [createdClassesPeople, setCreatedClassesPeople] = useState([]);
     const fetchItems = async () => {
         // url = '//localhost:5000/classroom/' + classData._id + '/alluser'
-        const  url = ' //thclassroom-api-app.herokuapp.com/classroom/' + classData._id + '/alluser'
+        const  url = ' //localhost:5000/classroom/' + classData._id + '/alluser'
         const data = await fetch(url);
         const items = await data.json();
         setCreatedClassesPeople(items);

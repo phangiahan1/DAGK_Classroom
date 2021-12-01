@@ -65,7 +65,7 @@ export const CreateClass = () => {
         };
         console.log("chua tao");
         console.log(newC);
-        axios.post('http://thclassroom-api-app.herokuapp.com/classroom', newC)
+        axios.post('http://localhost:5000/classroom', newC)
             .then(response => {
                 if (response.ok) {
                     console.log("da tao");

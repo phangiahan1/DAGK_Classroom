@@ -43,8 +43,8 @@ function App() {
     let email;
     if (loginData) email = loginData.email;
     if (tokenData) email = parseJwt(tokenData).email;
-    const data = await fetch('//thclassroom-api-app.herokuapp.com/classroom/' + email);
-    //const data = await fetch('//thclassroom-api-app.herokuapp.com/classroom/phanhan2261@gmail.com');
+    const data = await fetch('//localhost:5000/classroom/' + email);
+    //const data = await fetch('//localhost:5000/classroom/phanhan2261@gmail.com');
     const items = await data.json();
     setCreatedClasses(items);
   };
@@ -54,7 +54,7 @@ function App() {
     let email;
     if (loginData) email = loginData.email;
     if (tokenData) email = parseJwt(tokenData).email;
-    const data = await fetch('//thclassroom-api-app.herokuapp.com/classroom/' + email + '/joined');
+    const data = await fetch('//localhost:5000/classroom/' + email + '/joined');
     const items = await data.json();
     setJoinedClasses(items);
   };
@@ -145,54 +145,54 @@ function App() {
   return (
     <Router>
       <Switch>
-        {createdClasses.map((item, index) => (
+        {createdClasses && createdClasses.map((item, index) => (
           <Route key={index} exact path={`/${item._id}`}>
             <Header classData={item} />
             <MainClass classData={item} ></MainClass>
           </Route>
         ))}
 
-        {createdClasses.map((item, index) => (
+        {createdClasses && createdClasses.map((item, index) => (
           <Route key={index} exact path={`/${item._id}/people`}>
             <Header classData={item} />
             <MainClassUser classData={item} />
           </Route>
         ))}
 
-        {createdClasses.map((item, index) => (
+        {createdClasses && createdClasses.map((item, index) => (
           <Route key={index} exact path={`/${item._id}/classwork`}>
             <Header classData={item} />
             <MainClassClassWork classData={item} />
           </Route>
         ))}
-        {createdClasses.map((item, index) => (
+        {createdClasses && createdClasses.map((item, index) => (
           <Route key={index} exact path={`/${item._id}/marks`}>
             <Header classData={item} />
             <MainClassMarks classData={item} />
           </Route>
         ))}
 
-        {joinedClasses.map((item, index) => (
+        {joinedClasses && joinedClasses.map((item, index) => (
           <Route key={index} exact path={`/${item._id}`}>
             <Header classData={item} />
             <MainClass classData={item} ></MainClass>
           </Route>
         ))}
 
-        {joinedClasses.map((item, index) => (
+        {joinedClasses && joinedClasses.map((item, index) => (
           <Route key={index} exact path={`/${item._id}/people`}>
             <Header classData={item} />
             <MainClassUser classData={item} />
           </Route>
         ))}
 
-        {joinedClasses.map((item, index) => (
+        {joinedClasses && joinedClasses.map((item, index) => (
           <Route key={index} exact path={`/${item._id}/classwork`}>
             <Header classData={item} />
             <MainClassClassWork classData={item} />
           </Route>
         ))}
-        {joinedClasses.map((item, index) => (
+        {joinedClasses && joinedClasses.map((item, index) => (
           <Route key={index} exact path={`/${item._id}/marks`}>
             <Header classData={item} />
             <MainClassMarks classData={item} />

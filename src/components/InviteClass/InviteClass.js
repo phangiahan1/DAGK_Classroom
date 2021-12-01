@@ -48,7 +48,7 @@ export const InviteClass = () => {
     const newC = {
       email: email
     };
-    axios.post('http://thclassroom-api-app.herokuapp.com/' + idC + '/invite_teacher', newC)
+    axios.post('http://localhost:5000/' + idC + '/invite_teacher', newC)
       .then(response => console.log(newC));
     setOpenDialogCofirmInvite(false);
     setCofirmInvite(true);
