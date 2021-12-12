@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState , useContext } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -8,50 +8,35 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useLocalContext } from "../../context/context";
 import axios from 'axios';
+import { apiUrl } from "../../context/constants"
+import {AuthContext} from '../../context/AuthContext'
 
 export const InviteClass = () => {
+  //Context
+  const {
+    authState: {
+      user
+    } } = useContext(AuthContext)
+
   const { openDialogCofirmInvite, setOpenDialogCofirmInvite } = useLocalContext();
   const { CofirmInvite, setCofirmInvite } = useLocalContext();
-
-  const [tokenData, setTokenData] = useState(
-    localStorage.getItem('tokenData')
-      ? JSON.parse(localStorage.getItem('tokenData'))
-      : null
-  );
-  const [loginData, setLoginData] = useState(
-    localStorage.getItem('loginData')
-      ? JSON.parse(localStorage.getItem('loginData'))
-      : null
-  );
-
   const { idC, setidC } = useLocalContext();
-
-  function parseJwt(token) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-
-    return JSON.parse(jsonPayload);
-  };
 
   const handleClose = () => {
     setOpenDialogCofirmInvite(false);
     setCofirmInvite(true);
   };
   const handleAccept = () => {
-    let email;
-    if (loginData) email = loginData.email;
-    if (tokenData) email = parseJwt(tokenData).email;
     //add joined class
     const newC = {
-      email: email
+      email: user[0].email
     };
-    axios.post('http://localhost:5000/' + idC + '/invite_teacher', newC)
+    axios.post(`${apiUrl}/` + idC + `/invite_teacher`, newC)
       .then(response => console.log(newC));
     setOpenDialogCofirmInvite(false);
     setCofirmInvite(true);
+    //window.location.reload(true)
+
   };
 
   return (

@@ -18,6 +18,7 @@ import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
 import ListItemText from '@mui/material/ListItemText';
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import { apiUrl } from "../../context/constants" 
 
 export const InviteStudent = ({ classData }) => {
     const { createInviteStudentDialog, setcreateInviteStudentDialog } = useLocalContext();
@@ -27,9 +28,6 @@ export const InviteStudent = ({ classData }) => {
     const [Owner, setOwner] = useState("");
     const [isCopied, setIsCopied] = useState(false);
     const [LinkInviteClass, setLinkInviteClass] = useState(window.location.host + "/" + classData._id + "/invite_student");
-    console.log(LinkInviteClass);
-
-    //setOwner(loginData.email);
 
     const handleSubmit = e => {
         e.preventDefault();
@@ -39,7 +37,7 @@ export const InviteStudent = ({ classData }) => {
             classname: classData.classname,
             idclass: classData._id
         };
-        axios.post('http://localhost:5000/send_mail_student', newC)
+        axios.post(`${apiUrl}/send_mail_student`, newC)
             .then(response => console.log(newC));
         setEmail("");
         setcreateInviteStudentDialog(false);
@@ -55,7 +53,6 @@ export const InviteStudent = ({ classData }) => {
 
     function validateEmail(email) {
         const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        //const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         return re.test(email);
     }
     return (

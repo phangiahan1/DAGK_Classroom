@@ -1,36 +1,33 @@
-import { FolderOpen, PermContactCalendar } from "@material-ui/icons";
-import { Link } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import ReactFacebookLogin from "react-facebook-login";
 import "./Login.css";
 import GoogleLogin from 'react-google-login';
-import axios from "axios";
-import React, { useState } from "react";
-import { Dialog, Slide, TextField } from "@material-ui/core";
+import React, { useState, useContext } from "react";
 import { Alert, AlertTitle } from "@mui/material";
-import { useLocalContext } from "../../context/context";
-import { Close } from "@material-ui/icons";
 import Button from '@mui/material/Button'
 import "./style.css";
+import { AuthContext } from '../../context/AuthContext'
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 const Login = () => {
-  const { registerDialog, setRegisterDialog } = useLocalContext();
-  const { loginDialog, setLoginDialog } = useLocalContext();
-  const [username, setUsername] = useState("");
+
+  let location = useLocation();
+
+  console.log("MET ROI A")
+  // const a = location.state
+  // console.log(a)
+  let { from } = location.state || { from: { pathname: "/" } }
+  //Context
+  const { loginUser, loginUserGG } = useContext(AuthContext)
+
+  //Router
+  const history = useHistory()
+
+  //Local state
   const [password, setPassword] = useState("");
-  const [re_password, setRePassword] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState(true);
   const [MessageError, setMessageError] = useState("");
-  const [picture, setPicture] = useState("");
-  const [tokenData, setTokenData] = useState(
-    localStorage.getItem('TokenData')
-      ? JSON.parse(localStorage.getItem('TokenData'))
-      : null
-  );
 
   let fbContent = null;
   const [state, setState] = React.useState({
@@ -49,7 +46,6 @@ const Login = () => {
   //login by Facebook
   const handleLoginFb = _ => {
     if (state.isLoginIn) {
-      // <MyClass/>
     } else {
       fbContent = (
         <ReactFacebookLogin
@@ -63,16 +59,12 @@ const Login = () => {
   }
 
   // begin login by google
-  const [loginData, setLoginData] = useState(
-    localStorage.getItem('loginData')
-      ? JSON.parse(localStorage.getItem('loginData'))
-      : null
-  );
-
+  //Login gg fail 
   const handleFailure = (result) => {
     alert("fail: " + result);
   };
 
+  //Login gg success
   const handleLogin = async (googleData) => {
     const res = await fetch('/api/google-login', {
       method: 'POST',
@@ -85,139 +77,112 @@ const Login = () => {
     });
 
     const data = await res.json();
-    setLoginData(data);
     const newUser = {
-      username: data.name,
+      username: data.username,
       email: data.email,
       password: data.email,
       status: status,
       picture: data.picture
     };
-    axios.post('http://localhost:5000/user', newUser)
-      .then(res => {
-        console.log(res.data)
-        localStorage.setItem('tokenData', JSON.stringify(res.data));
-      })
 
-    localStorage.setItem('loginData', JSON.stringify(data));
-
-    window.location.href="/";
+    try {
+      const loginGG = await loginUserGG(newUser)
+      //Trường hợp login không thành công 
+      if (!loginGG.success) {
+        setMessageError("Please check email and password");
+        setTimeout(() => setMessageError(null), 2000)
+      } else {
+        //history.push('/')
+        history.replace(from);
+      }
+    } catch (error) {
+      console.log(error)
+    }
   };
-
-  const handleLogout = () => {
-    localStorage.removeItem('loginData');
-    setLoginData(null);
-  };
-
   // end login by google
 
-  //Login by email, password
-  const LoginSubmit = e => {
+  //Login by email, password (Dang nhap thong thuong)
+  const LoginSubmit = async e => {
     e.preventDefault();
     const user = {
       email: email,
       password: password
     };
-    axios.post('http://localhost:5000/user/login', user)
-      .then(response => {
-        alert("Login successful")
-        setTokenData(response.data);
-
-        localStorage.setItem('tokenData', JSON.stringify(response.data));
-        console.log(localStorage.getItem('tokenData'))
-        window.location.href="/";
-      })
-      .catch(error => {
-        // alert("Please check email and password")
-        setMessageError(error.response.data.message);
-      })
-    // setLoginDialog(false);
-  }
-
-  const handleShowRegister =_=>{
-    setRegisterDialog(true)
+    try {
+      const login = await loginUser(user)
+      //Trường hợp login không thành công 
+      if (!login.success) {
+        setMessageError("Please check email and password");
+        setTimeout(() => setMessageError(null), 2000)
+      } else {
+        //history.push('/')
+        history.replace(from);
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
     <div>
-      <Dialog
-        fullScreen
-        open={loginDialog}
-        onClose={() => setLoginDialog(false)}
-        TransitionComponent={Transition}
-      >
-        <div className="login">
-          <div className="login__wrapper">
-            <div
-              className="login__wraper2"
-              onClick={() => setLoginDialog(false)}>
-              <Close className="login__svg" />
-              <div className="login__topHead">Login</div>
-            </div>
-          </div>
-          {
-            MessageError ? (
-              <Alert severity="error">
-                <AlertTitle placeholder="bjhbfjs">Error</AlertTitle>
-                {MessageError}
-              </Alert>
-            ) : (
-              <div></div>
-            )
-          }
-          <div id="login-box">
-            <div class="left">
-              <h1>Login</h1>
-              <form onSubmit={LoginSubmit}>
-                <input className="login_input" type="text" name="email" placeholder="E-mail"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <input className="login_input" type="password" name="password" placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <Button variant="contained" onClick={LoginSubmit}>Login</Button>
-                <div>You haven't accout?  
-                <Button variant="contained" onClick={handleShowRegister}>SignUp</Button>
-                </div>
-              </form>
-
-            </div>
-
-            <div class="right">
-              <span class="loginwith">Login with<br /><br />social network</span>
-              <div class="social-signin " onClick={handleLoginFb}>
-                <ReactFacebookLogin
-                  appId="1510139052705581"
-                  fields="name,email,picture"
-                />
-              </div>
-
-              {/* <button class="social-signin twitter">Log in with Twitter</button>
-                    <button class="social-signin google">Log in with Google+</button> */}
-              <div class="social-signin">
-                {/* {
-                            loginData ? (
-                            <div>
-                            <h3>You logged in as {loginData.email}</h3>
-                            <button onClick={handleLogout}>Logout</button>
-                            </div>  
-                        ) :
-                        ( */}
-                <GoogleLogin
-                  clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-                  buttonText="LOG IN WITH GOOGLE"
-                  onSuccess={handleLogin}
-                  onFailure={handleFailure}
-                  cookiePolicy={'single_host_origin'}
-                ></GoogleLogin>
-              </div>
-            </div>
-            <div class="or">OR</div>
-          </div>
+      <div className="login">
+        <div className="login__wrapper">
+          <div className="login__topHead">Login</div>
         </div>
-      </Dialog>
+        {
+          MessageError ? (
+            <Alert severity="error">
+              <AlertTitle placeholder="bjhbfjs">Error</AlertTitle>
+              {MessageError}
+            </Alert>
+          ) : (
+            <div></div>
+          )
+        }
+        <div id="login-box">
+          <div class="left">
+            <h1>Login</h1>
+            <form onSubmit={LoginSubmit}>
+              <input className="login_input" type="text" name="email" placeholder="E-mail"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <input className="login_input" type="password" name="password" placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <Button variant="contained" type="submit">Login</Button>
+              <div>You haven't accout?
+                <Link to={`/register`} style={{ textDecoration: 'none' }}>
+                  <Button variant="contained">SignUp</Button>
+                </Link>
+              </div>
+            </form>
+
+          </div>
+
+          <div class="right">
+            <span class="loginwith">Login with<br /><br />social network</span>
+            <div class="social-signin " onClick={handleLoginFb}>
+              <ReactFacebookLogin
+                appId="1510139052705581"
+                fields="name,email,picture"
+              />
+            </div>
+
+            <div class="social-signin">
+              <GoogleLogin
+                clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                buttonText="LOG IN WITH GOOGLE"
+                onSuccess={handleLogin}
+                onFailure={handleFailure}
+                cookiePolicy={'single_host_origin'}
+              ></GoogleLogin>
+            </div>
+          </div>
+          <div class="or">OR</div>
+        </div>
+      </div>
     </div>
   );
 };

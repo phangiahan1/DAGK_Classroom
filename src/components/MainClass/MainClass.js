@@ -1,5 +1,5 @@
 import { Avatar, Button, TextField } from "@material-ui/core";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useContext } from "react";
 import "./style.css";
 import { useLocalContext } from "../../context/context";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -22,21 +22,62 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import Grid from '@mui/material/Grid';
 
-import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-
 import { blue } from '@mui/material/colors';
 
 import axios from 'axios';
+import {AuthContext} from '../../context/AuthContext'
+import { apiUrl } from "../../context/constants" 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export const MainClass = ({ classData }) => {
+    //context
+    const {
+        authState: {
+            user
+        }
+    } = useContext(AuthContext)
+
+    let email = user[0].email
     const [showInput, setShowInput] = useState(false);
     const { createTabs, setCreateTabs } = useLocalContext();
+
+    //Tim vai tro cua Ban trong lop
+    const [position, setPosition] = useState("");
+    ////1 owner
+    ////2 coop
+    ////3 student
+
+    //coop owner
+    const fetchItemsCoopOwner = async () => {
+        const data = await fetch(`${apiUrl}/classroom/` + classData._id + `/allteacher`);
+        const items = await data.json();
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].idUser.email == email) {
+                setPosition("coop");
+            }
+        }
+    };
+    const fetchItemsOwner = async () => {
+        const data = await fetch(`${apiUrl}/user/findEmail/` + classData.owner);
+        const items = await data.json();
+        if (items[0].email == email) {
+            setPosition("owner");
+        }
+    };
+    const fetchItemsStudent = async () => {
+        const data = await fetch(`${apiUrl}/classroom/` + classData._id + `/alluser`);
+        const items = await data.json();
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].idUser.email == email) {
+                setPosition("student");
+            }
+        }
+    };
 
     //grade constructor
     const [showGradeCons, setShowGradeCons] = useState(false);
@@ -44,7 +85,7 @@ export const MainClass = ({ classData }) => {
     //fetch grade constructor
     const [gradeConstructor, setGradeConstructor] = useState([]);
     const fetchItem = async () => {
-        const data = await fetch('http://localhost:5000/gradeConstructor/' + classData._id);
+        const data = await fetch(`${apiUrl}/gradeConstructor/` + classData._id);
         const items = await data.json();
         setGradeConstructor(items);
     };
@@ -56,18 +97,20 @@ export const MainClass = ({ classData }) => {
         items.splice(result.destination.index, 0, reorderedItem);
 
         setGradeConstructor(items);
-        axios.delete('http://localhost:5000/gradeConstructor/' + classData._id + '/deleteAll')
+        axios.delete(`${apiUrl}/gradeConstructor/` + classData._id + `/deleteAll`)
             .then(data => {
                 for (let i = 0; i < gradeConstructor.length; i++) {
-                    axios.post('http://localhost:5000/gradeConstructor', gradeConstructor[i])
+                    axios.post(`${apiUrl}/gradeConstructor`, gradeConstructor[i])
                 }
             }
             )
     }
 
     useEffect(() => {
-        fetchItem()
-        //console.log(gradeConstructor)
+        fetchItem();
+        fetchItemsStudent();
+        fetchItemsOwner();
+        fetchItemsCoopOwner();
     }, []
     );
 
@@ -146,7 +189,13 @@ export const MainClass = ({ classData }) => {
                         </div>
                     </div>
                     <Card sx={{ width: 155 }}
-                        onClick={() => setShowGradeCons(true)}
+                        onClick={() => {
+                            if(position == "student"){
+                                setShowGradeCons(false)
+                            }else{
+                                setShowGradeCons(true)
+                            }
+                        }}
                     >
                         <CardContent>
                             <Typography sx={{ fontSize: 16 }} color="text.secondary" gutterBottom>
@@ -229,7 +278,7 @@ export const MainClass = ({ classData }) => {
                                                 percentage: document.getElementById('per').value
                                             }
                                             alert("Save item");
-                                            axios.post('http://localhost:5000/gradeConstructor', newC)
+                                            axios.post(`${apiUrl}/gradeConstructor`, newC)
                                                 .then(response => {
                                                     if (response.data.success) {
                                                         alert("Save Success")
@@ -307,7 +356,7 @@ export const MainClass = ({ classData }) => {
                                                                                     percentage: document.getElementById(_id + 'per').value
                                                                                 }
                                                                                 alert("Edit item: " + _id);
-                                                                                axios.put('http://localhost:5000/gradeConstructor/' + _id, newC)
+                                                                                axios.put(`${apiUrl}/gradeConstructor/` + _id, newC)
                                                                                     .then(response => {
                                                                                         console.log(response.data.success)
                                                                                         if (response.data.success) {
@@ -323,7 +372,7 @@ export const MainClass = ({ classData }) => {
                                                                         }}><CheckIcon /></IconButton>
                                                                         <IconButton color="error" size="small" onClick={() => {
                                                                             alert("Confirm delete")
-                                                                            axios.delete('http://localhost:5000/gradeConstructor/' + _id)
+                                                                            axios.delete(`${apiUrl}/gradeConstructor/` + _id)
                                                                                 .then(response => {
                                                                                     if (response.success) alert("Delete Success")
                                                                                     fetchItem()

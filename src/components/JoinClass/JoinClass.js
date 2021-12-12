@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Avatar, Button, Dialog, Slide, TextField } from "@material-ui/core";
 import { useLocalContext } from "../../context/context";
 import { Close } from "@material-ui/icons";
 import "./style.css";
-import axios from 'axios';
+import { AuthContext } from '../../context/AuthContext'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -11,6 +11,16 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 
 export const JoinClass = () => {
+    //Context
+    const {
+        authState: {
+            user
+        },
+        logoutUser
+    } = useContext(AuthContext)
+
+    const handleLogout = () => { logoutUser() };
+
     const { joinClassDialog, setJoinClassDialog } = useLocalContext();
     return (
         <div>
@@ -27,13 +37,13 @@ export const JoinClass = () => {
                             onClick={() => setJoinClassDialog(false)}
                         >
                             <Close className="joinClass__svg" />
-                            <div className="joinClass__topHead">Join Class</div>
+                            <div className="joinClass__topHead">Join Class <b>(Tính năng chưa phát triển)</b></div>
                         </div>
                         <Button
                             className="joinClass__btn"
                             variant="contained"
                             color="primary"
-                            //onClick={handleSubmit}
+                        //onClick={handleSubmit}
                         >
                             Join
                         </Button>
@@ -47,14 +57,14 @@ export const JoinClass = () => {
                                 <Avatar />
                                 <div className="joinClass__loginText">
                                     <div className="joinClass__loginName">
-                                        
+                                        {user[0].username}
                                     </div>
                                     <div className="joinClass__loginEmail">
-                                        
+                                        {user[0].email}
                                     </div>
                                 </div>
                             </div>
-                            <Button variant="outlined" color="primary">
+                            <Button variant="outlined" color="primary" onClick={handleLogout}>
                                 Logout
                             </Button>
                         </div>
@@ -64,7 +74,7 @@ export const JoinClass = () => {
                             style={{ fontSize: "1.25rem", color: "#3c4043" }}
                             className="joinClass__formText"
                         >
-                            Class Code
+                            Class Code 
                         </div>
                         <div
                             style={{ color: "#3c4043", marginTop: "-5px" }}
@@ -77,17 +87,17 @@ export const JoinClass = () => {
                                 id="outlined-basic"
                                 label="Class Code"
                                 variant="outlined"
-                                //value={classCode}
-                                //onChange={(e) => setClassCode(e.target.value)}
-                                //error={error}
-                                //helperText={error && "No class was found"}
+                            //value={classCode}
+                            //onChange={(e) => setClassCode(e.target.value)}
+                            //error={error}
+                            //helperText={error && "No class was found"}
                             />
                             <TextField
                                 id="outlined-basic"
                                 label="Owner's email"
                                 variant="outlined"
-                                //value={email}
-                                //onChange={(e) => setemail(e.target.value)}
+                            //value={email}
+                            //onChange={(e) => setemail(e.target.value)}
                             />
                         </div>
                     </div>

@@ -1,52 +1,30 @@
 import { Avatar } from "@material-ui/core";
 import { FolderOpen, PermContactCalendar } from "@material-ui/icons";
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import "./style.css";
 import { useLocalContext } from "../../context/context";
 import MovingIcon from '@mui/icons-material/Moving';
+
+import { AuthContext } from "../../context/AuthContext"
+
 const MyClass = ({ classData }) => {
+    //context
+    const {
+        authState: {
+            user
+        }
+    } = useContext(AuthContext)
 
     const { createTabs, setCreateTabs } = useLocalContext();
     setCreateTabs(false);
-
-    //for login
-    const [tokenData, setTokenData] = useState(
-        localStorage.getItem('tokenData')
-            ? JSON.parse(localStorage.getItem('tokenData'))
-            : null
-    );
-    const [loginData, setLoginData] = useState(
-        localStorage.getItem('loginData')
-            ? JSON.parse(localStorage.getItem('loginData'))
-            : null
-    );
-    function parseJwt(token) {
-        var base64Url = token.split('.')[1];
-        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-
-        return JSON.parse(jsonPayload);
-    };
-
+ 
     const [owner, setOwner] = useState(false);
     useEffect(() => {
-        if (loginData) {
-            if (classData.owner == loginData.email) {
-                setOwner(true);
-            }
+        if (classData.owner == user[0].email) {
+            setOwner(true);
         }
-    }, [loginData]
-    );
-    useEffect(() => {
-        if (tokenData) {
-            if (classData.owner == parseJwt(tokenData).email) {
-                setOwner(true);
-            }
-        }
-    }, [tokenData]
+    }, []
     );
 
     return (
@@ -65,7 +43,6 @@ const MyClass = ({ classData }) => {
                         {owner ? null
                             : <p className="joined__owner">{classData.owner}</p>
                         }
-
                     </div>
                 </div>
                 {owner ? null :
@@ -73,7 +50,6 @@ const MyClass = ({ classData }) => {
                         className="joined__avatar"
                         src="https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/s75-c-fbw=1/photo.jpg"
                     />}
-
             </div>
             <div className="joined__bottom">
                 {owner ? <MovingIcon />

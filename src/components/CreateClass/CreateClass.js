@@ -5,35 +5,23 @@ import {
     Button,
     Dialog,
     DialogActions,
-    DialogContent,
     TextField
 } from "@mui/material";
 import './style.css';
 import axios from 'axios';
+import {AuthContext} from "../../context/AuthContext"
+import { useContext } from 'react'
+import { apiUrl } from "../../context/constants"
 
 export const CreateClass = () => {
+    //context
+    const {
+		authState: {
+			user
+		}
+	} = useContext(AuthContext)
+
     const { createClassDialog, setCreateClassDialog } = useLocalContext();
-
-    const [tokenData, setTokenData] = useState(
-        localStorage.getItem('tokenData')
-            ? JSON.parse(localStorage.getItem('tokenData'))
-            : null
-    );
-    const [loginData, setLoginData] = useState(
-        localStorage.getItem('loginData')
-            ? JSON.parse(localStorage.getItem('loginData'))
-            : null
-    );
-
-    function parseJwt(token) {
-        var base64Url = token.split('.')[1];
-        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-
-        return JSON.parse(jsonPayload);
-    };
 
     const [className, setClassName] = useState("");
     const [Section, setSection] = useState("");
@@ -42,16 +30,8 @@ export const CreateClass = () => {
     const [Owner, setOwner] = useState("");
 
     useEffect(() => {
-        if (loginData) {
-            setOwner(loginData.email);
-        }
-    }, [loginData]
-    );
-    useEffect(() => {
-        if (tokenData) {
-            setOwner(parseJwt(tokenData).email);
-        }
-    }, [tokenData]
+        setOwner(user[0].email)
+    }, [user]
     );
 
     const handleSubmit = e => {
@@ -65,7 +45,7 @@ export const CreateClass = () => {
         };
         console.log("chua tao");
         console.log(newC);
-        axios.post('http://localhost:5000/classroom', newC)
+        axios.post(`${apiUrl}/classroom`, newC)
             .then(response => {
                 if (response.ok) {
                     console.log("da tao");

@@ -12,16 +12,14 @@ import {
 } from "@mui/material";
 import './style.css';
 import axios from 'axios';
+import { apiUrl } from "../../context/constants" 
 
 export const InviteTeacher = ({ classData }) => {
     const { createInviteTeacherDialog, setcreateInviteTeacherDialog } = useLocalContext();
 
     const [Email, setEmail] = useState("");
     const [EmailError, setEmailError] = useState("");
-    const [Owner, setOwner] = useState("");
-
-    //setOwner(loginData.email);
-
+    
     const handleSubmit = e => {
         e.preventDefault();
         const newC = {
@@ -30,10 +28,8 @@ export const InviteTeacher = ({ classData }) => {
             classname: classData.classname,
             idclass: classData._id
         };
-        axios.post('http://localhost:5000/send_mail_teacher', newC)
+        axios.post(`${apiUrl}/send_mail_teacher`, newC)
             .then(response => console.log(newC));
-        // axios.post('http://localhost:5000/send_mail_teacher', newC)
-        //     .then(response => console.log(newC));
         setEmail("");
         setcreateInviteTeacherDialog(false);
         console.log(newC);
@@ -41,7 +37,6 @@ export const InviteTeacher = ({ classData }) => {
 
     function validateEmail(email) {
         const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        //const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         return re.test(email);
     }
     return (
@@ -77,7 +72,6 @@ export const InviteTeacher = ({ classData }) => {
                                     }
                                 }}
                             />
-
                         </div>
                         <DialogContent />
                         <DialogContent />
