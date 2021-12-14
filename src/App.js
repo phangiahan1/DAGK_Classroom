@@ -1,5 +1,5 @@
 import { useState, useEffect, React, useContext } from "react";
-import { Tesst, MyClass, MainClass, MainClassUser, Header, MainClassClassWork, MainClassMarks, InviteClass, InviteTeacher, InviteClassStudent } from './components';
+import { Tesst, MyClass, MainClass, MainClassUser, Header, MainClassClassWork, MainClassGrades, InviteClass, InviteTeacher, InviteClassStudent, MainStudentList  } from './components';
 import { BrowserRouter as Router, Switch, Route, useParams, Redirect } from "react-router-dom";
 import { useLocalContext } from './context/context';
 import { apiUrl } from './context/constants'
@@ -123,10 +123,16 @@ function App() {
             <MainClassClassWork classData={item} />
           </Route>
         ))}
-        {createdClasses.map((item, index) => (
-          <Route key={index} exact path={`/${item._id}/marks`}>
+        {createdClasses && createdClasses.map((item, index) => (
+          <Route key={index} exact path={`/${item._id}/Grades`}>
             <Header classData={item} />
-            <MainClassMarks classData={item} />
+            <MainClassGrades classData={item} />
+          </Route>
+        ))}
+        {createdClasses && createdClasses.map((item, index) => (
+          <Route key={index} exact path={`/${item._id}/StudentList`}>
+            <Header classData={item} />
+            <MainStudentList classData={item} />
           </Route>
         ))}
 
@@ -150,10 +156,17 @@ function App() {
             <MainClassClassWork classData={item} />
           </Route>
         ))}
-        {joinedClasses.map((item, index) => (
-          <Route key={index} exact path={`/${item._id}/marks`}>
+        {joinedClasses && joinedClasses.map((item, index) => (
+          <Route key={index} exact path={`/${item._id}/Grades`}>
             <Header classData={item} />
-            <MainClassMarks classData={item} />
+            <MainClassGrades classData={item} />
+          </Route>
+        ))}
+
+        {joinedClasses && joinedClasses.map((item, index) => (
+          <Route key={index} exact path={`/${item._id}/StudentList`}>
+            <Header classData={item} />
+            <MainStudentList classData={item} />
           </Route>
         ))}
 

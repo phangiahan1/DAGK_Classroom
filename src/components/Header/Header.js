@@ -97,7 +97,8 @@ const Header = ({ classData }) => {
                                     <Link to={`/${classData._id}/`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(0) }}><Tab label="Stream" style={{ textTransform: 'none' }} value="0" /></Link>
                                     <Link to={`/${classData._id}/classwork`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(1) }}><Tab label="Classwork" style={{ textTransform: 'none' }} value="1" /></Link>
                                     <Link to={`/${classData._id}/people`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(2) }}><Tab label="People" style={{ textTransform: 'none' }} value="2" /></Link>
-                                    <Link to={`/${classData._id}/marks`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(3) }}><Tab label="Marks" style={{ textTransform: 'none' }} value="3" /></Link>
+                                    <Link to={`/${classData._id}/Grades`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(3) }}><Tab label="Grades" style={{ textTransform: 'none' }} value="3" /></Link>
+                                    <Link to={`/${classData._id}/StudentList`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(4) }}><Tab label="Student" style={{ textTransform: 'none' }} value="4" /></Link>
                                 </Tabs>
                             </>
                             : null}
