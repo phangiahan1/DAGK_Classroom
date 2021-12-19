@@ -5,6 +5,7 @@ import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 import ReactExport from "react-export-excel";
 import { apiUrl } from "../../context/constants" 
 import axios from 'axios';
+import "./style.css";
 import { DataGrid,GridRowsProp, GridColDef } from '@mui/x-data-grid';
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -162,8 +163,8 @@ export const MainStudentList = ({ classData }) => {
         <div style={{ height: 300, width: '100%' }}>
         <DataGrid
           columns={[
-            { field: 'col1', headerName: 'StudentId', width: 350 },
-            { field: 'col2', headerName: 'FullName', width: 350 },
+            { field: 'col1', headerName: 'StudentId', width: 350 , editable: true},
+            { field: 'col2', headerName: 'FullName', width: 350 , editable: true},
           ]}
           rows={rows}
         />
@@ -171,7 +172,7 @@ export const MainStudentList = ({ classData }) => {
       ):(
         <DataTable
           pagination
-          highlightOnHover
+          highlightOnHovers
           columns={columns}
           data={data}
         />
