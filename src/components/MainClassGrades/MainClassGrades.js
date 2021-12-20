@@ -1,5 +1,6 @@
 import React from 'react'
 import * as XLSX from 'xlsx';
+import { useLocalContext } from "../../context/context";
 import DataTable from 'react-data-table-component';
 import { useState, useEffect } from 'react';
 import { apiUrl } from '../../context/constants';
@@ -17,6 +18,10 @@ const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 export const MainClassGrades = ({classData}) => {
+
+  //set tab header
+  const { createTabs, setCreateTabs } = useLocalContext();
+  setCreateTabs(true);
   
   //fetch grade constructor
   const [gradeConstructor, setGradeConstructor] = useState([]);
@@ -72,7 +77,7 @@ export const MainClassGrades = ({classData}) => {
       columnss.push({ field: item._id, headerName:  item.name +" - " + item.percentage, width: 200, editable: true })
     })
     const [columns, setColumns] = useState([]);
-    const [data, setData] = useState([]);
+    const [data, setData] = useState([]); // điểm excel
     const rowss = [];
     
     studentList.map((item) =>{
@@ -236,12 +241,12 @@ export const MainClassGrades = ({classData}) => {
         />
         
         <button onClick={handleSubmit}>Save data</button>
-      {/* <DataTable
+      <DataTable
         pagination
         highlightOnHover
         columns={columns}
         data={data}
-      /> */}
+      />
     <div style={{ height: 400, width: '100%' }}>
       <DataGrid
         rows={rowss}
@@ -250,7 +255,7 @@ export const MainClassGrades = ({classData}) => {
         rowsPerPageOptions={[5]}
       />
     </div>
-      <ReactHtmlTableToExcel  
+      <c  
         className="btn btn-info"  
         table="Exporttable"  
         filename="Export"  

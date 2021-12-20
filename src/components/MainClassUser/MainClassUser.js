@@ -27,6 +27,7 @@ const MainClassUser = ({ classData }) => {
 
     const { createTabs, setCreateTabs } = useLocalContext();
     setCreateTabs(true);
+    
     //owner toi cao
     const [ownerClass, setOwerClass] = useState();
     //Tim vai tro cua Ban trong lop
