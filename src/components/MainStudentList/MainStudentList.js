@@ -16,6 +16,9 @@ export const MainStudentList = ({ classData }) => {
   //set tab header
   const { createTabs, setCreateTabs } = useLocalContext();
   setCreateTabs(true);
+  //tab value
+  const { tabValue, setTabValue } = useLocalContext()
+  setTabValue(4)
 
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);

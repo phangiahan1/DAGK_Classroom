@@ -45,6 +45,9 @@ export const MainClass = ({ classData }) => {
     let email = user[0].email
     const [showInput, setShowInput] = useState(false);
     const { createTabs, setCreateTabs } = useLocalContext();
+    //tab value
+    const { tabValue, setTabValue } = useLocalContext()
+    setTabValue(0)
 
     //Tim vai tro cua Ban trong lop
     const [position, setPosition] = useState("");

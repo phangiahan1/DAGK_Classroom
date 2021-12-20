@@ -18,10 +18,12 @@ const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 export const MainClassGrades = ({ classData }) => {
-
   //set tab header
-  const { createTabs, setCreateTabs } = useLocalContext();
+  const { createTabs, setCreateTabs } = useLocalContext()
   setCreateTabs(true);
+  //tab value
+  const { tabValue, setTabValue } = useLocalContext()
+  setTabValue(3)
 
   //fetch grade constructor
   const [gradeConstructor, setGradeConstructor] = useState([]);
@@ -36,6 +38,7 @@ export const MainClassGrades = ({ classData }) => {
     const database = await fetch(`${apiUrl}/StudentList/` + classData._id);
     const items = await database.json();
     setStudentList(items)
+    //fetchDataOnTable()
   };
 
   const [user, setUser] = useState([]);
@@ -43,11 +46,12 @@ export const MainClassGrades = ({ classData }) => {
     const database = await fetch(`${apiUrl}/user`);
     const items = await database.json();
     setUser(items)
+    //fetchDataOnTable()
   }
 
   const [gradeOfStudent, setGradeOfStudent] = useState([]);
   const fetchItemGradeOfStudent = async () => {
-    const data = await fetch(`${apiUrl}/gradeStudent/` + "61a757c5e736480004b91b0a");
+    const data = await fetch(`${apiUrl}/gradeStudent/` + `61a757c5e736480004b91b0a`);
     const items = await data.json();
     setGradeOfStudent(items);
   };
@@ -56,17 +60,17 @@ export const MainClassGrades = ({ classData }) => {
     fetchItemStudentList()
     fetchItemUser()
     fetchItemGradeOfStudent()
-    console.log(gradeOfStudent)
+
   }, []
   );
 
-  // const [columns, setColumns] = useState([]);
   const columnss = [
-
-    { field: 'Student', headerName: 'Student', width: 200 },
-    { field: 'TotalGrade', headerName: 'Total grade', width: 200, editable: true }
+    { field: 'id', headerName: 'StudentID', width: 100 },
+    { field: 'Student', headerName: 'Student', width: 250 },
+    { field: 'TotalGrade', headerName: 'Total grade', width: 100, editable: true }
   ];
-  const [fileGrade, setFileGrade] = React.useState('');
+
+  const [fileGrade, setFileGrade] = React.useState('');// chọn file để input 
   const handleChange = (event) => {
     setFileGrade(event.target.value);
   };
@@ -74,28 +78,45 @@ export const MainClassGrades = ({ classData }) => {
   const chooseGradeFile = [];
   gradeConstructor.map((item) => {
     chooseGradeFile.push(item.name);
-    columnss.push({ field: item._id, headerName: item.name + " - " + item.percentage, width: 200, editable: true })
+    //columnss.push({ field: item._id, headerName: item.name + " - " + item.percentage, width: 100, editable: true })
+    columnss.push({ field: item.name, headerName: item.name + " - " + item.percentage, width: 100})
   })
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]); // điểm excel
+
+  //For table
+  const [RowTable, setRowTable] = useState([]);
   const rowss = [];
 
-  studentList.map((item) => {
-    let points = 0;
-
-    let name = item.StudentId + " - " + item.Fullname;
-    user.map((u) =>
-      (item.StudentId === u.studentId) ?
-        name = item.StudentId + " - " + item.Fullname + " - user = " + u.username : name,
-    )
-    gradeOfStudent.map((point) => {
-      if (item.StudentId == point.StudentId)
-        points = point.numberGrade;
-
+  // const fetchDataOnTable = async () => {
+  //   const dataload = await studentList.map((item) => {
+  const fetchDataOnTable = () => {
+    studentList.map((item) => {
+      let points = 0;
+      let name = item.Fullname;
+      user.map((u) =>
+        (item.StudentId === u.studentId) ?
+          name = item.Fullname + " - user = " + u.username : name,
+      )
+      gradeOfStudent.map((point) => {
+        if (item.StudentId == point.StudentId)
+          points = point.numberGrade;
+      })
+      let objRowss = { id: item.StudentId, Student: name }
+      gradeConstructor.map((i) => {
+        objRowss[i.name] = "0";
+      })
+      rowss.push(objRowss)
     })
+    console.log("rowss")
+    console.log(rowss)
+    setRowTable(rowss);
+  };
 
-    rowss.push({ id: item.StudentId, Student: name, idGrade: points })
-  })
+  useEffect(() => {
+    fetchDataOnTable()
+  }, [studentList, user, gradeOfStudent, gradeConstructor])
+
   // process CSV data
   const processData = dataString => {
     const dataStringLines = dataString.split(/\r\n|\n/);
@@ -132,7 +153,7 @@ export const MainClassGrades = ({ classData }) => {
       selector: c,
     }));
 
-    setData(list);
+    setData(list)
     setColumns(columns);
   }
 
@@ -168,33 +189,35 @@ export const MainClassGrades = ({ classData }) => {
     return filterColsByKey // OR return columns
   };
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    // if(window.confirm("Are you sure you wish to save this import?")){
-    //   data.forEach(student => {
-    //     const newGrade = {
-    //       idClass: classData._id,
-    //       idGrade: "61a757c5e736480004b91b0a",
-    //       StudentId: student.StudentId,
-    //       numberGrade: student.Grade
-    //     }
-    //       axios.post(`${apiUrl}/gradeStudent`, newGrade)
-    //           .then(response => {
-    //               if (response.ok) {
-    //                   console.log("import successful");
-    //               }
-    //           })
-    //           .then(data => {
-    //               console.log(data);
-    //           }
-    //           )
-    //           .catch(error => {
-    //               console.log(error);
-    //           });
-    //     })
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [loading, setLoading] = React.useState(false);
 
-    // }
+  const handleSaveOnTable = e => {
+    setRefreshKey(oldKey => oldKey +1)
   }
+  useEffect(() => {
+    async function fetchDataGrade() {
+      let fakeRow = RowTable
+      const result = await data.forEach(dataItem => {
+        fakeRow.forEach(rowssItem => {
+          if (rowssItem.id == dataItem.StudentId) {
+            console.log(rowssItem.id + "==" + dataItem.StudentId)
+            for (let property in rowssItem) {
+              if (property == fileGrade) {
+                rowssItem[property] = dataItem.Grade
+              }
+            }
+          }
+        });
+      })
+      setRowTable(fakeRow)
+      console.log("fakeRow")
+      console.log(RowTable)
+    }
+    fetchDataGrade()
+    console.log(RowTable)
+  }, [studentList, user, gradeOfStudent, gradeConstructor,refreshKey])
+
 
   return (
     <div>
@@ -240,16 +263,16 @@ export const MainClassGrades = ({ classData }) => {
         onChange={handleFileUpload}
       />
 
-      <button onClick={handleSubmit}>Save data</button>
-      <DataTable
+      <button onClick={handleSaveOnTable}>Save data</button>
+      {/* <DataTable
         pagination
         highlightOnHover
         columns={columns}
         data={data}
-      />
+      /> */}
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
-          rows={rowss}
+          rows={RowTable}
           columns={columnss}
           pageSize={5}
           rowsPerPageOptions={[5]}
@@ -263,14 +286,17 @@ export const MainClassGrades = ({ classData }) => {
         buttonText="Export excel" />
       <table id="Exporttable" class="hide">
         <tbody>
-          {columnss.map(item => {
-            return (
-              <td>{item.headerName}</td>
-            );
-          })}
+          <tr>
+            {columnss.map(item => {
+              return (
+                <th>{item.headerName}</th>
+              );
+            })}
+          </tr>
           {rowss.map(item => {
             return (
               <tr>
+                <td>{item.id}</td>
                 <td>{item.Student}</td>
                 <td>{item.ToTalGrade}</td>
               </tr>

@@ -24,9 +24,13 @@ const MainClassUser = ({ classData }) => {
     let email = user[0].email
 
     const { idC, setidC } = useLocalContext();
-
-    const { createTabs, setCreateTabs } = useLocalContext();
+    
+    //set tab header
+    const { createTabs, setCreateTabs } = useLocalContext()
     setCreateTabs(true);
+    //tab value
+    const { tabValue, setTabValue } = useLocalContext()
+    setTabValue(2)
     
     //owner toi cao
     const [ownerClass, setOwerClass] = useState();
