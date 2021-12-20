@@ -10,8 +10,12 @@ import { MenuItem } from '@mui/material';
 import { Select } from '@mui/material';
 import { FormControl } from '@mui/material';
 import { InputLabel } from '@mui/material';
-import ReactHtmlTableToExcel from 'react-html-table-to-excel';
 import axios from 'axios';
+import {
+  GridToolbarContainer,
+  GridToolbarExport,
+  gridClasses,
+} from '@mui/x-data-grid';
 import "./style.css";
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -64,7 +68,7 @@ export const MainClassGrades = ({ classData }) => {
   }, []
   );
 
-  const columnss = [
+  const columnBoardGrade = [
     { field: 'id', headerName: 'StudentID', width: 100 },
     { field: 'Student', headerName: 'Student', width: 250 },
     { field: 'TotalGrade', headerName: 'Total grade', width: 100, editable: true }
@@ -78,15 +82,15 @@ export const MainClassGrades = ({ classData }) => {
   const chooseGradeFile = [];
   gradeConstructor.map((item) => {
     chooseGradeFile.push(item.name);
-    //columnss.push({ field: item._id, headerName: item.name + " - " + item.percentage, width: 100, editable: true })
-    columnss.push({ field: item.name, headerName: item.name + " - " + item.percentage, width: 100})
+    //columnBoardGrade.push({ field: item._id, headerName: item.name + " - " + item.percentage, width: 100, editable: true })
+    columnBoardGrade.push({ field: item.name, headerName: item.name + " - " + item.percentage, width: 100, editable: true})
   })
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]); // điểm excel
 
   //For table
   const [RowTable, setRowTable] = useState([]);
-  const rowss = [];
+  const rowBoardGrade = [];
 
   // const fetchDataOnTable = async () => {
   //   const dataload = await studentList.map((item) => {
@@ -102,15 +106,15 @@ export const MainClassGrades = ({ classData }) => {
         if (item.StudentId == point.StudentId)
           points = point.numberGrade;
       })
-      let objRowss = { id: item.StudentId, Student: name }
+      let objrowBoardGrade = { id: item.StudentId, Student: name }
       gradeConstructor.map((i) => {
-        objRowss[i.name] = "0";
+        objrowBoardGrade[i.name] = "0";
       })
-      rowss.push(objRowss)
+      rowBoardGrade.push(objrowBoardGrade)
     })
-    console.log("rowss")
-    console.log(rowss)
-    setRowTable(rowss);
+    console.log("rowBoardGrade")
+    console.log(rowBoardGrade)
+    setRowTable(rowBoardGrade);
   };
 
   useEffect(() => {
@@ -199,12 +203,12 @@ export const MainClassGrades = ({ classData }) => {
     async function fetchDataGrade() {
       let fakeRow = RowTable
       const result = await data.forEach(dataItem => {
-        fakeRow.forEach(rowssItem => {
-          if (rowssItem.id == dataItem.StudentId) {
-            console.log(rowssItem.id + "==" + dataItem.StudentId)
-            for (let property in rowssItem) {
+        fakeRow.forEach(rowBoardGradeItem => {
+          if (rowBoardGradeItem.id == dataItem.StudentId) {
+            console.log(rowBoardGradeItem.id + "==" + dataItem.StudentId)
+            for (let property in rowBoardGradeItem) {
               if (property == fileGrade) {
-                rowssItem[property] = dataItem.Grade
+                rowBoardGradeItem[property] = dataItem.Grade
               }
             }
           }
@@ -218,6 +222,13 @@ export const MainClassGrades = ({ classData }) => {
     console.log(RowTable)
   }, [studentList, user, gradeOfStudent, gradeConstructor,refreshKey])
 
+  function ExportToolbar() {
+    return (
+      <GridToolbarContainer className={gridClasses.toolbarContainer}>
+        <GridToolbarExport />
+      </GridToolbarContainer>
+    );
+  }
 
   return (
     <div>
@@ -273,37 +284,14 @@ export const MainClassGrades = ({ classData }) => {
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={RowTable}
-          columns={columnss}
+          columns={columnBoardGrade}
           pageSize={5}
           rowsPerPageOptions={[5]}
+          components={{
+          Toolbar: ExportToolbar,
+        }}
         />
       </div>
-      <ReactHtmlTableToExcel
-        className="btn btn-info"
-        table="Exporttable"
-        filename="Export"
-        sheet="Sheet"
-        buttonText="Export excel" />
-      <table id="Exporttable" class="hide">
-        <tbody>
-          <tr>
-            {columnss.map(item => {
-              return (
-                <th>{item.headerName}</th>
-              );
-            })}
-          </tr>
-          {rowss.map(item => {
-            return (
-              <tr>
-                <td>{item.id}</td>
-                <td>{item.Student}</td>
-                <td>{item.ToTalGrade}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
     </div>
   );
 }
