@@ -202,6 +202,30 @@ export const MainClassGrades = ({ classData }) => {
   const [refreshKey, setRefreshKey] = useState(0);
   const [loading, setLoading] = React.useState(false);
 
+  const postStudentGrade =async(StudentId,numberGrade)=>{
+    const idGradeFind = await fetch(`${apiUrl}/gradeConstructor/find/` + fileGrade);
+    const items = await idGradeFind.json();
+      const newImport = {
+        idGrade: items[0]._id,
+        StudentId: StudentId,
+        numberGrade: numberGrade,
+        status: false
+      }
+      axios.post(`${apiUrl}/gradeStudent`, newImport)
+        .then(response => {
+          if (response.ok) {
+            console.log("import successful");
+          }
+        })
+        .then(data => {
+          console.log(data);
+        }
+        )
+        .catch(error => {
+          console.log(error);
+        });
+  }
+
   const handleSaveOnTable = e => {
     setRefreshKey(oldKey => oldKey + 1)
   }
@@ -212,6 +236,7 @@ export const MainClassGrades = ({ classData }) => {
         fakeRow.forEach(rowBoardGradeItem => {
           if (rowBoardGradeItem.id == dataItem.StudentId) {
             console.log(rowBoardGradeItem.id + "==" + dataItem.StudentId)
+            postStudentGrade(dataItem.StudentId,dataItem.Grade)
             for (let property in rowBoardGradeItem) {
               if (property == fileGrade) {
                 rowBoardGradeItem[property] = dataItem.Grade
@@ -220,6 +245,7 @@ export const MainClassGrades = ({ classData }) => {
           }
         });
       })
+
       setRowTable(fakeRow)
       console.log("fakeRow")
       console.log(RowTable)
