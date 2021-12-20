@@ -17,6 +17,7 @@ import {
   gridClasses,
 } from '@mui/x-data-grid';
 import "./style.css";
+import Button from '@mui/material/Button';
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
@@ -83,7 +84,7 @@ export const MainClassGrades = ({ classData }) => {
   gradeConstructor.map((item) => {
     chooseGradeFile.push(item.name);
     //columnBoardGrade.push({ field: item._id, headerName: item.name + " - " + item.percentage, width: 100, editable: true })
-    columnBoardGrade.push({ field: item.name, headerName: item.name + " - " + item.percentage, width: 100, editable: true})
+    columnBoardGrade.push({ field: item.name, headerName: item.name + " - " + item.percentage, width: 100, editable: true })
   })
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]); // điểm excel
@@ -179,6 +180,11 @@ export const MainClassGrades = ({ classData }) => {
     reader.readAsBinaryString(file);
   }
 
+  // handle return table
+  const handleReturn = e => {
+    console.log("return table")
+  }
+
   const data1 = [{ StudentId: "", Grade: "" }];
   const camelCase = (str) => {
     return str.substring(0, 1).toUpperCase() + str.substring(1);
@@ -197,7 +203,7 @@ export const MainClassGrades = ({ classData }) => {
   const [loading, setLoading] = React.useState(false);
 
   const handleSaveOnTable = e => {
-    setRefreshKey(oldKey => oldKey +1)
+    setRefreshKey(oldKey => oldKey + 1)
   }
   useEffect(() => {
     async function fetchDataGrade() {
@@ -220,7 +226,7 @@ export const MainClassGrades = ({ classData }) => {
     }
     fetchDataGrade()
     console.log(RowTable)
-  }, [studentList, user, gradeOfStudent, gradeConstructor,refreshKey])
+  }, [studentList, user, gradeOfStudent, gradeConstructor, refreshKey])
 
   function ExportToolbar() {
     return (
@@ -229,6 +235,8 @@ export const MainClassGrades = ({ classData }) => {
       </GridToolbarContainer>
     );
   }
+
+
 
   return (
     <div>
@@ -250,15 +258,21 @@ export const MainClassGrades = ({ classData }) => {
           )}
         </Select>
       </FormControl>
-      <ExcelFile filename="template Student Grade">
-        <ExcelSheet data={data1} name="StudentList">
-          {
-            filterColumns(data1).map((col) => {
-              return <ExcelColumn label={camelCase(col)} value={col} />
-            })
-          }
-        </ExcelSheet>
-      </ExcelFile>
+
+      <Button>
+        <ExcelFile
+          filename="template Student Grade"
+          element={<Button variant="outlined" sx={{mt: 2, mx: 2}}>Download</Button>}>
+          <ExcelSheet data={data1} name="StudentList">
+            {
+              filterColumns(data1).map((col) => {
+                return <ExcelColumn label={camelCase(col)} value={col} />
+              })
+            }
+          </ExcelSheet>
+        </ExcelFile>
+      </Button>
+
       <table id="table-to-xls" class="hide">
         <tbody>
           {data1.map(item => {
@@ -270,17 +284,26 @@ export const MainClassGrades = ({ classData }) => {
       </table>
       <input
         type="file"
+        size="60"
         accept=".csv,.xlsx,.xls"
         onChange={handleFileUpload}
       />
 
-      <button onClick={handleSaveOnTable}>Save data</button>
-      {/* <DataTable
-        pagination
-        highlightOnHover
-        columns={columns}
-        data={data}
-      /> */}
+      {/* <Button
+        variant="contained"
+        component="label"
+      >
+        Upload File
+        <input
+          type="file"
+          accept=".csv,.xlsx,.xls"
+          onChange={handleFileUpload}
+          hidden
+        />
+      </Button> */}
+
+      <Button onClick={handleSaveOnTable} variant="outlined" sx={{mt: 2, mx: 2}}>Save data</Button>
+      <Button onClick={handleReturn} variant="contained" sx={{mt: 2, mx: 2}}>Return data</Button>
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={RowTable}
@@ -288,8 +311,8 @@ export const MainClassGrades = ({ classData }) => {
           pageSize={5}
           rowsPerPageOptions={[5]}
           components={{
-          Toolbar: ExportToolbar,
-        }}
+            Toolbar: ExportToolbar,
+          }}
         />
       </div>
     </div>

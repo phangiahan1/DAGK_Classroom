@@ -8,6 +8,8 @@ import axios from 'axios';
 import "./style.css";
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import { useLocalContext } from "../../context/context";
+import Button from '@mui/material/Button';
+
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
@@ -144,8 +146,11 @@ export const MainStudentList = ({ classData }) => {
   return (
     <div>
       <div>
-        <ExcelFile filename="template Student List">
-          <ExcelSheet data={data1} name="StudentList">
+      <Button>
+        <ExcelFile
+          filename="template Student Grade"
+          element={<Button variant="outlined" sx={{mt: 2, mx: 2}}>Download</Button>}>
+           <ExcelSheet data={data1} name="StudentList">
             {
               filterColumns(data1).map((col) => {
                 return <ExcelColumn label={camelCase(col)} value={col} />
@@ -153,6 +158,16 @@ export const MainStudentList = ({ classData }) => {
             }
           </ExcelSheet>
         </ExcelFile>
+      </Button>
+        {/* <ExcelFile filename="template Student List">
+          <ExcelSheet data={data1} name="StudentList">
+            {
+              filterColumns(data1).map((col) => {
+                return <ExcelColumn label={camelCase(col)} value={col} />
+              })
+            }
+          </ExcelSheet>
+        </ExcelFile> */}
         <table id="table-to-xls" class="hide">
           <tbody>
             {data1.map(item => {
@@ -185,7 +200,7 @@ export const MainStudentList = ({ classData }) => {
             data={data}
           />
         )}
-        <button onClick={handleSubmit}>Save data</button>
+        <Button onClick={handleSubmit} variant="contained" sx={{mt: 2, mx: 2}}>Save data</Button>
       </div>
     </div>
   );
