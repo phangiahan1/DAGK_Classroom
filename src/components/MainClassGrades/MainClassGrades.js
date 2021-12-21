@@ -211,7 +211,13 @@ export const MainClassGrades = ({ classData }) => {
         numberGrade: numberGrade,
         status: false
       }
-      axios.post(`${apiUrl}/gradeStudent`, newImport)
+      const database = await fetch(`${apiUrl}/gradeStudent/findGrade/find`, newImport);
+      const grade = await database.json();
+      console.log(items[0]._id)
+      console.log(StudentId)
+      console.log(grade)
+      if(database){
+        axios.put(`${apiUrl}/gradeStudent/updateGrade/find`, newImport)
         .then(response => {
           if (response.ok) {
             console.log("import successful");
@@ -223,7 +229,21 @@ export const MainClassGrades = ({ classData }) => {
         )
         .catch(error => {
           console.log(error);
+          axios.post(`${apiUrl}/gradeStudent`, newImport)
+          .then(response => {
+            if (response.ok) {
+              console.log("import successful");
+            }
+          })
+          .then(data => {
+            console.log(data);
+          }
+          )
+          .catch(error => {
+            console.log(error);
+          });
         });
+      }
   }
 
   const handleSaveOnTable = e => {
