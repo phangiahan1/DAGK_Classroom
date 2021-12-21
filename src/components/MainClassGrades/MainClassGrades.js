@@ -18,6 +18,7 @@ import {
 } from '@mui/x-data-grid';
 import "./style.css";
 import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
@@ -98,6 +99,18 @@ export const MainClassGrades = ({ classData }) => {
     setFileGrade(event.target.value);
   };
 
+  const [fileReturn, setFileReturn] = React.useState('');// chọn file để return 
+  const handleChangeReturn = (event) => {
+    setFileReturn(event.target.value);
+    console.log(fileReturn)
+  };
+
+  const [fileUnReturn, setFileUnReturn] = React.useState('');// chọn file để return 
+  const handleChangeUnReturn = (event) => {
+    setFileUnReturn(event.target.value);
+    console.log(fileUnReturn)
+  };
+
   const chooseGradeFile = [];
   gradeConstructor.map((item) => {
     chooseGradeFile.push(item.name);
@@ -131,8 +144,8 @@ export const MainClassGrades = ({ classData }) => {
       })
       rowBoardGrade.push(objrowBoardGrade)
     })
-    //console.log("rowBoardGrade")
-    //console.log(rowBoardGrade)
+    // console.log("rowBoardGrade")
+    // console.log(rowBoardGrade)
     setRowTable(rowBoardGrade);
   };
 
@@ -199,8 +212,59 @@ export const MainClassGrades = ({ classData }) => {
   }
 
   // handle return table
-  const handleReturn = e => {
-    //console.log("return table")
+  const handleReturn = async e => {
+    if (fileReturn == "All") {
+      axios.put(`${apiUrl}/gradeConstructor/` + classData._id + `/returnAll`)
+        .then(response => {
+          console.log(response.data.success)
+          if (response.data.success) {
+            alert("Return Success")
+            fetchItem()
+          } else {
+            alert("Return fail")
+          }
+        }).catch(error => alert(error))
+    } else {
+      axios.put(`${apiUrl}/gradeConstructor/` + fileReturn + `/returnOne`)
+        .then(response => {
+          console.log(response.data.success)
+          if (response.data.success) {
+            alert("Return Success")
+            fetchItem()
+          } else {
+            alert("Return fail")
+          }
+        }).catch(error => alert(error))
+    }
+  }
+
+  // handle un return table
+  const handleUnReturn = async e => {
+    if (fileUnReturn == "All") {
+      axios.put(`${apiUrl}/gradeConstructor/` + classData._id + `/unreturnAll`)
+        .then(response => {
+          console.log(response.data.success)
+          if (response.data.success) {
+            alert("Return Success")
+            fetchItem()
+            // fetchItem()
+          } else {
+            alert("Return fail")
+          }
+        }).catch(error => alert(error))
+    } else {
+      axios.put(`${apiUrl}/gradeConstructor/` + fileUnReturn + `/unreturnOne`)
+        .then(response => {
+          console.log(response.data.success)
+          if (response.data.success) {
+            alert("Return Success")
+            fetchItem()
+            // fetchItem()
+          } else {
+            alert("Return fail")
+          }
+        }).catch(error => alert(error))
+    }
   }
 
   const data1 = [{ StudentId: "", Grade: "" }];
@@ -221,7 +285,7 @@ export const MainClassGrades = ({ classData }) => {
   const [refreshKeyTotal, setRefreshKeyTotal] = useState(0);
   const [loading, setLoading] = React.useState(false);
 
-  const postStudentGrade =async(StudentId,numberGrade)=>{
+  const postStudentGrade = async (StudentId, numberGrade) => {
     const idGradeFind = await fetch(`${apiUrl}/gradeConstructor/find/` + fileGrade);
     const items = await idGradeFind.json();
       const newImport = {
@@ -311,8 +375,9 @@ export const MainClassGrades = ({ classData }) => {
       //console.log(RowTable)
     }
     fetchDataGrade()
-    //console.log(RowTable)
-  }, [studentList, user, gradeOfStudent, gradeConstructor, refreshKey])
+    console.log(RowTable)
+  }, [refreshKey])
+  // }, [studentList, user, gradeOfStudent, gradeConstructor, refreshKey])
 
   function ExportToolbar() {
     return (
@@ -407,7 +472,7 @@ export const MainClassGrades = ({ classData }) => {
       <Button>
         <ExcelFile
           filename="template Student Grade"
-          element={<Button variant="outlined" sx={{mt: 2, mx: 2}}>Download</Button>}>
+          element={<Button variant="outlined" sx={{ mt: 2, mx: 2 }}>Download</Button>}>
           <ExcelSheet data={data1} name="StudentList">
             {
               filterColumns(data1).map((col) => {
@@ -461,6 +526,58 @@ export const MainClassGrades = ({ classData }) => {
           }}
         />
       </div>
+      <Grid container spacing={1}>
+        <Grid item xs={6}>
+          <FormControl sx={{ m: 1, minWidth: 200 }}>
+            <InputLabel id="choose-file-return-data">Choose return column</InputLabel>
+            <Select
+              labelId="choose-file-return-data"
+              id="demo-simple-select-autowidth"
+              value={fileReturn}
+              onChange={handleChangeReturn}
+              autoWidth
+              label="Choose return column"
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              <MenuItem value="All">
+                <em>All</em>
+              </MenuItem>
+              {gradeConstructor.map(item => (
+                item.returnData ? null
+                  : <MenuItem value={item._id}>{item.name}</MenuItem>)
+              )}
+            </Select>
+          </FormControl>
+          <Button onClick={handleReturn} variant="contained" sx={{ mt: 2, mx: 2 }}>Return data</Button>
+        </Grid>
+        <Grid item xs={6}>
+          <FormControl sx={{ m: 1, minWidth: 200 }}>
+            <InputLabel id="choose-file-un-return-data">Choose un return</InputLabel>
+            <Select
+              labelId="choose-file-un-return-data"
+              id="demo-simple-select-autowidth"
+              value={fileUnReturn}
+              onChange={handleChangeUnReturn}
+              autoWidth
+              label="Choose return column"
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              <MenuItem value="All">
+                <em>All</em>
+              </MenuItem>
+              {gradeConstructor.map(item => (
+                item.returnData ? <MenuItem value={item._id}>{item.name}</MenuItem>
+                  : null)
+              )}
+            </Select>
+          </FormControl>
+          <Button onClick={handleUnReturn} variant="contained" sx={{ mt: 2, mx: 2 }}>Un return data</Button>
+        </Grid>
+      </Grid>
     </div>
   );
 }
