@@ -159,15 +159,6 @@ export const MainStudentList = ({ classData }) => {
           </ExcelSheet>
         </ExcelFile>
       </Button>
-        {/* <ExcelFile filename="template Student List">
-          <ExcelSheet data={data1} name="StudentList">
-            {
-              filterColumns(data1).map((col) => {
-                return <ExcelColumn label={camelCase(col)} value={col} />
-              })
-            }
-          </ExcelSheet>
-        </ExcelFile> */}
         <table id="table-to-xls" class="hide">
           <tbody>
             {data1.map(item => {
