@@ -151,7 +151,7 @@ export const MainClassGrades = ({ classData }) => {
     // console.log("rowBoardGrade")
     // console.log(rowBoardGrade)
     setRowTable(rowBoardGrade);
-    setRowTable(rowTemplate)
+    setRowTableTemplate(rowTemplate)
   };
 
   useEffect(() => {
