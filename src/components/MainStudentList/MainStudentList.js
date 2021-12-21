@@ -9,6 +9,7 @@ import "./style.css";
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import { useLocalContext } from "../../context/context";
 import Button from '@mui/material/Button';
+import { Alert, AlertTitle } from "@mui/material";
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -21,7 +22,7 @@ export const MainStudentList = ({ classData }) => {
   //tab value
   const { tabValue, setTabValue } = useLocalContext()
   setTabValue(4)
-
+  const [MessageError, setMessageError] = useState("");
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
 
@@ -114,28 +115,45 @@ export const MainStudentList = ({ classData }) => {
   const handleSubmit = e => {
     e.preventDefault();
     if (window.confirm("Are you sure you wish to save this import?")) {
-      data.forEach(student => {
-        console.log(student)
-        const newImport = {
-          idClass: classData._id,
-          StudentId: student.StudentId,
-          Fullname: student.Fullname
+      axios.delete(`${apiUrl}/StudentList/`+ classData._id +`/deleteAll`)
+      .then(response => {
+        if (response.ok) {
+          console.log("delete successful");
         }
-        axios.post(`${apiUrl}/StudentList`, newImport)
-          .then(response => {
-            if (response.ok) {
-              console.log("import successful");
-            }
-          })
-          .then(data => {
-            console.log(data);
+        data.forEach(student => {
+          console.log(student)
+          const newImport = {
+            idClass: classData._id,
+            StudentId: student.StudentId,
+            Fullname: student.Fullname
           }
-          )
-          .catch(error => {
-            console.log(error);
-          });
+          axios.post(`${apiUrl}/StudentList`, newImport)
+            .then(response => {
+              if (response.ok) {
+                console.log("import successful");
+                setMessageError("import successful")
+              }
+            })
+            .then(data => {
+              console.log(data);
+              setMessageError("import successful")
+            }
+            )
+            .catch(error => {
+              console.log(error);
+              setMessageError("import fail")
+            });
+        })
       })
-
+      .then(data => {
+        console.log(data);
+        setMessageError("import successful")
+      }
+      )
+      .catch(error => {
+        console.log(error);
+        setMessageError("import fail")
+      });
     }
   }
   const rows = [];
@@ -145,6 +163,16 @@ export const MainStudentList = ({ classData }) => {
 
   return (
     <div>
+    {
+        MessageError ? (
+          <Alert >
+            <AlertTitle placeholder="bjhbfjs">Error</AlertTitle>
+            {MessageError}
+          </Alert>
+        ) : (
+          <div></div>
+        )
+      }
       <div>
       <Button>
         <ExcelFile
