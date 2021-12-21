@@ -276,6 +276,7 @@ export const MainClassGrades = ({ classData }) => {
   studentList.map(item=>{
     data1.push({ StudentId: item.StudentId, Grade:"" })
   })
+  data1.push({ StudentId: "", Grade:"" })
   const camelCase = (str) => {
     return str.substring(0, 1).toUpperCase() + str.substring(1);
   };
