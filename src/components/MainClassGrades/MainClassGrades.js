@@ -125,6 +125,50 @@ export const MainClassGrades = ({ classData }) => {
   const [RowTableTemplate, setRowTableTemplate] = useState([]);
   const rowBoardGrade = [];
   const rowTemplate = [];
+  const fetchDataGrade = async () => {
+    let fakeRow = RowTable
+
+    console.log(fakeRow)
+    const result = await data.forEach(dataItem => {
+      fakeRow.forEach(rowBoardGradeItem => {
+        if (rowBoardGradeItem.id == dataItem.StudentId) {
+          //console.log(rowBoardGradeItem.id + "==" + dataItem.StudentId)
+          postStudentGrade(dataItem.StudentId, dataItem.Grade)
+          for (let property in rowBoardGradeItem) {
+            if (property == fileGrade) {
+              rowBoardGradeItem[property] = dataItem.Grade
+            }
+          }
+        }
+      });
+    })
+
+    fakeRow.forEach(rowBoardGradeItem => {
+      let totalGrade = 0;
+      let per = 0;
+      axios.get(`${apiUrl}/gradeStudent/findGrade/byStudentId/` + rowBoardGradeItem.id)
+        .then(gradesOfStudent => {
+          console.log(gradesOfStudent);
+          for (let i = 0; i < gradesOfStudent.data.length; i++) {
+            axios.get(`${apiUrl}/gradeConstructor/byId/` + gradesOfStudent.data[i].idGrade)
+              .then(constructorOfGrade => {
+                console.log(constructorOfGrade)
+                totalGrade += gradesOfStudent.data[i].numberGrade * constructorOfGrade.data.percentage
+                per += constructorOfGrade.data.percentage
+                //console.log(totalGrade / per)
+                rowBoardGradeItem["TotalGrade"] = totalGrade / per
+                rowBoardGradeItem[constructorOfGrade.data.name] = gradesOfStudent.data[i].numberGrade
+              })
+
+          }
+        })
+        .catch(err =>
+          console.log(err)
+        )
+    })
+
+    setRowTable(fakeRow)
+  }
 
   // const fetchDataOnTable = async () => {
   //   const dataload = await studentList.map((item) => {
@@ -141,25 +185,26 @@ export const MainClassGrades = ({ classData }) => {
           points = point.numberGrade;
       })
       let objrowBoardGrade = { id: item.StudentId, Student: name, TotalGrade: 0 }
-      let objrowTemplate = { id: item.StudentId}
+      let objrowTemplate = { id: item.StudentId }
       gradeConstructor.map((i) => {
-        axios.get(`${apiUrl}/gradeStudent/findGrade/find/`+i._id+`/`+item.StudentId)
-        .then(data=>{
-          objrowBoardGrade[i.name] = data.data.numberGrade;
-        })
-        objrowBoardGrade[i.name] = "0";
+        // axios.get(`${apiUrl}/gradeStudent/findGrade/find/` + i._id + `/` + item.StudentId)
+        //   .then(data => {
+        //     objrowBoardGrade[i.name] = data.data.numberGrade;
+        //   })
+        objrowBoardGrade[i.name] = 0;
       })
       rowBoardGrade.push(objrowBoardGrade)
+      //console.log(rowBoardGrade)
       rowTemplate.push(objrowTemplate)
     })
-    // console.log("rowBoardGrade")
-    // console.log(rowBoardGrade)
     setRowTable(rowBoardGrade);
     setRowTableTemplate(rowTemplate)
+    fetchDataGrade()
   };
 
   useEffect(() => {
     fetchDataOnTable()
+    fetchDataGrade()
   }, [studentList, user, gradeOfStudent, gradeConstructor])
 
   // process CSV data
@@ -277,10 +322,10 @@ export const MainClassGrades = ({ classData }) => {
   }
 
   const data1 = [];
-  studentList.map(item=>{
-    data1.push({ StudentId: item.StudentId, Grade:"" })
+  studentList.map(item => {
+    data1.push({ StudentId: item.StudentId, Grade: "" })
   })
-  data1.push({ StudentId: "", Grade:"" })
+  data1.push({ StudentId: "", Grade: "" })
   const camelCase = (str) => {
     return str.substring(0, 1).toUpperCase() + str.substring(1);
   };
@@ -301,17 +346,17 @@ export const MainClassGrades = ({ classData }) => {
   const postStudentGrade = async (StudentId, numberGrade) => {
     const idGradeFind = await fetch(`${apiUrl}/gradeConstructor/find/` + fileGrade);
     const items = await idGradeFind.json();
-      const newImport = {
-        idGrade: items[0]._id,
-        StudentId: StudentId,
-        numberGrade: numberGrade,
-        status: false
-      }
-      const database = await fetch(`${apiUrl}/gradeStudent/findGrade/find`, newImport);
-      console.log(database)
-      const grade = await database.json();
-      if(database){
-        axios.put(`${apiUrl}/gradeStudent/updateGrade/find`, newImport)
+    const newImport = {
+      idGrade: items[0]._id,
+      StudentId: StudentId,
+      numberGrade: numberGrade,
+      status: false
+    }
+    const database = await fetch(`${apiUrl}/gradeStudent/findGrade/find`, newImport);
+    console.log(database)
+    const grade = await database.json();
+    if (database) {
+      axios.put(`${apiUrl}/gradeStudent/updateGrade/find`, newImport)
         .then(response => {
           if (response.ok) {
             //console.log("import successful");
@@ -324,67 +369,26 @@ export const MainClassGrades = ({ classData }) => {
         .catch(error => {
           //console.log(error);
           axios.post(`${apiUrl}/gradeStudent`, newImport)
-          .then(response => {
-            if (response.ok) {
-              //console.log("import successful");
+            .then(response => {
+              if (response.ok) {
+                //console.log("import successful");
+              }
+            })
+            .then(data => {
+              //console.log(data);
             }
-          })
-          .then(data => {
-            //console.log(data);
-          }
-          )
-          .catch(error => {
-            //console.log(error);
-          });
+            )
+            .catch(error => {
+              //console.log(error);
+            });
         });
-      }
+    }
   }
 
   const handleSaveOnTable = e => {
     setRefreshKey(oldKey => oldKey + 1)
   }
   useEffect(() => {
-    async function fetchDataGrade() {
-      let fakeRow = RowTable
-      
-      console.log(fakeRow)
-      const result = await data.forEach(dataItem => {
-        fakeRow.forEach(rowBoardGradeItem => {
-          if (rowBoardGradeItem.id == dataItem.StudentId) {
-            //console.log(rowBoardGradeItem.id + "==" + dataItem.StudentId)
-            postStudentGrade(dataItem.StudentId,dataItem.Grade)
-            for (let property in rowBoardGradeItem) {
-              if (property == fileGrade) {
-                rowBoardGradeItem[property] = dataItem.Grade
-              }
-            }
-          }
-        });
-      })
-
-      fakeRow.forEach(rowBoardGradeItem => {
-          let totalGrade=0;
-          let per = 0;
-          axios.get(`${apiUrl}/gradeStudent/findGrade/byStudentId/` + rowBoardGradeItem.id)
-          .then(gradesOfStudent=>{
-            for(let i=0; i< gradesOfStudent.data.length; i++){
-              axios.get(`${apiUrl}/gradeConstructor/byId/` + gradesOfStudent.data[i].idGrade)
-              .then(constructorOfGrade=>{
-                totalGrade += gradesOfStudent.data[i].numberGrade * constructorOfGrade.data.percentage
-                per += constructorOfGrade.data.percentage
-                console.log(totalGrade/per )
-                rowBoardGradeItem["TotalGrade"] = totalGrade/per
-              })
-              
-            }
-          })
-          .catch(err=>
-            console.log(err)
-            )
-      })
-
-      setRowTable(fakeRow)
-    }
     fetchDataGrade()
     console.log(RowTable)
   }, [refreshKey])
@@ -398,7 +402,7 @@ export const MainClassGrades = ({ classData }) => {
     );
   }
 
-  const handleTotalGrades = e =>{
+  const handleTotalGrades = e => {
     setRefreshKeyTotal(oldKey => oldKey + 1)
   }
 
@@ -476,7 +480,7 @@ export const MainClassGrades = ({ classData }) => {
         />
       </Button> */}
 
-      <Button onClick={handleSaveOnTable} variant="outlined" sx={{mt: 2, mx: 2}}>Save data</Button>
+      <Button onClick={handleSaveOnTable} variant="outlined" sx={{ mt: 2, mx: 2 }}>Save data</Button>
       {/* <Button onClick={handleReturn} variant="contained" sx={{mt: 2, mx: 2}}>Return data</Button> */}
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
