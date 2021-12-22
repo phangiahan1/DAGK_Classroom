@@ -31,13 +31,13 @@ export const MainStudentList = ({ classData }) => {
     const database = await fetch(`${apiUrl}/StudentList/` + classData._id);
     const items = await database.json();
     setStudentList(items)
-    console.log(items);
+    //console.log(items);
     setData(items);
   };
 
   useEffect(() => {
     fetchItem()
-    console.log(studentList)
+    //console.log(studentList)
   }, []
   );
 
@@ -118,10 +118,10 @@ export const MainStudentList = ({ classData }) => {
       axios.delete(`${apiUrl}/StudentList/`+ classData._id +`/deleteAll`)
       .then(response => {
         if (response.ok) {
-          console.log("delete successful");
+          //console.log("delete successful");
         }
         data.forEach(student => {
-          console.log(student)
+          //console.log(student)
           const newImport = {
             idClass: classData._id,
             StudentId: student.StudentId,
@@ -130,12 +130,13 @@ export const MainStudentList = ({ classData }) => {
           axios.post(`${apiUrl}/StudentList`, newImport)
             .then(response => {
               if (response.ok) {
-                console.log("import successful");
+                // console.log("import successful");
                 setMessageError("import successful")
               }
             })
             .then(data => {
-              console.log(data);
+              //console.log(data);
+              window.location.reload(true)
               setMessageError("import successful")
             }
             )
@@ -146,12 +147,12 @@ export const MainStudentList = ({ classData }) => {
         })
       })
       .then(data => {
-        console.log(data);
+        //console.log(data);
         setMessageError("import successful")
       }
       )
       .catch(error => {
-        console.log(error);
+        //console.log(error);
         setMessageError("import fail")
       });
     }
