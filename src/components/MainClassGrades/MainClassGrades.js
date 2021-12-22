@@ -128,7 +128,7 @@ export const MainClassGrades = ({ classData }) => {
 
   // const fetchDataOnTable = async () => {
   //   const dataload = await studentList.map((item) => {
-  const fetchDataOnTable = () => {
+  const fetchDataOnTable = async () => {
     studentList.map((item) => {
       let points = 0;
       let name = item.Fullname;
@@ -143,6 +143,10 @@ export const MainClassGrades = ({ classData }) => {
       let objrowBoardGrade = { id: item.StudentId, Student: name, TotalGrade: 0 }
       let objrowTemplate = { id: item.StudentId}
       gradeConstructor.map((i) => {
+        axios.get(`${apiUrl}/gradeStudent/findGrade/find/`+i._id+`/`+item.StudentId)
+        .then(data=>{
+          objrowBoardGrade[i.name] = data.data.numberGrade;
+        })
         objrowBoardGrade[i.name] = "0";
       })
       rowBoardGrade.push(objrowBoardGrade)
@@ -304,6 +308,7 @@ export const MainClassGrades = ({ classData }) => {
         status: false
       }
       const database = await fetch(`${apiUrl}/gradeStudent/findGrade/find`, newImport);
+      console.log(database)
       const grade = await database.json();
       if(database){
         axios.put(`${apiUrl}/gradeStudent/updateGrade/find`, newImport)
@@ -357,7 +362,6 @@ export const MainClassGrades = ({ classData }) => {
         });
       })
 
-      // let fakeRow = RowTable
       fakeRow.forEach(rowBoardGradeItem => {
           let totalGrade=0;
           let per = 0;
