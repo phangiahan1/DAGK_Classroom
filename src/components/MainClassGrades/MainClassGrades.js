@@ -477,7 +477,7 @@ export const MainClassGrades = ({ classData }) => {
       </Button> */}
 
       <Button onClick={handleSaveOnTable} variant="outlined" sx={{mt: 2, mx: 2}}>Save data</Button>
-      <Button onClick={handleReturn} variant="contained" sx={{mt: 2, mx: 2}}>Return data</Button>
+      {/* <Button onClick={handleReturn} variant="contained" sx={{mt: 2, mx: 2}}>Return data</Button> */}
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={RowTable}
