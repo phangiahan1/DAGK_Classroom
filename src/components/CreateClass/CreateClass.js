@@ -43,13 +43,13 @@ export const CreateClass = () => {
             room: Room,
             owner: Owner
         };
-        console.log("chua tao");
-        console.log(newC);
+        // console.log("chua tao");
+        // console.log(newC);
         axios.post(`${apiUrl}/classroom`, newC)
             .then(response => {
                 if (response.ok) {
-                    console.log("da tao");
-                    console.log(response);
+                    // console.log("da tao");
+                    // console.log(response);
                     setClassName("");
                     setSection("");
                     setRoom("");
@@ -61,8 +61,8 @@ export const CreateClass = () => {
                 }
             })
             .then(data => {
-                console.log("da tao");
-                console.log(data);
+                // console.log("da tao");
+                // console.log(data);
                 setClassName("");
                 setSection("");
                 setRoom("");

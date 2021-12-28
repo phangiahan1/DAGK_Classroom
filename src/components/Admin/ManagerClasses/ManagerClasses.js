@@ -42,7 +42,7 @@ export default function ManagerClasses() {
         // },
       ];
       
-      console.log(classroom)
+      //console.log(classroom)
       const rows = []
       let id = 0;
       classroom.map(item=>{

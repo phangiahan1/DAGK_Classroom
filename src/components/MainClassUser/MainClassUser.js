@@ -1,5 +1,5 @@
 import { Grid, Avatar, List, ListItem, ListItemText, ListItemAvatar, Divider, ListItemIcon, Checkbox } from '@mui/material';
-import { useState, useEffect, React , useContext } from "react";
+import { useState, useEffect, React, useContext } from "react";
 import { useLocalContext } from "../../context/context";
 import "./style.css";
 import IconButton from '@mui/material/IconButton';
@@ -10,8 +10,9 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import InviteStudent from '../InviteDialog/InviteStudent';
 import InviteTeacher from '../InviteDialog/InviteTeacher';
-import {AuthContext} from '../../context/AuthContext'
-import { apiUrl } from "../../context/constants" 
+import { AuthContext } from '../../context/AuthContext'
+import { apiUrl } from "../../context/constants"
+import axios from 'axios';
 
 const MainClassUser = ({ classData }) => {
     //context
@@ -21,21 +22,26 @@ const MainClassUser = ({ classData }) => {
         }
     } = useContext(AuthContext)
 
-    let email = user[0].email
-
     const { idC, setidC } = useLocalContext();
-    
+
     //set tab header
     const { createTabs, setCreateTabs } = useLocalContext()
     setCreateTabs(true);
     //tab value
     const { tabValue, setTabValue } = useLocalContext()
     setTabValue(2)
-    
+
     //owner toi cao
     const [ownerClass, setOwerClass] = useState();
     //Tim vai tro cua Ban trong lop
-    const [position, setPosition] = useState("");
+    const [position, setPosition] = useState();
+
+    const fetchPosition = async () => {
+        const type = await axios.get(`${apiUrl}/classroom/${classData._id}/${user[0].email}/getPosition`);
+        console.log(type.data.message)
+        setPosition(type.data.message)
+
+    };
     ////1 owner
     ////2 coop
     ////3 student
@@ -46,38 +52,22 @@ const MainClassUser = ({ classData }) => {
         const data = await fetch(`${apiUrl}/classroom/` + classData._id + `/allteacher`);
         const items = await data.json();
         setCoopOwner(items);
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].idUser.email == email) {
-                console.log("items[i].idUser.email");
-                setPosition("coop");
-                console.log(position);
-            }
-        }
     };
-
     const fetchItems1 = async () => {
+        //Tìm kiểm owner ==> trả về giống gmail => đó là owner
         const data = await fetch(`${apiUrl}/user/findEmail/` + classData.owner);
         const items = await data.json();
         setOwerClass(items);
-
-        if (items[0].email == email) {
-            setPosition("owner");
-            console.log(position);
-        }
     };
     const [createdClassesPeople, setCreatedClassesPeople] = useState([]);
     const fetchItems = async () => {
         const data = await fetch(`${apiUrl}/classroom/` + classData._id + `/alluser`);
         const items = await data.json();
         setCreatedClassesPeople(items);
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].idUser.email == email) {
-                setPosition("student");
-                console.log(position);
-            }
-        }
     };
+
     useEffect(() => {
+        fetchPosition();
         fetchItems();
         fetchItems1();
         fetchItemsCoopOwner();
@@ -98,7 +88,7 @@ const MainClassUser = ({ classData }) => {
         }
 
         setChecked(newChecked);
-        console.log(newChecked);
+        //console.log(newChecked);
     };
 
     const handleToggleall = () => {
@@ -110,7 +100,7 @@ const MainClassUser = ({ classData }) => {
             }
         }
         setChecked(newChecked);
-        console.log(newChecked);
+        //console.log(newChecked);
     };
 
     //create invite teacher

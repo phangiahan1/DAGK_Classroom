@@ -102,13 +102,13 @@ export const MainClassGrades = ({ classData }) => {
   const [fileReturn, setFileReturn] = React.useState('');// chọn file để return 
   const handleChangeReturn = (event) => {
     setFileReturn(event.target.value);
-    console.log(fileReturn)
+    //console.log(fileReturn)
   };
 
   const [fileUnReturn, setFileUnReturn] = React.useState('');// chọn file để return 
   const handleChangeUnReturn = (event) => {
     setFileUnReturn(event.target.value);
-    console.log(fileUnReturn)
+    //console.log(fileUnReturn)
   };
 
   const chooseGradeFile = [];
@@ -128,7 +128,7 @@ export const MainClassGrades = ({ classData }) => {
   const fetchDataGrade = async () => {
     let fakeRow = RowTable
 
-    console.log(fakeRow)
+    //console.log(fakeRow)
     const result = await data.forEach(dataItem => {
       fakeRow.forEach(rowBoardGradeItem => {
         if (rowBoardGradeItem.id == dataItem.StudentId) {
@@ -152,7 +152,7 @@ export const MainClassGrades = ({ classData }) => {
           for (let i = 0; i < gradesOfStudent.data.length; i++) {
             axios.get(`${apiUrl}/gradeConstructor/byId/` + gradesOfStudent.data[i].idGrade)
               .then(constructorOfGrade => {
-                console.log(constructorOfGrade)
+                //console.log(constructorOfGrade)
                 totalGrade += gradesOfStudent.data[i].numberGrade * constructorOfGrade.data.percentage
                 per += constructorOfGrade.data.percentage
                 //console.log(totalGrade / per)
@@ -270,7 +270,7 @@ export const MainClassGrades = ({ classData }) => {
     if (fileReturn == "All") {
       axios.put(`${apiUrl}/gradeConstructor/` + classData._id + `/returnAll`)
         .then(response => {
-          console.log(response.data.success)
+          //console.log(response.data.success)
           if (response.data.success) {
             alert("Return Success")
             fetchItem()
@@ -281,7 +281,7 @@ export const MainClassGrades = ({ classData }) => {
     } else {
       axios.put(`${apiUrl}/gradeConstructor/` + fileReturn + `/returnOne`)
         .then(response => {
-          console.log(response.data.success)
+          //console.log(response.data.success)
           if (response.data.success) {
             alert("Return Success")
             fetchItem()
@@ -297,7 +297,7 @@ export const MainClassGrades = ({ classData }) => {
     if (fileUnReturn == "All") {
       axios.put(`${apiUrl}/gradeConstructor/` + classData._id + `/unreturnAll`)
         .then(response => {
-          console.log(response.data.success)
+          //console.log(response.data.success)
           if (response.data.success) {
             alert("Return Success")
             fetchItem()
@@ -309,7 +309,7 @@ export const MainClassGrades = ({ classData }) => {
     } else {
       axios.put(`${apiUrl}/gradeConstructor/` + fileUnReturn + `/unreturnOne`)
         .then(response => {
-          console.log(response.data.success)
+          //console.log(response.data.success)
           if (response.data.success) {
             alert("Return Success")
             fetchItem()
@@ -353,7 +353,7 @@ export const MainClassGrades = ({ classData }) => {
       status: false
     }
     const database = await fetch(`${apiUrl}/gradeStudent/findGrade/find`, newImport);
-    console.log(database)
+    //console.log(database)
     const grade = await database.json();
     if (database) {
       axios.put(`${apiUrl}/gradeStudent/updateGrade/find`, newImport)
@@ -390,7 +390,7 @@ export const MainClassGrades = ({ classData }) => {
   }
   useEffect(() => {
     fetchDataGrade()
-    console.log(RowTable)
+    //console.log(RowTable)
   }, [refreshKey])
   // }, [studentList, user, gradeOfStudent, gradeConstructor, refreshKey])
 

@@ -9,8 +9,8 @@ const ProtectedRoute = ({ children, ...rest }) => {
 		authState: { authLoading, isAuthenticated, user }
 	} = useContext(AuthContext)
 
-	console.log(authLoading)
-	console.log(isAuthenticated)
+	// console.log(authLoading)
+	// console.log(isAuthenticated)
 	// console.log(user[0].username)
 	if (user) {
 		console.log(user[0].email)

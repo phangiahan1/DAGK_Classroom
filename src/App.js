@@ -30,7 +30,7 @@ function App() {
     const data = await fetch(`${apiUrl}/classroom/` + user[0].email);
     const items = await data.json();
     setCreatedClasses(items);
-    console.log(createdClasses)
+    //console.log(createdClasses)
   };
 
   const [joinedClasses, setJoinedClasses] = useState([]);
@@ -38,7 +38,7 @@ function App() {
     const data = await fetch(`${apiUrl}/classroom/` + user[0].email + `/joined`);
     const items = await data.json();
     setJoinedClasses(items);
-    console.log(joinedClasses)
+    //console.log(joinedClasses)
   };
   useEffect(() => {
     if (user) {

@@ -50,37 +50,16 @@ export const MainClass = ({ classData }) => {
     setTabValue(0)
 
     //Tim vai tro cua Ban trong lop
-    const [position, setPosition] = useState("");
+    const [position, setPosition] = useState();
+    const fetchPosition = async () => {
+        const type = await axios.get(`${apiUrl}/classroom/${classData._id}/${user[0].email}/getPosition`);
+        //console.log(type.data.message)
+        setPosition(type.data.message)
+
+    };
     ////1 owner
     ////2 coop
     ////3 student
-
-    //coop owner
-    const fetchItemsCoopOwner = async () => {
-        const data = await fetch(`${apiUrl}/classroom/` + classData._id + `/allteacher`);
-        const items = await data.json();
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].idUser.email == email) {
-                setPosition("coop");
-            }
-        }
-    };
-    const fetchItemsOwner = async () => {
-        const data = await fetch(`${apiUrl}/user/findEmail/` + classData.owner);
-        const items = await data.json();
-        if (items[0].email == email) {
-            setPosition("owner");
-        }
-    };
-    const fetchItemsStudent = async () => {
-        const data = await fetch(`${apiUrl}/classroom/` + classData._id + `/alluser`);
-        const items = await data.json();
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].idUser.email == email) {
-                setPosition("student");
-            }
-        }
-    };
 
     //grade constructor
     const [showGradeCons, setShowGradeCons] = useState(false);
@@ -110,10 +89,8 @@ export const MainClass = ({ classData }) => {
     }
 
     useEffect(() => {
+        fetchPosition();
         fetchItem();
-        fetchItemsStudent();
-        fetchItemsOwner();
-        fetchItemsCoopOwner();
     }, []
     );
 
@@ -361,7 +338,7 @@ export const MainClass = ({ classData }) => {
                                                                                 alert("Edit item: " + _id);
                                                                                 axios.put(`${apiUrl}/gradeConstructor/` + _id, newC)
                                                                                     .then(response => {
-                                                                                        console.log(response.data.success)
+                                                                                        //console.log(response.data.success)
                                                                                         if (response.data.success) {
                                                                                             alert("Save Success")
                                                                                             fetchItem()

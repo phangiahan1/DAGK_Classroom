@@ -32,7 +32,7 @@ export const Profile = () => {
     studentId: ''
   });
 
-  axios.get('http://thclassroom-api-app.herokuapp.com/user/findEmail/' + user[0].email)
+  axios.get(`${apiUrl}/user/findEmail/` + user[0].email)
     .then(response => {
       setUser({
         username: response.data[0].username,
