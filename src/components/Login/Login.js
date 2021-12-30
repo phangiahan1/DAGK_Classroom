@@ -7,6 +7,7 @@ import { Alert, AlertTitle } from "@mui/material";
 import Button from '@mui/material/Button'
 import "./style.css";
 import { AuthContext } from '../../context/AuthContext'
+import { apiUrl } from "../../context/constants";
 
 
 const Login = () => {
@@ -66,7 +67,7 @@ const Login = () => {
 
   //Login gg success
   const handleLogin = async (googleData) => {
-    const res = await fetch('/api/google-login', {
+    const res = await fetch(`${apiUrl}/api/google-login`, {
       method: 'POST',
       body: JSON.stringify({
         token: googleData.tokenId,

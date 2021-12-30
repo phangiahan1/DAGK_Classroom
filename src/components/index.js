@@ -7,6 +7,7 @@ export {default as Login} from "./Login/Login";
 export {default as Register} from "./Login/Register";
 export {default as MainClass} from "./MainClass/MainClass";
 export {default as MainClassGrades} from "./MainClassGrades/MainClassGrades";
+export {default as MainClassGradesStu} from "./MainClassGradesStu/MainClassGradesStu";
 export {default as MainClassClassWork} from "./MainClassClassWork/MainClassClassWork";
 export {default as MainClassUser} from "./MainClassUser/MainClassUser";
 export {default as InviteTeacher} from "./InviteDialog/InviteTeacher"; //Trang khi người dùng chọn gửi mail
