@@ -1,5 +1,5 @@
 import { useState, useEffect, React, useContext } from "react";
-import { Tesst, MyClass, MainClass, MainClassUser, Header, MainClassClassWork, MainClassGrades, InviteClass, InviteTeacher, InviteClassStudent, MainStudentList  } from './components';
+import { Tesst, ManagerAccount, MyClass, MainClass, MainClassUser, Header, MainClassClassWork, MainClassGrades, InviteClass, InviteTeacher, InviteClassStudent, MainStudentList  } from './components';
 import { BrowserRouter as Router, Switch, Route, useParams, Redirect } from "react-router-dom";
 import { useLocalContext } from './context/context';
 import { apiUrl } from './context/constants'
@@ -7,12 +7,20 @@ import AuthContextProvider from "./context/AuthContext";
 import ProtectedRoute from "./components/routing/ProtectedRoute"
 import Auth from './components/Auth'
 import { AuthContext } from './context/AuthContext'
+import ListAccountLocked from "./components/Admin/ListAccountLocked/ListAccountLocked";
+import ManagerClasses from "./components/Admin/ManagerClasses/ManagerClasses";
+import HeaderAdminAccount from "./components/Admin/HeaderAdminAccount/HeaderAdminAccount";
+import HeaderAdminAccountUser from "./components/Admin/HeaderAdminAccountUser/HeaderAdminAccountUser";
+import HeaderAdminClassroom from "./components/Admin/HeaderAdminClassroom/HeaderAdminClassroom";
+import AdminList from "./components/Admin/AdminList/AdminList";
+import CreateAdmin from "./components/Admin/CreateAdmin/CreateAdmin";
 
 function App() {
   //context
   const {
     authState: {
-      user
+      user,
+      isAdmin
     }
   } = useContext(AuthContext)
 
@@ -101,6 +109,32 @@ function App() {
   }
 
   return (
+    isAdmin?(
+      <Router>
+        <Switch>
+          <Route path={`/admin/admin`}>
+            <HeaderAdminAccount/>
+            <AdminList/>
+          </Route>
+          <Route path={`/admin/adminCreate`}>
+            <HeaderAdminAccount/>
+            <CreateAdmin/>
+          </Route>
+          <Route path={`/admin/user`}>
+            <HeaderAdminAccountUser/>
+            <ManagerAccount/>
+          </Route>
+          <Route path={`/admin/userLock`}>
+            <HeaderAdminAccountUser/>
+            <ListAccountLocked/>
+          </Route>
+            <Route path={`/admin/classroom`}>
+            <HeaderAdminClassroom/>
+            <ManagerClasses/>
+          </Route>
+        </Switch>
+      </Router>
+    ):(
     <Router>
       <Switch>
         {createdClasses.map((item, index) => (
@@ -210,6 +244,7 @@ function App() {
         </ProtectedRoute>
       </Switch>
     </Router>
+    )
   );
 }
 

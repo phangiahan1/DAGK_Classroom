@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { DataGrid , GridRowParams} from '@mui/x-data-grid';
 import { GridValueGetterParams } from '@mui/x-data-grid';
 import LockIcon from '@mui/icons-material/Lock';
@@ -8,8 +8,19 @@ import { Button } from '@mui/material';
 import { apiUrl } from '../../../context/constants';
 import axios from 'axios';
 import { useLocalContext } from '../../../context/context';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../../../context/AuthContext'
 
-export default function ManagerAccount() {
+export default function CreateAdmin() {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [re_password, setRePassword] = useState("");
+    const [email, setEmail] = useState("");
+    const [status, setStatus] = useState(true);
+    const [picture, setPicture] = useState("");
+    const [MessageError, setMessageError] = useState("");
+
   const [user, setUser] = useState([]);
   const fetchItemUser = async () => {
     const database = await fetch(`${apiUrl}/user`);
@@ -23,7 +34,7 @@ export default function ManagerAccount() {
   );
 
   const { tabValue, setTabValue } = useLocalContext()
-  setTabValue(0)
+  setTabValue(1)
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
@@ -34,7 +45,6 @@ export default function ManagerAccount() {
       headerName: 'Student Id',
       type: 'number',
       width: 90,
-      
     },
     // {
     //   field: 'fullName',
@@ -72,53 +82,72 @@ export default function ManagerAccount() {
       
     })
   }
+
+  const handleCreateAdmin = e => {
+    
+  }
+
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleLoadTable = e => {
     lockUser()
     setRefreshKey(oldKey => oldKey + 1)
   }
-  // const handleMapStudentId = e => {
-  //   setRefreshKey(oldKey => oldKey + 1)
-  // }
-
-  // const handleUnMapStudentId = e => {
-  //   setRefreshKey(oldKey => oldKey + 1)
-  // }
 
   useEffect(() => {
     fetchItemUser()
     //console.log(RowTable)
   }, [refreshKey])
 
-  
-  
+  const {registerUser } = useContext(AuthContext)
+
+  const SignupSubmit = async e => {
+    e.preventDefault();
+    if (password !== re_password) {
+      setMessageError("Password not compare re-pasword")
+    }
+    else {
+      const newUser = {
+        username: username,
+        email: email,
+        password: email,
+        status: status,
+        picture: "/public/user.png",
+        role: true
+      };
+
+      try {
+        const register = await registerUser(newUser)
+        //Trường hợp login không thành công 
+        if (!register.success) {
+          setMessageError("Please check your information");
+          setTimeout(() => setMessageError(null), 2000)
+        } else {
+        //   history.push('/')
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
   return (
     <div>
       {/* <h2>LIST ACCOUNT</h2> */}
-        <Button variant="outlined" onClick={handleLoadTable} startIcon={<LockIcon />}>
-            Ban
-        </Button>
-        {/* <Button variant="outlined" onClick={handleMapStudentId} startIcon={<LockIcon />}>
-            Map StudentId
-        </Button>
-        <Button variant="outlined" onClick={handleUnMapStudentId} startIcon={<LockIcon />}>
-            Unmap StudentId
+        {/* <Button variant="outlined" onClick={handleCreateAdmin} startIcon={<AddCircleOutlineIcon />}>
+            Create account admin
         </Button> */}
-        <div style={{ height: 600, width: '100%' }}>
-        <DataGrid
-            rows={rows}
-            columns={columns}
-            pstudentIdSize={20}
-            rowsPerPstudentIdOptions={[20]}
-            checkboxSelection
-            onSelectionModelChange={(ids) => {
-              setChooseUserLock(ids)
-              console.log(chooseUserLock)
-              console.log(ids);
-            }}
-        />
-        </div>
+        <form onSubmit={SignupSubmit}>
+              <input className="login_input" type="text" name="username" placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+              <input className="login_input" type="text" name="email" placeholder="E-mail"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <Button variant="contained" type="submit">Create account</Button>
+            </form>
     </div>
   );
 }

@@ -10,7 +10,8 @@ const AuthContextProvider = ({ children }) => {
     const [authState, dispatch] = useReducer(authReducer, {
         authLoading: true,
         isAuthenticated: false,
-        user: null
+        user: null,
+        isAdmin: false
     })
 
     // Authenticate user
@@ -21,10 +22,11 @@ const AuthContextProvider = ({ children }) => {
 
         try {
             const response = await axios.get(`${apiUrl}/user/auth`)
+            console.log(response)
             if (response.data.success) {
                 dispatch({
                     type: 'SET_AUTH',
-                    payload: { isAuthenticated: true, user: response.data.user }
+                    payload: { isAuthenticated: true, user: response.data.user, isAdmin: response.data.isAdmin }
                 })
             }
         } catch (error) {
@@ -33,7 +35,7 @@ const AuthContextProvider = ({ children }) => {
             setAuthToken(null)
             dispatch({
                 type: 'SET_AUTH',
-                payload: { isAuthenticated: false, user: null }
+                payload: { isAuthenticated: false, user: null,isAdmin: false }
             })
         }
     }
@@ -52,7 +54,8 @@ const AuthContextProvider = ({ children }) => {
             }
 
             await loadUser()
-
+            
+            console.log(authState)
             return response.data
         } catch (error) {
             if (error.response.data) return error.response.data
@@ -108,7 +111,7 @@ const AuthContextProvider = ({ children }) => {
 		localStorage.removeItem(LOCAL_STORAGE_TOKEN_NAME)
 		dispatch({
 			type: 'SET_AUTH',
-			payload: { isAuthenticated: false, user: null }
+			payload: { isAuthenticated: false, user: null, isAdmin:false }
 		})
 	}
 

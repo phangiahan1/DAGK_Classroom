@@ -1,12 +1,11 @@
 import { Route, Redirect } from 'react-router-dom'
 import { useContext } from 'react'
 import { AuthContext } from '../../context/AuthContext'
-import { Header } from '..'
 
 const ProtectedRoute = ({ children, ...rest }) => {
 	//const ProtectedRoute = ({ component: Component, ...rest }) => {
 	const {
-		authState: { authLoading, isAuthenticated, user }
+		authState: { authLoading, isAuthenticated, user, isAdmin }
 	} = useContext(AuthContext)
 
 	// console.log(authLoading)
@@ -27,6 +26,16 @@ const ProtectedRoute = ({ children, ...rest }) => {
 		<Route
 			{...rest}
 			render={({ location }) => {
+				if(isAdmin){
+					// return (
+					// 	<div>
+					// 		<HeaderAdmin/>
+					// 		<ListAccountLocked/>
+					// 	</div>
+						
+					// );
+					return children;
+				}
 				if (isAuthenticated) {
 					return children;
 				}

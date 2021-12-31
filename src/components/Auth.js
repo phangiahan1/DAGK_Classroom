@@ -3,10 +3,11 @@ import Register from './Login/Register.js'
 import { AuthContext } from './../context/AuthContext'
 import { useContext } from 'react'
 import { Redirect } from 'react-router-dom'
+import ListAccountLocked from '../components/Admin/ListAccountLocked/ListAccountLocked'
 
 const Auth = ({ authRoute }) => {
 	const {
-		authState: { authLoading, isAuthenticated }
+		authState: { authLoading, isAuthenticated, isAdmin }
 	} = useContext(AuthContext)
 
 	let body

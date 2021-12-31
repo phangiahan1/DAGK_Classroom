@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid , GridRowParams} from '@mui/x-data-grid';
 import { GridValueGetterParams } from '@mui/x-data-grid';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -8,8 +8,9 @@ import { Button } from '@mui/material';
 import { apiUrl } from '../../../context/constants';
 import axios from 'axios';
 import { useLocalContext } from '../../../context/context';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
-export default function ListAccountLocked() {
+export default function AdminList() {
   const [user, setUser] = useState([]);
   const fetchItemUser = async () => {
     const database = await fetch(`${apiUrl}/user`);
@@ -22,6 +23,8 @@ export default function ListAccountLocked() {
   }, []
   );
 
+  const { tabValue, setTabValue } = useLocalContext()
+  setTabValue(0)
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
@@ -45,26 +48,23 @@ export default function ListAccountLocked() {
     //     }`,
     // },
   ];
-
-  const { tabValue, setTabValue } = useLocalContext()
-  setTabValue(1)
   
   const rows = []
   let id = 0;
   user.map(item=>{
     id++;
-    if(item.status==false)
-    rows.push({ id: id, username: item.username, email: item.email, studentId: item.studentId })
+    if(item.status==true)
+      rows.push({ id: id, username: item.username, email: item.email, studentId: item.studentId })
   })
 
-  const [chooseUserUnLock,setChooseUserUnLock] = useState([]);
-  const unlockUser = () =>{
+  const [chooseUserLock,setChooseUserLock] = useState([]);
+  const lockUser = () =>{
     
     console.log(rows)
     rows.map(item=>{
-      chooseUserUnLock.map(i=>{
+      chooseUserLock.map(i=>{
         if(item.id == i)
-        axios.put(`${apiUrl}/user/unlock/`+item.email)
+        axios.put(`${apiUrl}/user/lock/`+item.email)
         .then(data=>
           console.log(data))
         .catch(err=>console.log(err))
@@ -73,10 +73,14 @@ export default function ListAccountLocked() {
     })
   }
 
+  const handleCreateAdmin = e => {
+    
+  }
+
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleLoadTable = e => {
-    unlockUser()
+    lockUser()
     setRefreshKey(oldKey => oldKey + 1)
   }
 
@@ -85,12 +89,14 @@ export default function ListAccountLocked() {
     //console.log(RowTable)
   }, [refreshKey])
   
-
   return (
     <div>
-        {/* <h2>LIST ACCOUNT LOCKED</h2> */}
-        <Button variant="outlined" onClick={handleLoadTable} startIcon={<LockOpenIcon />}>
-            Unban
+      {/* <h2>LIST ACCOUNT</h2> */}
+        {/* <Button variant="outlined" onClick={handleCreateAdmin} startIcon={<AddCircleOutlineIcon />}>
+            Create account admin
+        </Button> */}
+        <Button variant="outlined" onClick={handleLoadTable} startIcon={<LockIcon />}>
+            Ban
         </Button>
         <div style={{ height: 600, width: '100%' }}>
         <DataGrid
@@ -100,8 +106,8 @@ export default function ListAccountLocked() {
             rowsPerPstudentIdOptions={[20]}
             checkboxSelection
             onSelectionModelChange={(ids) => {
-              setChooseUserUnLock(ids)
-              console.log(chooseUserUnLock)
+              setChooseUserLock(ids)
+              console.log(chooseUserLock)
               console.log(ids);
             }}
         />

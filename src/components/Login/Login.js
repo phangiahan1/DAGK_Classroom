@@ -7,7 +7,7 @@ import { Alert, AlertTitle } from "@mui/material";
 import Button from '@mui/material/Button'
 import "./style.css";
 import { AuthContext } from '../../context/AuthContext'
-
+import { apiUrl } from "../../context/constants";
 
 const Login = () => {
 
@@ -17,9 +17,10 @@ const Login = () => {
   // const a = location.state
   // console.log(a)
   let { from } = location.state || { from: { pathname: "/" } }
+  let { fromAdmin } = {fromAdmin: {pathname: "/admin/user"} }
   //Context
   const { loginUser, loginUserGG } = useContext(AuthContext)
-
+  
   //Router
   const history = useHistory()
 
@@ -65,8 +66,8 @@ const Login = () => {
   };
 
   //Login gg success
-  const handleLogin = async (googleData) => {
-    const res = await fetch('/api/google-login', {
+const handleLogin = async (googleData) => {
+    const res = await fetch(`${apiUrl}/api/google-login`, {
       method: 'POST',
       body: JSON.stringify({
         token: googleData.tokenId,
@@ -99,6 +100,7 @@ const Login = () => {
       console.log(error)
     }
   };
+  
   // end login by google
 
   //Login by email, password (Dang nhap thong thuong)
@@ -114,6 +116,9 @@ const Login = () => {
       if (!login.success) {
         setMessageError("Please check email and password");
         setTimeout(() => setMessageError(null), 2000)
+      } else if(login.isAdmin){
+      // } else if(email==="admin@gmail.com"){
+        history.replace(fromAdmin);
       } else {
         //history.push('/')
         history.replace(from);
