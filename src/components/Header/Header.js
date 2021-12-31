@@ -1,6 +1,6 @@
 import { AppBar, Toolbar, Typography, Avatar, Menu, MenuItem } from '@mui/material';
 import { Add, Apps } from "@mui/icons-material";
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import { useStyles } from './style';
 import { Drawer, CreateClass, JoinClass, Profile } from '..';
 import { Button, Tabs, Tab } from '@material-ui/core';
@@ -13,6 +13,9 @@ import Tooltip from '@mui/material/Tooltip';
 import Logout from '@mui/icons-material/Logout';
 import { AuthContext } from "../../context/AuthContext"
 import { useContext } from 'react'
+import axios from 'axios';
+import { apiUrl } from '../../context/constants';
+import HomeIcon from '@mui/icons-material/Home';
 
 const Header = ({ classData }) => {
     //context
@@ -23,6 +26,23 @@ const Header = ({ classData }) => {
         logoutUser
     } = useContext(AuthContext)
 
+    //Find role in class
+    const [position, setPosition] = useState();
+
+    const fetchPosition = async () => {
+        const type = await axios.get(`${apiUrl}/classroom/${classData._id}/${user[0].email}/getPosition`);
+        console.log(type.data.message)
+        setPosition(type.data.message)
+
+    };
+    ////1 owner
+    ////2 coop
+    ////3 student
+    useEffect(() => {
+        if (classData != null)
+            fetchPosition();
+    }, []
+    );
     //use style css
     const classes = useStyles();
 
@@ -85,9 +105,15 @@ const Header = ({ classData }) => {
                     <div className={classes.headerWrapper}>
                         <Drawer />
                         <Typography variant="h6" className={classes.title}>
-                            <Link to='/' style={{ textDecoration: 'none', color: 'white' }}>
-                                TH Classroom
-                            </Link>
+                            {classData ? <div style={{color: 'white'}}>
+                                {/* <Link to='/' style={{ textDecoration: 'none', color: 'white' }}>
+                                    <HomeIcon />
+                                </Link>  */}
+                                {classData.classname}
+                            </div>
+                                : <Link to='/' style={{ textDecoration: 'none', color: 'white' }}>
+                                    TH Classroom
+                                </Link>}
                         </Typography>
                     </div>
                     <div>
@@ -97,8 +123,13 @@ const Header = ({ classData }) => {
                                     <Link to={`/${classData._id}/`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(0) }}><Tab label="Stream" style={{ textTransform: 'none' }} value="0" /></Link>
                                     <Link to={`/${classData._id}/classwork`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(1) }}><Tab label="Classwork" style={{ textTransform: 'none' }} value="1" /></Link>
                                     <Link to={`/${classData._id}/people`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(2) }}><Tab label="People" style={{ textTransform: 'none' }} value="2" /></Link>
-                                    <Link to={`/${classData._id}/Grades`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(3) }}><Tab label="Grades" style={{ textTransform: 'none' }} value="3" /></Link>
-                                    <Link to={`/${classData._id}/StudentList`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(4) }}><Tab label="Student" style={{ textTransform: 'none' }} value="4" /></Link>
+                                    {position == "student" ?
+                                        <Link to={`/${classData._id}/GradesStu`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(3) }}><Tab label="Grades" style={{ textTransform: 'none' }} value="3" /></Link>
+                                        : <Link to={`/${classData._id}/Grades`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(3) }}><Tab label="Grades" style={{ textTransform: 'none' }} value="3" /></Link>
+                                    }
+                                    {position == "student" ? null :
+                                        <Link to={`/${classData._id}/StudentList`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(4) }}><Tab label="Student" style={{ textTransform: 'none' }} value="4" /></Link>
+                                    }
                                 </Tabs>
                             </>
                             : null}

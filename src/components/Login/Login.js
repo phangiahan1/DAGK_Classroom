@@ -66,7 +66,7 @@ const Login = () => {
   };
 
   //Login gg success
-const handleLogin = async (googleData) => {
+  const handleLogin = async (googleData) => {
     const res = await fetch(`${apiUrl}/api/google-login`, {
       method: 'POST',
       body: JSON.stringify({
