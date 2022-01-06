@@ -104,7 +104,6 @@ export const InviteStudent = ({ classData }) => {
                                     if (validateEmail(e.target.value)) {
                                         setEmail(e.target.value);
                                         setEmailError("");
-                                        //console.log(Email);
                                     } else {
                                         setEmailError("Email is not valid");
                                     }

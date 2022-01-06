@@ -11,7 +11,8 @@ import { useLocalContext } from '../../../context/context';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../context/AuthContext'
-
+import { Alert, AlertTitle } from "@mui/material";
+import "./styleCreate.css";
 export default function CreateAdmin() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -69,8 +70,6 @@ export default function CreateAdmin() {
 
   const [chooseUserLock,setChooseUserLock] = useState([]);
   const lockUser = () =>{
-    
-    console.log(rows)
     rows.map(item=>{
       chooseUserLock.map(i=>{
         if(item.id == i)
@@ -96,7 +95,6 @@ export default function CreateAdmin() {
 
   useEffect(() => {
     fetchItemUser()
-    //console.log(RowTable)
   }, [refreshKey])
 
   const {registerUser } = useContext(AuthContext)
@@ -124,6 +122,7 @@ export default function CreateAdmin() {
           setTimeout(() => setMessageError(null), 2000)
         } else {
         //   history.push('/')
+          setMessageError("Create admin successful");
         }
       } catch (error) {
         console.log(error)
@@ -137,7 +136,19 @@ export default function CreateAdmin() {
         {/* <Button variant="outlined" onClick={handleCreateAdmin} startIcon={<AddCircleOutlineIcon />}>
             Create account admin
         </Button> */}
-        <form onSubmit={SignupSubmit}>
+        {
+          MessageError ? (
+            <Alert icon={false} severity='success'>
+              <AlertTitle placeholder="bjhbfjs">Alert</AlertTitle>
+              {MessageError}
+            </Alert>
+          ) : (
+            <div></div>
+          )
+        }
+        <div id="admin-box">
+          <div class="left">
+            <form onSubmit={SignupSubmit}>
               <input className="login_input" type="text" name="username" placeholder="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -148,6 +159,9 @@ export default function CreateAdmin() {
               />
               <Button variant="contained" type="submit">Create account</Button>
             </form>
+          </div>
+        </div>
+        
     </div>
   );
 }

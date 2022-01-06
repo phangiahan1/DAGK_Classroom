@@ -60,7 +60,6 @@ export default function ListAccountLocked() {
   const [chooseUserUnLock,setChooseUserUnLock] = useState([]);
   const unlockUser = () =>{
     
-    console.log(rows)
     rows.map(item=>{
       chooseUserUnLock.map(i=>{
         if(item.id == i)
@@ -82,7 +81,6 @@ export default function ListAccountLocked() {
 
   useEffect(() => {
     fetchItemUser()
-    //console.log(RowTable)
   }, [refreshKey])
   
 
@@ -101,8 +99,6 @@ export default function ListAccountLocked() {
             checkboxSelection
             onSelectionModelChange={(ids) => {
               setChooseUserUnLock(ids)
-              console.log(chooseUserUnLock)
-              console.log(ids);
             }}
         />
         </div>

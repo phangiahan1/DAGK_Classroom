@@ -1,117 +1,75 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { DataGrid , GridRowParams} from '@mui/x-data-grid';
-import { GridValueGetterParams } from '@mui/x-data-grid';
-import LockIcon from '@mui/icons-material/Lock';
-import LockOpenIcon from '@mui/icons-material/LockOpen';
-import { Button } from '@mui/material';
+import { useState, useEffect, useHistory, useLocation } from 'react';
 import { apiUrl } from '../../../context/constants';
-import axios from 'axios';
-import { useLocalContext } from '../../../context/context';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import PageviewIcon from '@mui/icons-material/Pageview';
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridRowId,
+  GridValueOptionsParams,
+} from '@mui/x-data-grid';
 
 export default function AdminList() {
+
   const [user, setUser] = useState([]);
+  const admin = [];
   const fetchItemUser = async () => {
     const database = await fetch(`${apiUrl}/user`);
     const items = await database.json();
-    setUser(items)
+    items.map(item=>{
+      if(item.role){
+        admin.push(item)
+      }
+    })
+    setUser(admin)
   }
 
-  useEffect(() => {
+    useEffect(() => {
     fetchItemUser()
   }, []
   );
 
-  const { tabValue, setTabValue } = useLocalContext()
-  setTabValue(0)
-
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'username', headerName: 'Name', width: 130 },
-    { field: 'email', headerName: 'Email', width: 130 },
-    {
-      field: 'studentId',
-      headerName: 'Student Id',
-      type: 'number',
-      width: 90,
-    },
-    // {
-    //   field: 'fullName',
-    //   headerName: 'Full name',
-    //   description: 'This column has a value getter and is not sortable.',
-    //   sortable: false,
-    //   width: 160,
-    //   valueGetter: (params: GridValueGetterParams) =>
-    //     `${params.getValue(params.id, 'email') || ''} ${
-    //       params.getValue(params.id, 'username') || ''
-    //     }`,
-    // },
-  ];
-  
   const rows = []
   let id = 0;
   user.map(item=>{
     id++;
     if(item.status==true)
-      rows.push({ id: id, username: item.username, email: item.email, studentId: item.studentId })
+      rows.push({ id: item._id, idAdmin: id, username: item.username, email: item.email, studentId: item.studentId })
   })
+  const view = React.useCallback(
+    (id) => () => {
+      setTimeout(() => {
+      window.location.href=id+"/admin";
+      });
+    },
+    [],
+  );
 
-  const [chooseUserLock,setChooseUserLock] = useState([]);
-  const lockUser = () =>{
-    
-    console.log(rows)
-    rows.map(item=>{
-      chooseUserLock.map(i=>{
-        if(item.id == i)
-        axios.put(`${apiUrl}/user/lock/`+item.email)
-        .then(data=>
-          console.log(data))
-        .catch(err=>console.log(err))
-      })
-      
-    })
-  }
+  const columns = React.useMemo(
+    () => [
+      { field: 'id', type: 'string', hide:true },
+      { field: 'idAdmin', type: 'string' },
+      { field: 'username', type: 'string' },
+      { field: 'email', type: 'string', width: 130 },
+      {
+        field: 'actions',
+        type: 'actions',
+        width: 80,
+        getActions: (params) => [
+          <GridActionsCellItem
+            icon={<PageviewIcon />}
+            label="View"
+            onClick={view(params.id)}
+          />,
+        ],
+      },
+    ],
+    [view],
+  );
 
-  const handleCreateAdmin = e => {
-    
-  }
-
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  const handleLoadTable = e => {
-    lockUser()
-    setRefreshKey(oldKey => oldKey + 1)
-  }
-
-  useEffect(() => {
-    fetchItemUser()
-    //console.log(RowTable)
-  }, [refreshKey])
-  
   return (
-    <div>
-      {/* <h2>LIST ACCOUNT</h2> */}
-        {/* <Button variant="outlined" onClick={handleCreateAdmin} startIcon={<AddCircleOutlineIcon />}>
-            Create account admin
-        </Button> */}
-        <Button variant="outlined" onClick={handleLoadTable} startIcon={<LockIcon />}>
-            Ban
-        </Button>
-        <div style={{ height: 600, width: '100%' }}>
-        <DataGrid
-            rows={rows}
-            columns={columns}
-            pstudentIdSize={20}
-            rowsPerPstudentIdOptions={[20]}
-            checkboxSelection
-            onSelectionModelChange={(ids) => {
-              setChooseUserLock(ids)
-              console.log(chooseUserLock)
-              console.log(ids);
-            }}
-        />
-        </div>
+    <div style={{ height: 300, width: '100%' }}>
+      <DataGrid columns={columns} rows={rows} />
     </div>
   );
 }

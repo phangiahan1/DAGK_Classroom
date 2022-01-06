@@ -14,6 +14,7 @@ import HeaderAdminAccountUser from "./components/Admin/HeaderAdminAccountUser/He
 import HeaderAdminClassroom from "./components/Admin/HeaderAdminClassroom/HeaderAdminClassroom";
 import AdminList from "./components/Admin/AdminList/AdminList";
 import CreateAdmin from "./components/Admin/CreateAdmin/CreateAdmin";
+import AdminDetail from "./components/Admin/AdminDetail/AdminDetail";
 
 function App() {
   //context
@@ -38,20 +39,39 @@ function App() {
     const data = await fetch(`${apiUrl}/classroom/` + user[0].email);
     const items = await data.json();
     setCreatedClasses(items);
-    //console.log(createdClasses)
   };
+
+  const [adminList, setAdminList] = useState([]);
+  const fetchItemUser = async () => {
+    const database = await fetch(`${apiUrl}/user`);
+    const items = await database.json();
+    items.map(item=>{
+      // if(item.role){
+        adminList.push(item)
+      // }
+    })
+  }
 
   const [joinedClasses, setJoinedClasses] = useState([]);
   const fetchItemsoJoin = async () => {
     const data = await fetch(`${apiUrl}/classroom/` + user[0].email + `/joined`);
     const items = await data.json();
     setJoinedClasses(items);
-    //console.log(joinedClasses)
   };
+
+  const [classes, setClasses] = useState([]);
+  const fetchItemClasses = async () => {
+    const data = await fetch(`${apiUrl}/classroom/`);
+    const items = await data.json();
+    setClasses(items);
+  };
+
   useEffect(() => {
     if (user) {
       fetchItemsCreate();
       fetchItemsoJoin();
+      fetchItemUser();
+      fetchItemClasses();
     }
   }, [user]
   );
@@ -116,6 +136,12 @@ function App() {
             <HeaderAdminAccount/>
             <AdminList/>
           </Route>
+          {adminList.map((item, index) => (
+          <Route key={index} exact path={`/admin/${item._id}/admin`}>
+            <HeaderAdminAccount/>
+            <AdminDetail data={item}/>
+          </Route>
+          ))}
           <Route path={`/admin/adminCreate`}>
             <HeaderAdminAccount/>
             <CreateAdmin/>
@@ -132,6 +158,13 @@ function App() {
             <HeaderAdminClassroom/>
             <ManagerClasses/>
           </Route>
+
+        {classes.map((item, index) => (
+          <Route key={index} exact path={`/admin/${item._id}/class`}>
+            <HeaderAdminClassroom/>
+            <MainClass classData={item} ></MainClass>
+          </Route>
+        ))}
         </Switch>
       </Router>
     ):(

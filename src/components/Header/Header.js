@@ -31,7 +31,6 @@ const Header = ({ classData }) => {
 
     const fetchPosition = async () => {
         const type = await axios.get(`${apiUrl}/classroom/${classData._id}/${user[0].email}/getPosition`);
-        console.log(type.data.message)
         setPosition(type.data.message)
 
     };

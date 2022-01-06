@@ -85,7 +85,7 @@ const HeaderAdminAccount = ({ classData }) => {
     };
 
     const [adminHeader, setAdminHeader] = useState(0);
-    console.log(adminHeader)
+
     return (
         <div className={classes.root}>
             <AppBar className={classes.appBar} position="static">

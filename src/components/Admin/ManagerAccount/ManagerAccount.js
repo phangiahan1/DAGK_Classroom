@@ -1,15 +1,19 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { DataGrid , GridRowParams} from '@mui/x-data-grid';
-import { GridValueGetterParams } from '@mui/x-data-grid';
 import LockIcon from '@mui/icons-material/Lock';
-import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Button } from '@mui/material';
 import { apiUrl } from '../../../context/constants';
 import axios from 'axios';
 import { useLocalContext } from '../../../context/context';
+import { useState, useEffect, useHistory, useLocation } from 'react';
+import PageviewIcon from '@mui/icons-material/Pageview';
+import {
+  DataGrid,
+  GridActionsCellItem,
+} from '@mui/x-data-grid';
 
 export default function ManagerAccount() {
+  const { tabValue, setTabValue } = useLocalContext()
+  setTabValue(0)
   const [user, setUser] = useState([]);
   const fetchItemUser = async () => {
     const database = await fetch(`${apiUrl}/user`);
@@ -22,45 +26,54 @@ export default function ManagerAccount() {
   }, []
   );
 
-  const { tabValue, setTabValue } = useLocalContext()
-  setTabValue(0)
-
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'username', headerName: 'Name', width: 130 },
-    { field: 'email', headerName: 'Email', width: 130 },
-    {
-      field: 'studentId',
-      headerName: 'Student Id',
-      type: 'number',
-      width: 90,
-      
-    },
-    // {
-    //   field: 'fullName',
-    //   headerName: 'Full name',
-    //   description: 'This column has a value getter and is not sortable.',
-    //   sortable: false,
-    //   width: 160,
-    //   valueGetter: (params: GridValueGetterParams) =>
-    //     `${params.getValue(params.id, 'email') || ''} ${
-    //       params.getValue(params.id, 'username') || ''
-    //     }`,
-    // },
-  ];
-  
   const rows = []
   let id = 0;
   user.map(item=>{
     id++;
     if(item.status==true)
-      rows.push({ id: id, username: item.username, email: item.email, studentId: item.studentId })
+      rows.push({ id: item._id,idIndex: id, username: item.username, email: item.email, studentId: item.studentId })
   })
 
+  const view = React.useCallback(
+    (id) => () => {
+      setTimeout(() => {
+      window.location.href=id+"/admin";
+      });
+    },
+    [],
+  );
+
+  const columns = React.useMemo(
+    () => [
+        { field: 'id', headerName: 'ID', width: 70, hide:true },
+        { field: 'idIndex', headerName: 'ID', width: 70 },
+        { field: 'username', headerName: 'Name', width: 130 },
+        { field: 'email', headerName: 'Email', width: 130 },
+        {
+          field: 'studentId',
+          headerName: 'Student Id',
+          type: 'number',
+          width: 90,
+          
+        },
+        {
+          field: 'actions',
+          type: 'actions',
+          width: 80,
+          getActions: (params) => [
+            <GridActionsCellItem
+              icon={<PageviewIcon />}
+              label="View"
+              onClick={view(params.id)}
+            />,
+          ],
+        },
+      ],
+    [view],
+  );
   const [chooseUserLock,setChooseUserLock] = useState([]);
   const lockUser = () =>{
     
-    console.log(rows)
     rows.map(item=>{
       chooseUserLock.map(i=>{
         if(item.id == i)
@@ -78,33 +91,15 @@ export default function ManagerAccount() {
     lockUser()
     setRefreshKey(oldKey => oldKey + 1)
   }
-  // const handleMapStudentId = e => {
-  //   setRefreshKey(oldKey => oldKey + 1)
-  // }
-
-  // const handleUnMapStudentId = e => {
-  //   setRefreshKey(oldKey => oldKey + 1)
-  // }
-
   useEffect(() => {
     fetchItemUser()
-    //console.log(RowTable)
   }, [refreshKey])
 
-  
-  
   return (
     <div>
-      {/* <h2>LIST ACCOUNT</h2> */}
         <Button variant="outlined" onClick={handleLoadTable} startIcon={<LockIcon />}>
             Ban
         </Button>
-        {/* <Button variant="outlined" onClick={handleMapStudentId} startIcon={<LockIcon />}>
-            Map StudentId
-        </Button>
-        <Button variant="outlined" onClick={handleUnMapStudentId} startIcon={<LockIcon />}>
-            Unmap StudentId
-        </Button> */}
         <div style={{ height: 600, width: '100%' }}>
         <DataGrid
             rows={rows}
@@ -114,8 +109,6 @@ export default function ManagerAccount() {
             checkboxSelection
             onSelectionModelChange={(ids) => {
               setChooseUserLock(ids)
-              console.log(chooseUserLock)
-              console.log(ids);
             }}
         />
         </div>

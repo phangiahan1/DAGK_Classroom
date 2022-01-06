@@ -31,13 +31,11 @@ export const MainStudentList = ({ classData }) => {
     const database = await fetch(`${apiUrl}/StudentList/` + classData._id);
     const items = await database.json();
     setStudentList(items)
-    //console.log(items);
     setData(items);
   };
 
   useEffect(() => {
     fetchItem()
-    //console.log(studentList)
   }, []
   );
 
@@ -118,10 +116,8 @@ export const MainStudentList = ({ classData }) => {
       axios.delete(`${apiUrl}/StudentList/`+ classData._id +`/deleteAll`)
       .then(response => {
         if (response.ok) {
-          //console.log("delete successful");
         }
         data.forEach(student => {
-          //console.log(student)
           const newImport = {
             idClass: classData._id,
             StudentId: student.StudentId,
