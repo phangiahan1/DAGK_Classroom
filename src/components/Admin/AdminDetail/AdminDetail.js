@@ -13,7 +13,7 @@ export default function AdminDetail(data) {
                     sx={{ width: 130, height: 130 }}
                 />
             </div>
-            <div class="right">
+            <div class="right_detail">
             
             <Box sx={{ p: 1, my: 1, border: '1px solid' }}>
                     Email: {data.data.email}
