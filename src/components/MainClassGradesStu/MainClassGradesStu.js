@@ -13,7 +13,7 @@ import { AuthContext } from '../../context/AuthContext'
 import axios from 'axios';
 import { useState, useEffect, React, useContext } from 'react';
 import { apiUrl } from '../../context/constants';
-
+import { CreatereviewStudent, CreateClass } from "..";
 
 export const MainClassGradesStu = ({ classData }) => {
   //console.log("classData")
@@ -27,7 +27,7 @@ export const MainClassGradesStu = ({ classData }) => {
       fontSize: 14
     }
   }));
-  
+
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
     "&:nth-of-type(odd)": {
       backgroundColor: theme.palette.action.hover
@@ -76,7 +76,7 @@ export const MainClassGradesStu = ({ classData }) => {
             //console.log(results)
             if (results.data.success) {
               t.push(
-                createData(item.name, results.data.gradeData, "-")
+                createData(item.name, results.data.gradeData, "-", item._id)
               )
             }
           }
@@ -85,18 +85,19 @@ export const MainClassGradesStu = ({ classData }) => {
             //console.log(" ne hén");
             //console.log(error);
             t.push(
-              createData(item.name, "-", "-")
+              createData(item.name, "-", "-", item._id)
             )
           }
         )
     }
     setGradeData(t)
+    console.log(rows)
   };
 
   useEffect(() => {
     fetchGradeConstructor()
   }, []
-  ); 
+  );
   useEffect(() => {
     fetchGradeData()
   }, [gradeConstructor]
@@ -107,6 +108,19 @@ export const MainClassGradesStu = ({ classData }) => {
   const handleProfile = () => {
     setProfileDialog(true);
   }
+
+  const { setCreateGradeReview } = useLocalContext();
+  const [data, setData] = useState({});
+
+  const handleCreate = () => {
+    console.log(data);
+    setCreateGradeReview(true);
+  };
+  const handleSave = (d) => {
+    setData(d)
+    console.log(d);
+    return Promise.resolve(d);
+  };
   return (
     <div className='divcenter'>
       {!user[0].studentId ?
@@ -135,11 +149,29 @@ export const MainClassGradesStu = ({ classData }) => {
                   <StyledTableCell align="right">{row.grade}</StyledTableCell>
                   <StyledTableCell align="right">{row.note}</StyledTableCell>
                   <StyledTableCell align="center">
-                    <Button variant="contained"
-                      onClick={(e) => { alert(row.name) }}
-                      endIcon={<SendIcon />}>
-                      Review
-                    </Button>
+                    {row.grade === '-' ?
+                      <Button variant="contained"
+                        onClick={(e) => { alert(row.name) }}
+                        endIcon={<SendIcon />}
+                        disabled>
+                        Review
+                      </Button>
+                      : <Button variant="contained"
+                        onClick={ () => {
+                           handleSave({ _id: row.button, grade: row.grade, name: row.name })
+                            .then((d) => setCreateGradeReview(true));
+                        }}
+                        //onClick={(e) => { alert( classData._id +"--" + row.grade+"--" + row.name) }}
+                        //onClick={handleCreate}
+                        // onClick={(e) => 
+                        //   //setData({ _id: classData._id, grade: row.grade, name: row.name }),
+                        //   setCreateGradeReview(true)
+
+                        // }
+                        //onClick={handleCreate({ _id: classData._id, grade: row.grade, name: row.name })}
+                        endIcon={<SendIcon />}>
+                        Review
+                      </Button>}
                   </StyledTableCell>
                 </StyledTableRow>
               ))}
@@ -147,6 +179,7 @@ export const MainClassGradesStu = ({ classData }) => {
           </Table>
         </TableContainer>
       }
+      <CreatereviewStudent classData={data}/>
     </div>
   );
 }
