@@ -31,7 +31,7 @@ ol {
   position: absolute;
   top: 0;
   width: 100%;
-  background-color: #174ea6;
+  /* background-color: #174ea6; */
 }
 .joined__image {
   background-image: url(https://gstatic.com/classroom/themes/Physics.jpg);

@@ -6,10 +6,13 @@ import ReactExport from "react-export-excel";
 import { apiUrl } from "../../context/constants"
 import axios from 'axios';
 import "./style.css";
-import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridRowsProp, GridColDef, getDataGridUtilityClass } from '@mui/x-data-grid';
 import { useLocalContext } from "../../context/context";
 import Button from '@mui/material/Button';
 import { Alert, AlertTitle } from "@mui/material";
+import { margin } from '@mui/system';
+import SaveIcon from '@mui/icons-material/Save';
+import DownloadIcon from '@mui/icons-material/Download';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -158,8 +161,13 @@ export const MainStudentList = ({ classData }) => {
     rows.push({ id: item._id, col1: item.StudentId, col2: item.Fullname })
   })
 
+  
+  const divStyle = {
+    textAlign:'center',
+  };
+
   return (
-    <div>
+    <div  style={divStyle}>
     {
         MessageError ? (
           <Alert >
@@ -174,7 +182,7 @@ export const MainStudentList = ({ classData }) => {
       <Button>
         <ExcelFile
           filename="template Student Grade"
-          element={<Button variant="outlined" sx={{mt: 2, mx: 2}}>Download</Button>}>
+          element={<Button variant="outlined" sx={{mt: 2, mx: 2}}><DownloadIcon/>Download</Button>}>
            <ExcelSheet data={data1} name="StudentList">
             {
               filterColumns(data1).map((col) => {
@@ -198,12 +206,14 @@ export const MainStudentList = ({ classData }) => {
           accept=".csv,.xlsx,.xls"
           onChange={handleFileUpload}
         />
+        
+        <Button onClick={handleSubmit} variant="contained" sx={{mt: 2, mx: 2}}><SaveIcon/> Save data</Button>
         {(studentList.length) ? (
-          <div style={{ height: 300, width: '100%' }}>
-            <DataGrid
+          <div style={{ height: 600, width: 600, marginInline:'30%'}} >
+            <DataGrid  
               columns={[
-                { field: 'col1', headerName: 'StudentId', width: 350, editable: true },
-                { field: 'col2', headerName: 'FullName', width: 350, editable: true },
+                { field: 'col1', headerName: 'StudentId', width: 300, editable: true },
+                { field: 'col2', headerName: 'FullName', width: 300, editable: true },
               ]}
               rows={rows}
             />
@@ -216,7 +226,6 @@ export const MainStudentList = ({ classData }) => {
             data={data}
           />
         )}
-        <Button onClick={handleSubmit} variant="contained" sx={{mt: 2, mx: 2}}>Save data</Button>
       </div>
     </div>
   );

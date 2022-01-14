@@ -10,6 +10,8 @@ import { MenuItem } from '@mui/material';
 import { Select } from '@mui/material';
 import { FormControl } from '@mui/material';
 import { InputLabel } from '@mui/material';
+import SaveIcon from '@mui/icons-material/Save';
+import DownloadIcon from '@mui/icons-material/Download';
 import axios from 'axios';
 import {
   GridToolbarContainer,
@@ -89,7 +91,7 @@ export const MainClassGrades = ({ classData }) => {
   );
 
   const columnBoardGrade = [
-    { field: 'id', headerName: 'StudentID', width: 100 },
+    { field: 'id', headerName: 'StudentID', width: 150 },
     { field: 'Student', headerName: 'Student', width: 250 },
     { field: 'TotalGrade', headerName: 'Total grade', width: 100, editable: true }
   ];
@@ -407,95 +409,82 @@ export const MainClassGrades = ({ classData }) => {
     setRefreshKeyTotal(oldKey => oldKey + 1)
   }
 
+  const divstyle={
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  }
   return (
     <div>
-      <FormControl sx={{ m: 1, minWidth: 200 }}>
-        <InputLabel id="demo-simple-select-autowidth-label">Choose file grade import</InputLabel>
-        <Select
-          labelId="demo-simple-select-autowidth-label"
-          id="demo-simple-select-autowidth"
-          value={fileGrade}
-          onChange={handleChange}
-          autoWidth
-          label="Choose file grade import"
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          {chooseGradeFile.map(item =>
-            <MenuItem value={item}>{item}</MenuItem>
-          )}
-        </Select>
-      </FormControl>
+      <div style={divstyle}>
+        <div>
+          <Button>
+            <ExcelFile
+              filename="template Student Grade"
+              element={<Button variant="outlined" sx={{ mt: 2, mx: 2 }}><DownloadIcon/>Download</Button>}>
+              <ExcelSheet data={data1} name="StudentList">
+                {
+                  filterColumns(data1).map((col) => {
+                    return <ExcelColumn label={camelCase(col)} value={col} />
+                  })
+                }
+              </ExcelSheet>
+            </ExcelFile>
+          </Button>
+        </div>
+        <div>
+        <table id="table-to-xls" class="hide">
+          <tbody>
+            {/* <th> */}
+            {data1.map(item => {
+              return (
+                <tr></tr>
+              );
+            })}
+          </tbody>
+        </table>
+        <FormControl sx={{ m: 1, minWidth: 200 }}>
+            <InputLabel id="demo-simple-select-autowidth-label">Choose file grade import</InputLabel>
+            <Select
+              labelId="demo-simple-select-autowidth-label"
+              id="demo-simple-select-autowidth"
+              value={fileGrade}
+              onChange={handleChange}
+              width = {200}
+              label="Choose file grade import"
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {chooseGradeFile.map(item =>
+                <MenuItem value={item}>{item}</MenuItem>
+              )}
+            </Select>
+          </FormControl>
 
-      <Button>
-        <ExcelFile
-          filename="template Student Grade"
-          element={<Button variant="outlined" sx={{ mt: 2, mx: 2 }}>Download</Button>}>
-          <ExcelSheet data={data1} name="StudentList">
-            {
-              filterColumns(data1).map((col) => {
-                return <ExcelColumn label={camelCase(col)} value={col} />
-              })
-            }
-          </ExcelSheet>
-        </ExcelFile>
-      </Button>
-
-      <table id="table-to-xls" class="hide">
-        <tbody>
-          {/* <th> */}
-          {data1.map(item => {
-            return (
-              <tr></tr>
-            );
-          })}
-          {/* </th>
-          
-          {studentList.map(item => {
-            return (
-              <td>
-              <tr>{item.StudentId}</tr>
-              </td>
-            );
-          })} */}
-        </tbody>
-      </table>
-      <input
-        type="file"
-        size="60"
-        accept=".csv,.xlsx,.xls"
-        onChange={handleFileUpload}
-      />
-
-      {/* <Button
-        variant="contained"
-        component="label"
-      >
-        Upload File
         <input
           type="file"
+          size="60"
           accept=".csv,.xlsx,.xls"
           onChange={handleFileUpload}
-          hidden
         />
-      </Button> */}
-
-      <Button onClick={handleSaveOnTable} variant="outlined" sx={{ mt: 2, mx: 2 }}>Save data</Button>
-      {/* <Button onClick={handleReturn} variant="contained" sx={{mt: 2, mx: 2}}>Return data</Button> */}
-      <div style={{ height: 400, width: '100%' }}>
-        <DataGrid
-          rows={RowTable}
-          columns={columnBoardGrade}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          components={{
-            Toolbar: ExportToolbar,
-          }}
-        />
+        <Button onClick={handleSaveOnTable} variant="outlined" sx={{ mt: 2, mx: 2 }}><SaveIcon/>Save data</Button>
+        
+        </div>
       </div>
-      <Grid container spacing={1}>
-        <Grid item xs={6}>
+        <div style={{ height: 500, width: 500 + gradeConstructor.length*100, marginInline:'20%'}}>
+          <DataGrid
+            rows={RowTable}
+            columns={columnBoardGrade}
+            pageSize={10}
+            rowsPerPageOptions={[10]}
+            components={{
+              Toolbar: ExportToolbar,
+            }}
+          />
+        </div>
+        <div style={divstyle}>
+          <div>
           <FormControl sx={{ m: 1, minWidth: 200 }}>
             <InputLabel id="choose-file-return-data">Choose return column</InputLabel>
             <Select
@@ -503,7 +492,7 @@ export const MainClassGrades = ({ classData }) => {
               id="demo-simple-select-autowidth"
               value={fileReturn}
               onChange={handleChangeReturn}
-              autoWidth
+              width = {200}
               label="Choose return column"
             >
               <MenuItem value="">
@@ -519,8 +508,8 @@ export const MainClassGrades = ({ classData }) => {
             </Select>
           </FormControl>
           <Button onClick={handleReturn} variant="contained" sx={{ mt: 2, mx: 2 }}>Return data</Button>
-        </Grid>
-        <Grid item xs={6}>
+        </div>
+        <div>
           <FormControl sx={{ m: 1, minWidth: 200 }}>
             <InputLabel id="choose-file-un-return-data">Choose un return</InputLabel>
             <Select
@@ -528,7 +517,7 @@ export const MainClassGrades = ({ classData }) => {
               id="demo-simple-select-autowidth"
               value={fileUnReturn}
               onChange={handleChangeUnReturn}
-              autoWidth
+              width = {200}
               label="Choose return column"
             >
               <MenuItem value="">
@@ -544,8 +533,8 @@ export const MainClassGrades = ({ classData }) => {
             </Select>
           </FormControl>
           <Button onClick={handleUnReturn} variant="contained" sx={{ mt: 2, mx: 2 }}>Un return data</Button>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </div>
   );
 }

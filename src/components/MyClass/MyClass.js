@@ -52,9 +52,9 @@ const MyClass = ({ classData }) => {
                     />}
             </div>
             <div className="joined__bottom">
-                {owner ? <MovingIcon />
+                {/* {owner ? <MovingIcon />
                     : <PermContactCalendar />}
-                <FolderOpen />
+                <FolderOpen /> */}
             </div>
         </li>
     );
