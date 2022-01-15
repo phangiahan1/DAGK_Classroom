@@ -179,8 +179,9 @@ export const MainClassGrades = ({ classData }) => {
       let points = 0;
       let name = item.Fullname;
       user.map((u) =>
-        (item.StudentId === u.studentId) ?
-          name = item.Fullname + " - user = " + u.username : name,
+        (item.StudentId === u.studentId)
+          ? name = item.Fullname + " (" + u.username + ")"
+          : name ,
       )
       gradeOfStudent.map((point) => {
         if (item.StudentId == point.StudentId)
