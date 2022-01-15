@@ -15,7 +15,7 @@ import HeaderAdminClassroom from "./components/Admin/HeaderAdminClassroom/Header
 import AdminList from "./components/Admin/AdminList/AdminList";
 import CreateAdmin from "./components/Admin/CreateAdmin/CreateAdmin";
 import AdminDetail from "./components/Admin/AdminDetail/AdminDetail";
-
+import {io} from "socket.io-client"
 function App() {
   //context
   const {
@@ -67,6 +67,12 @@ function App() {
   };
 
   useEffect(() => {
+    
+    //   //socket io
+    //   const socket = io("http://localhost:5000");
+    //   console.log(socket.on("firstEvent",(msg)=>{
+    //   console.log(msg)
+    // }))
     if (user) {
       fetchItemsCreate();
       fetchItemsoJoin();

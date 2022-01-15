@@ -1,0 +1,16 @@
+.notifications {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    color: black;
+    font-weight: 300;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .notification {
+    padding: 5px;
+    font-size: 14px;
+  }

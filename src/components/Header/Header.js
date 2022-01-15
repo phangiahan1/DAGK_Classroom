@@ -14,8 +14,11 @@ import Logout from '@mui/icons-material/Logout';
 import { AuthContext } from "../../context/AuthContext"
 import { useContext } from 'react'
 import axios from 'axios';
+import { Badge } from '@mui/material';
 import { apiUrl } from '../../context/constants';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import HomeIcon from '@mui/icons-material/Home';
+import './style.css';
 
 const Header = ({ classData }) => {
     //context
@@ -96,6 +99,7 @@ const Header = ({ classData }) => {
     const handleClose3 = () => {
         setAnchorE3(null);
     };
+    const [openNotification, setOpenNotification] = useState(false);
 
     return (
         <div className={classes.root}>
@@ -137,7 +141,20 @@ const Header = ({ classData }) => {
                         {!createTabs && user ?
                             <Add onClick={handleClick} className={classes.icon} />
                             : null}
-                        <Apps className={classes.icon} />
+                        <Badge badgeContent="2" color="secondary"  className={classes.icon} onClick={() => setOpenNotification(!openNotification)}>
+                            <NotificationsIcon/>
+                        </Badge>
+                       {openNotification && (
+                        <div className="notifications">
+                        {/* gọi list danh sách notification */}
+                           {/* {notifications.map((n) => displayNotification(n))} */}
+                            <span className="notification">hhhhhhhhh</span>
+                            <span className="notification">thong báo mơi nhat</span>
+                           <button className="nButton" >
+                            Mark as read
+                           </button>
+                        </div>
+                        )}
                         <Menu
                             id="simple-menu"
                             anchorEl={anchorEl}
