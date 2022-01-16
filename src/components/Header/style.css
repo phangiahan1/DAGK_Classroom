@@ -11,6 +11,12 @@
   }
 
   .notification {
-    padding: 5px;
+    padding: 10px;
     font-size: 14px;
+  }
+
+  .notification_unread {
+    padding: 10px;
+    font-size: 14px;
+    color: red;
   }

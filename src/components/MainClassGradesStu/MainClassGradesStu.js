@@ -179,7 +179,7 @@ export const MainClassGradesStu = ({ classData }) => {
           </Table>
         </TableContainer>
       }
-      <CreatereviewStudent classData={data}/>
+      <CreatereviewStudent classData={data} InfoClass={classData}/>
     </div>
   );
 }
