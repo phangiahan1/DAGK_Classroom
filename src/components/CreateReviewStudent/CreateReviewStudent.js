@@ -13,7 +13,7 @@ import { AuthContext } from "../../context/AuthContext"
 import { useContext } from 'react'
 import { apiUrl } from "../../context/constants"
 
-export const CreatereviewStudent = ({ classData }) => {
+export const CreatereviewStudent = ({ classData, InfoClass }) => {
     //context
     const {
         authState: {
@@ -30,6 +30,8 @@ export const CreatereviewStudent = ({ classData }) => {
         e.preventDefault();
         const newC = {
             gradeConId: classData._id,
+            idTeacher: InfoClass.owner,
+            idClass: InfoClass._id,
             StudentId: user[0].studentId,
             gradeNew: expectationGrade,
             messStu: explanationMessage
