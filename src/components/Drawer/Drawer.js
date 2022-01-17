@@ -6,11 +6,11 @@ import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import { makeStyles } from "@material-ui/core/styles";
 import { Menu } from "@material-ui/icons";
 import { IconButton } from "@material-ui/core";
+import HomeIcon from '@mui/icons-material/Home';
+import { Link } from "react-router-dom";
 const useStyles = makeStyles({
   list: {
     width: 250,
@@ -50,26 +50,23 @@ export default function SwipeableTemporaryDrawer({ classData }) {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+          <Link to='/' style={{ textDecoration: 'none'}}>
+            <ListItem button key="Home">
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary="Home" />
+            </ListItem>
+            </Link>
       </List>
       <Divider />
-      <List>
+      {/* <List>
         {['All mail', 'Trash', 'Spam'].map((text, index) => (
           <ListItem button key={text}>
-            <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
             <ListItemText primary={text} />
           </ListItem>
         ))}
-      </List>
+      </List> */}
     </Box>
   );
 
