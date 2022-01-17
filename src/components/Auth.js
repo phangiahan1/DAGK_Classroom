@@ -4,6 +4,7 @@ import { AuthContext } from './../context/AuthContext'
 import { useContext } from 'react'
 import { Redirect } from 'react-router-dom'
 import ListAccountLocked from '../components/Admin/ListAccountLocked/ListAccountLocked'
+import OTPActivation from './OTPActivation/OTPActivation.js'
 
 const Auth = ({ authRoute }) => {
 	const {

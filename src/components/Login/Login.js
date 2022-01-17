@@ -157,6 +157,13 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <Button variant="contained" type="submit">Login</Button>
+              <br/>
+              <div>Forgot password?
+                <Link to={`/register`} style={{ textDecoration: 'none' }}>
+                  <Button variant="contained">Send new password</Button>
+                </Link>
+              </div>
+              <br/>
               <div>You haven't accout?
                 <Link to={`/register`} style={{ textDecoration: 'none' }}>
                   <Button variant="contained">SignUp</Button>

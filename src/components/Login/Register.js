@@ -11,6 +11,7 @@ import { Close } from "@material-ui/icons";
 import Button from '@mui/material/Button'
 import "./style.css";
 import { AuthContext } from '../../context/AuthContext'
+import OTPActivation from "../OTPActivation/OTPActivation";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -125,7 +126,7 @@ export const Register = () => {
           setMessageError("Please check your information");
           setTimeout(() => setMessageError(null), 2000)
         } else {
-          history.push('/')
+          history.push('/otp')
         }
       } catch (error) {
         console.log(error)
