@@ -51,7 +51,7 @@ export const CreateClass = () => {
                     setRoom("");
                     setSubject("");
                     setCreateClassDialog(false);
-                    window.location.reload(true);
+                    //window.location.reload(true);
                 // } else {
                 //     throw new Error('Fail to create class');
                 }
@@ -62,7 +62,7 @@ export const CreateClass = () => {
                 setRoom("");
                 setSubject("");
                 setCreateClassDialog(false);
-                window.location.reload(true);
+                //window.location.reload(true);
             }
             )
             .catch(error => {

@@ -25,6 +25,10 @@ function App() {
     }
   } = useContext(AuthContext)
 
+  //Join Class Dialog
+  const { joinClassDialog, setJoinClassDialog } = useLocalContext();
+  const { createClassDialog, setCreateClassDialog } = useLocalContext();
+
   const { loginDialog, setLoginDialog } = useLocalContext();
 
   //for teacher confirm email
@@ -79,7 +83,7 @@ function App() {
       fetchItemUser();
       fetchItemClasses();
     }
-  }, [user]
+  }, [user, joinClassDialog, createClassDialog]
   );
 
   const { idC, setidC } = useLocalContext();
