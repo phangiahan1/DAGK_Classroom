@@ -217,7 +217,7 @@ const Header = ({ classData }) => {
                         </Typography>
                     </div>
                     <div>
-                        {createTabs && classData != null ?
+                        {createTabs && classData != null && position != null ?
                             <>
                                 <Tabs value={tabValue} centered>
                                     <Link to={`/${classData._id}/`} style={{ textDecoration: 'none', color: 'white' }} onClick={() => { setTabValue(0) }}><Tab label="Stream" style={{ textTransform: 'none' }} value="0" /></Link>
