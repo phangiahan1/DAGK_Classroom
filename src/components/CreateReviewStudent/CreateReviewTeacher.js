@@ -12,8 +12,10 @@ import axios from 'axios';
 import { AuthContext } from "../../context/AuthContext"
 import { useContext } from 'react'
 import { apiUrl } from "../../context/constants"
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
-export const CreatereviewStudent = ({ classData, InfoClass }) => {
+export const CreateReviewTeacher = ({ classData, InfoClass }) => {
     //context
     const {
         authState: {
@@ -21,67 +23,103 @@ export const CreatereviewStudent = ({ classData, InfoClass }) => {
         }
     } = useContext(AuthContext)
 
-    const { createGradeReview, setCreateGradeReview } = useLocalContext();
+    console.log(classData)
 
-    const [expectationGrade, setExpectationGrade] = useState("");
+    const { createGradeReviewTeacher, setCreateGradeReviewTeacher } = useLocalContext();
+
+    const [NewGradeUpdate, setNewGradeUpdate] = useState("");
     const [explanationMessage, setExplanationMessage] = useState("");
 
-    const handleSubmit = e => {
-        e.preventDefault();
+    const hanleDisagree = () => {
         const newC = {
-            gradeConId: classData._id,
-            idTeacher: InfoClass.owner,
-            idClass: InfoClass._id,
-            StudentId: user[0].studentId,
-            gradeNew: expectationGrade,
-            gradeOld: classData.grade,
-            messStu: explanationMessage
+            explanationMessage: explanationMessage,
+            idGradeReview: classData.idGradeReview
         };
-        axios.post(`${apiUrl}/gradeReview`, newC)
+        axios.put(`${apiUrl}/gradeReview/review/false`, newC)
             .then(response => {
                 console.log(response)
                 if (response.data.success) {
-                    setExpectationGrade("");
                     setExplanationMessage("");
-                    setCreateGradeReview(false);
-                    //window.location.reload(true);
+                    setNewGradeUpdate("");
+                    setCreateGradeReviewTeacher(false)
                 }
             })
             .catch(error => {
                 alert(error + ": " + 'Fail');
-                setExpectationGrade("");
+                setNewGradeUpdate("");
                 setExplanationMessage("");
-                setCreateGradeReview(false);
-                //window.location.reload(true);
+                setCreateGradeReviewTeacher(false)
+            });
+    }
+
+    const handleSubmit = e => {
+        e.preventDefault();
+        const newC = {
+            explanationMessage: explanationMessage,
+            NewGradeUpdate: NewGradeUpdate,
+            idGradeReview: classData.idGradeReview,
+            idGradeCon: classData.button._id,
+            StudentId: classData.StudentID
+        };
+        axios.put(`${apiUrl}/gradeReview/review/true`, newC)
+            .then(response => {
+                console.log(response)
+                if (response.data.success) {
+                    setExplanationMessage("");
+                    setNewGradeUpdate("");
+                    setCreateGradeReviewTeacher(false)
+                }
+            })
+            .catch(error => {
+                alert(error + ": " + 'Fail');
+                setNewGradeUpdate("");
+                setExplanationMessage("");
+                setCreateGradeReviewTeacher(false)
             });
     }
     return (
         <div>
             <Dialog
-                onClose={() => setCreateGradeReview(false)}
+                onClose={() => setCreateGradeReviewTeacher(false)}
                 aria-labelledby="customized-dialog-title"
-                open={createGradeReview}
+                open={createGradeReviewTeacher}
                 className="form__dialog"
                 maxWidth="lg"
             >
                 <form onSubmit={handleSubmit}>
                     <div className="form">
-                        <p className="class__title">Request Review</p>
+                        <p className="class__title">Handle Review</p>
                         <div className="form__inputs">
                             <TextField
                                 id="filled-basic"
-                                label="Grade Constructor Name"
+                                label="Student ID"
                                 className="form__input"
                                 variant="filled"
-                                value={classData.name}
+                                value={classData.StudentID}
                                 disabled
                             />
                             <TextField
                                 id="filled-basic"
-                                label="Current grade"
+                                label="Tên cột điểm"
                                 className="form__input"
                                 variant="filled"
-                                value={classData.grade}
+                                value={classData.GradeName}
+                                disabled
+                            />
+                            <TextField
+                                id="filled-basic"
+                                label="Điểm đề xuất"
+                                className="form__input"
+                                variant="filled"
+                                value={classData.OldGrade + "  --->  " + classData.NewGrade}
+                                disabled
+                            />
+                            <TextField
+                                id="filled-basic"
+                                label="Lý do"
+                                className="form__input"
+                                variant="filled"
+                                value={classData.Why}
                                 disabled
                             />
                             <TextField
@@ -89,15 +127,14 @@ export const CreatereviewStudent = ({ classData, InfoClass }) => {
                                 label="Expectation Grade"
                                 className="form__input"
                                 variant="filled"
-                                value={expectationGrade}
+                                value={NewGradeUpdate}
                                 type="number"
                                 InputProps={{ inputProps: { min: 0, max: 10 } }}
-                                //onChange={(e) => setExpectationGrade(e.target.value)}
                                 onChange={(e) => {
                                     let value = parseFloat(e.target.value, 10);
                                     if (value > 10) value = 10;
                                     if (value < 0) value = 0;
-                                    setExpectationGrade(value)
+                                    setNewGradeUpdate(value)
                                 }}
                             />
                             <TextField
@@ -112,10 +149,11 @@ export const CreatereviewStudent = ({ classData, InfoClass }) => {
                             />
                         </div>
                         <DialogActions>
-                            <Button autoFocus onClick={() => setCreateGradeReview(false)}>
+                            <Button autoFocus onClick={() => setCreateGradeReviewTeacher(false)}>
                                 Cancel
                             </Button>
-                            <Button type="submit">Send</Button>
+                            <Button onClick={hanleDisagree} variant="contained" endIcon={<HighlightOffIcon />} color="error">Disagree</Button>
+                            <Button type="submit" variant="contained" endIcon={<CheckCircleOutlineIcon />}>Agree</Button>
                         </DialogActions>
                     </div>
                 </form>
@@ -123,4 +161,4 @@ export const CreatereviewStudent = ({ classData, InfoClass }) => {
         </div>
     )
 }
-export default CreatereviewStudent;
+export default CreateReviewTeacher;

@@ -16,6 +16,8 @@ const MyClass = ({ classData }) => {
         }
     } = useContext(AuthContext)
 
+    console.log(classData)
+
     const { createTabs, setCreateTabs } = useLocalContext();
     setCreateTabs(false);
  

@@ -13,7 +13,7 @@ import { AuthContext } from '../../context/AuthContext'
 import axios from 'axios';
 import { useState, useEffect, React, useContext } from 'react';
 import { apiUrl } from '../../context/constants';
-import { CreatereviewStudent, CreateClass } from "..";
+import { CreatereviewStudent } from "..";
 
 export const MainClassGradesStu = ({ classData }) => {
   //console.log("classData")
@@ -68,12 +68,9 @@ export const MainClassGradesStu = ({ classData }) => {
   const fetchGradeData = async () => {
     let t = []
     for await (let item of gradeConstructor) {
-      ////console.log("Da vo")
       await axios.get(`${apiUrl}/gradeStudent/viewGrade/${user[0].studentId}/${item._id}`)
-        //await axios.get(`${apiUrl}/gradeStudent/viewGrade/18120026/61b642f585478718501edcfc`)
         .then(
           results => {
-            //console.log(results)
             if (results.data.success) {
               t.push(
                 createData(item.name, results.data.gradeData, "-", item._id)
@@ -82,8 +79,6 @@ export const MainClassGradesStu = ({ classData }) => {
           }
         ).catch(
           function (error) {
-            //console.log(" ne hén");
-            //console.log(error);
             t.push(
               createData(item.name, "-", "-", item._id)
             )
@@ -91,8 +86,9 @@ export const MainClassGradesStu = ({ classData }) => {
         )
     }
     setGradeData(t)
-    console.log(rows)
   };
+  const { createGradeReview, setCreateGradeReview } = useLocalContext();
+  const [data, setData] = useState({});
 
   useEffect(() => {
     fetchGradeConstructor()
@@ -100,7 +96,7 @@ export const MainClassGradesStu = ({ classData }) => {
   );
   useEffect(() => {
     fetchGradeData()
-  }, [gradeConstructor]
+  }, [gradeConstructor, createGradeReview]
   );
 
   //create profile
@@ -109,16 +105,10 @@ export const MainClassGradesStu = ({ classData }) => {
     setProfileDialog(true);
   }
 
-  const { setCreateGradeReview } = useLocalContext();
-  const [data, setData] = useState({});
 
-  const handleCreate = () => {
-    console.log(data);
-    setCreateGradeReview(true);
-  };
+
   const handleSave = (d) => {
     setData(d)
-    console.log(d);
     return Promise.resolve(d);
   };
   return (
@@ -157,18 +147,10 @@ export const MainClassGradesStu = ({ classData }) => {
                         Review
                       </Button>
                       : <Button variant="contained"
-                        onClick={ () => {
-                           handleSave({ _id: row.button, grade: row.grade, name: row.name })
+                        onClick={() => {
+                          handleSave({ _id: row.button, grade: row.grade, name: row.name })
                             .then((d) => setCreateGradeReview(true));
                         }}
-                        //onClick={(e) => { alert( classData._id +"--" + row.grade+"--" + row.name) }}
-                        //onClick={handleCreate}
-                        // onClick={(e) => 
-                        //   //setData({ _id: classData._id, grade: row.grade, name: row.name }),
-                        //   setCreateGradeReview(true)
-
-                        // }
-                        //onClick={handleCreate({ _id: classData._id, grade: row.grade, name: row.name })}
                         endIcon={<SendIcon />}>
                         Review
                       </Button>}
@@ -179,7 +161,7 @@ export const MainClassGradesStu = ({ classData }) => {
           </Table>
         </TableContainer>
       }
-      <CreatereviewStudent classData={data} InfoClass={classData}/>
+      <CreatereviewStudent classData={data} InfoClass={classData} />
     </div>
   );
 }
