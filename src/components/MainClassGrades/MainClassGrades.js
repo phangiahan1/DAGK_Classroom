@@ -1,7 +1,6 @@
 import React from 'react'
 import * as XLSX from 'xlsx';
 import { useLocalContext } from "../../context/context";
-import DataTable from 'react-data-table-component';
 import { useState, useEffect } from 'react';
 import { apiUrl } from '../../context/constants';
 import ReactExport from "react-export-excel";
@@ -20,12 +19,49 @@ import {
 } from '@mui/x-data-grid';
 import "./style.css";
 import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
+import Divider from '@mui/material/Divider';
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import { styled } from "@mui/material/styles";
+import { CreatereviewTeacher } from "..";
+import SendIcon from '@mui/icons-material/Send';
+
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 export const MainClassGrades = ({ classData }) => {
+
+  //For table Review
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 14
+    }
+  }));
+
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    "&:nth-of-type(odd)": {
+      backgroundColor: theme.palette.action.hover
+    },
+    // hide last border
+    "&:last-child td, &:last-child th": {
+      border: 0
+    }
+  }));
+  function createDataGradereview(StudentID, GradeName, OldGrade, NewGrade, Why, button, idGradeReview) {
+    return { StudentID, GradeName, OldGrade, NewGrade, Why, button, idGradeReview };
+  }
+  // End for table Review
+
   //set tab header
   const { createTabs, setCreateTabs } = useLocalContext()
   setCreateTabs(true);
@@ -154,10 +190,10 @@ export const MainClassGrades = ({ classData }) => {
           for (let i = 0; i < gradesOfStudent.data.length; i++) {
             axios.get(`${apiUrl}/gradeConstructor/byId/` + gradesOfStudent.data[i].idGrade)
               .then(constructorOfGrade => {
-                //console.log(constructorOfGrade)
+                console.log(constructorOfGrade)
                 totalGrade += gradesOfStudent.data[i].numberGrade * constructorOfGrade.data.percentage
                 per += constructorOfGrade.data.percentage
-                //console.log(totalGrade / per)
+                console.log(totalGrade / per)
                 rowBoardGradeItem["TotalGrade"] = totalGrade / per
                 rowBoardGradeItem[constructorOfGrade.data.name] = gradesOfStudent.data[i].numberGrade
               })
@@ -409,19 +445,106 @@ export const MainClassGrades = ({ classData }) => {
     setRefreshKeyTotal(oldKey => oldKey + 1)
   }
 
-  const divstyle={
+  //For table Review
+  const [rowsGradeReview, setGradeReview] = useState([]); //Hàng của grade Review
+  const [dataGradeReview, setDataGradeReview] = useState({}); //Lưu dât gửi cho component
+  const { createGradeReviewTeacher, setCreateGradeReviewTeacher } = useLocalContext();
+
+  const handleSaveGradeReview = (d) => {
+    setDataGradeReview(d)
+    //console.log(dataGradeReview);
+    return Promise.resolve(d);
+  };
+
+  const fetchGradeReview = async () => {
+    let t = []
+    await axios.get(`${apiUrl}/gradeReview/${classData._id}/all`)
+      .then(
+        results => {
+          //console.log(results)
+          if (results.data.success) {
+            results.data.data.forEach(element => {
+              t.push(
+                createDataGradereview(element.StudentId, element.idGradeCon.name,
+                  element.numberGradeOld, element.numberGradeNew, element.messStu,
+                  element.idGradeCon, element._id)
+              )
+            });
+          }
+        }
+      ).catch(
+        function (error) {
+        }
+      )
+    setGradeReview(t)
+    console.log(rowsGradeReview)
+  };
+  useEffect(() => {
+    fetchGradeReview()
+  }, [gradeConstructor, createGradeReviewTeacher]
+  );
+
+  //End for table Review
+
+  const divstyle = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
   }
   return (
     <div>
+      {rowsGradeReview.length > 0 ?
+        <div className='divcenter'>
+          <div>
+            <b>YÊU CẦU XEM XÉT LẠI ĐIỂM </b>
+          </div>
+          <TableContainer component={Paper} sx={{
+            mt: 1
+          }}>
+            <Table aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell align="center">StudentID</StyledTableCell>
+                  <StyledTableCell align="center">Tên Cột điểm</StyledTableCell>
+                  <StyledTableCell align="center">Điểm cũ</StyledTableCell>
+                  <StyledTableCell align="center">Điểm mới</StyledTableCell>
+                  <StyledTableCell align="center">Lý do</StyledTableCell>
+                  <StyledTableCell align="center">Review</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rowsGradeReview.map((row, index) => (
+                  <StyledTableRow key={index}>
+                    <StyledTableCell component="th" scope="row">
+                      {row.StudentID}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">{row.GradeName}</StyledTableCell>
+                    <StyledTableCell align="center">{row.OldGrade}</StyledTableCell>
+                    <StyledTableCell align="center">{row.NewGrade}</StyledTableCell>
+                    <StyledTableCell align="center">{row.Why}</StyledTableCell>
+                    <StyledTableCell align="center">
+                      <Button variant="contained"
+                        onClick={() => {
+                          handleSaveGradeReview(row)
+                            .then((d) => setCreateGradeReviewTeacher(true));
+                        }}
+                        endIcon={<SendIcon />}>
+                        Review
+                      </Button>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer> </div>
+        : null}
+      <Divider />
       <div style={divstyle}>
         <div>
           <Button>
             <ExcelFile
               filename="template Student Grade"
-              element={<Button variant="outlined" sx={{ mt: 2, mx: 2 }}><DownloadIcon/>Download</Button>}>
+              element={<Button variant="outlined" sx={{ mt: 2, mx: 2 }}><DownloadIcon />Download</Button>}>
               <ExcelSheet data={data1} name="StudentList">
                 {
                   filterColumns(data1).map((col) => {
@@ -433,24 +556,24 @@ export const MainClassGrades = ({ classData }) => {
           </Button>
         </div>
         <div>
-        <table id="table-to-xls" class="hide">
-          <tbody>
-            {/* <th> */}
-            {data1.map(item => {
-              return (
-                <tr></tr>
-              );
-            })}
-          </tbody>
-        </table>
-        <FormControl sx={{ m: 1, minWidth: 200 }}>
+          <table id="table-to-xls" class="hide">
+            <tbody>
+              {/* <th> */}
+              {data1.map(item => {
+                return (
+                  <tr></tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <FormControl sx={{ m: 1, minWidth: 200 }}>
             <InputLabel id="demo-simple-select-autowidth-label">Choose file grade import</InputLabel>
             <Select
               labelId="demo-simple-select-autowidth-label"
               id="demo-simple-select-autowidth"
               value={fileGrade}
               onChange={handleChange}
-              width = {200}
+              width={200}
               label="Choose file grade import"
             >
               <MenuItem value="">
@@ -462,29 +585,29 @@ export const MainClassGrades = ({ classData }) => {
             </Select>
           </FormControl>
 
-        <input
-          type="file"
-          size="60"
-          accept=".csv,.xlsx,.xls"
-          onChange={handleFileUpload}
-        />
-        <Button onClick={handleSaveOnTable} variant="outlined" sx={{ mt: 2, mx: 2 }}><SaveIcon/>Save data</Button>
-        
+          <input
+            type="file"
+            size="60"
+            accept=".csv,.xlsx,.xls"
+            onChange={handleFileUpload}
+          />
+          <Button onClick={handleSaveOnTable} variant="outlined" sx={{ mt: 2, mx: 2 }}><SaveIcon />Save data</Button>
+
         </div>
       </div>
-        <div style={{ height: 500, width: 500 + gradeConstructor.length*100, marginInline:'20%'}}>
-          <DataGrid
-            rows={RowTable}
-            columns={columnBoardGrade}
-            pageSize={10}
-            rowsPerPageOptions={[10]}
-            components={{
-              Toolbar: ExportToolbar,
-            }}
-          />
-        </div>
-        <div style={divstyle}>
-          <div>
+      <div style={{ height: 500, width: 500 + gradeConstructor.length * 100, marginInline: '20%' }}>
+        <DataGrid
+          rows={RowTable}
+          columns={columnBoardGrade}
+          pageSize={10}
+          rowsPerPageOptions={[10]}
+          components={{
+            Toolbar: ExportToolbar,
+          }}
+        />
+      </div>
+      <div style={divstyle}>
+        <div>
           <FormControl sx={{ m: 1, minWidth: 200 }}>
             <InputLabel id="choose-file-return-data">Choose return column</InputLabel>
             <Select
@@ -492,7 +615,7 @@ export const MainClassGrades = ({ classData }) => {
               id="demo-simple-select-autowidth"
               value={fileReturn}
               onChange={handleChangeReturn}
-              width = {200}
+              width={200}
               label="Choose return column"
             >
               <MenuItem value="">
@@ -517,7 +640,7 @@ export const MainClassGrades = ({ classData }) => {
               id="demo-simple-select-autowidth"
               value={fileUnReturn}
               onChange={handleChangeUnReturn}
-              width = {200}
+              width={200}
               label="Choose return column"
             >
               <MenuItem value="">
@@ -535,6 +658,7 @@ export const MainClassGrades = ({ classData }) => {
           <Button onClick={handleUnReturn} variant="contained" sx={{ mt: 2, mx: 2 }}>Un return data</Button>
         </div>
       </div>
+      <CreatereviewTeacher classData={dataGradeReview} />
     </div>
   );
 }

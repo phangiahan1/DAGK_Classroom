@@ -21,6 +21,7 @@ export function ContextProvider({ children }) {
     const [idC, setidC] = useState("");
     const [adminHeader, setAdminHeader] = useState(0);
     const [createGradeReview, setCreateGradeReview] = useState(false);
+    const [createGradeReviewTeacher, setCreateGradeReviewTeacher] = useState(false);
 
     const value = {
         createClassDialog, setCreateClassDialog,
@@ -37,7 +38,8 @@ export function ContextProvider({ children }) {
         createInviteStudentDialog, setcreateInviteStudentDialog,
         openDialogCofirmInviteStudent, setOpenDialogCofirmInviteStudent,
         adminHeader, setAdminHeader,
-        createGradeReview, setCreateGradeReview
+        createGradeReview, setCreateGradeReview,
+        createGradeReviewTeacher, setCreateGradeReviewTeacher
     };
     return (
         <AddContext.Provider value={value}>{children}</AddContext.Provider>

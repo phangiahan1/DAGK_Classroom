@@ -95,18 +95,18 @@ const Header = ({ classData }) => {
                     }
                 })
             }
-            
+
         })
         console.log(notificationsTeacherReturn)
       };
-    ////1 owner
-    ////2 coop
-    ////3 student
+    // ////1 owner
+    // ////2 coop
+    // ////3 student
     useEffect(() => {
-        fetchNotification();
-        fetchNotificationStudent();
-        fetchNotificationFinalDecision();
-        fetchNotificationTeacherReturn();
+        // fetchNotification();
+        // fetchNotificationStudent();
+        // fetchNotificationFinalDecision();
+        // fetchNotificationTeacherReturn();
         if (classData != null)
             fetchPosition();
     }, []
@@ -167,37 +167,37 @@ const Header = ({ classData }) => {
     };
     const [openNotification, setOpenNotification] = useState(false);
 
-    
-    function displayNotification(n){
-        return(
+
+    function displayNotification(n) {
+        return (
             <span className="notification">{n.StudentId} have a review</span>
         )
     }
 
-    function displayNotificationAnswer(n){
-        return(
+    function displayNotificationAnswer(n) {
+        return (
             <span className="notification">Teacher {n.idTeacher} replied to your review</span>
         )
     }
-    
-    function displayNotificationsDecision(n){
-        return(
+
+    function displayNotificationsDecision(n) {
+        return (
             <span className="notification">Teacher {n.idTeacher} creates a final decision on a mark review</span>
         )
     }
     const [name, setName] = useState("");
-    function displayNotificationsTeacherReturn(n){
+    function displayNotificationsTeacherReturn(n) {
         // console.log(n)
         // axios.get(`${apiUrl}/gradeConstructor/byId/`+ n.idGrade)
         // .then(data=>
         //   setName(data.data.name))
         // .catch(err=>console.log(err))
-        
-        return(
+
+        return (
             <span className="notification">Teacher finalizes a grade composition </span>
         )
     }
-    
+
     return (
         <div className={classes.root}>
             <AppBar className={classes.appBar} position="static">
@@ -205,7 +205,7 @@ const Header = ({ classData }) => {
                     <div className={classes.headerWrapper}>
                         <Drawer />
                         <Typography variant="h6" className={classes.title}>
-                            {classData ? <div style={{color: 'white'}}>
+                            {classData ? <div style={{ color: 'white' }}>
                                 {/* <Link to='/' style={{ textDecoration: 'none', color: 'white' }}>
                                     <HomeIcon />
                                 </Link>  */}
@@ -242,30 +242,30 @@ const Header = ({ classData }) => {
                          notificationsDecision.length + notificationsTeacherReturn.length} color="secondary"  className={classes.icon} onClick={() => setOpenNotification(!openNotification)}>
                             <NotificationsIcon/>
                         </Badge>
-                       {openNotification && (
-                        <div className="notifications">
-                        {/* gọi list danh sách notification */}
-                           {notifications?
-                           (
-                               notifications.map(n=>
-                               displayNotification(n)
-                           )):(<></>)}
-                           {notificationsOfStudent?(
-                                notificationsOfStudent.map(i=>
-                                    displayNotificationAnswer(i)
-                           )):(<></>)}
-                           {notificationsDecision?(
-                                notificationsDecision.map(i=>
-                                    displayNotificationsDecision(i)
-                           )):(<></>)}
-                           {notificationsTeacherReturn?(
-                                notificationsTeacherReturn.map(i=>
-                                    displayNotificationsTeacherReturn(i)
-                           )):(<></>)}
-                           {/* <button className="nButton" >
-                            Mark as read
-                           </button> */}
-                        </div>
+                        {openNotification && (
+                            <div className="notifications">
+                                {/* gọi list danh sách notification */}
+                                {notifications.length > 0 ?
+                                    (
+                                        notifications.map(n =>
+                                            displayNotification(n)
+                                        )) : (<></>)}
+                                {notificationsOfStudent.length > 0 ? (
+                                    notificationsOfStudent.map(i =>
+                                        displayNotificationAnswer(i)
+                                    )) : (<></>)}
+                                {notificationsDecision ? (
+                                    notificationsDecision.map(i =>
+                                        displayNotificationsDecision(i)
+                                    )) : (<></>)}
+                                {notificationsTeacherReturn.length > 0 ? (
+                                    notificationsTeacherReturn.map(i =>
+                                        displayNotificationsTeacherReturn(i)
+                                    )) : (<></>)}
+                                {/* <button className="nButton" >
+                                    Mark as read
+                                </button> */}
+                            </div>
                         )}
                         <Menu
                             id="simple-menu"

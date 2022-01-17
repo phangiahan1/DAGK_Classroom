@@ -19,3 +19,4 @@ export {default as MainStudentList} from "./MainStudentList/MainStudentList"
 export {default as ManagerAccount} from "./Admin/ManagerAccount/ManagerAccount"
 export {default as DrawerAdmin} from "./Admin/DrawerAdmin/DrawerAdmin"
 export {default as CreatereviewStudent} from "./CreateReviewStudent/CreateReviewStudent" // Trang tạo yêu cầu review
+export {default as CreatereviewTeacher} from "./CreateReviewStudent/CreateReviewTeacher" // Trang tạo yêu cầu review
