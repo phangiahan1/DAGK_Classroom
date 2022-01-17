@@ -16,6 +16,7 @@ import AdminList from "./components/Admin/AdminList/AdminList";
 import CreateAdmin from "./components/Admin/CreateAdmin/CreateAdmin";
 import AdminDetail from "./components/Admin/AdminDetail/AdminDetail";
 import {io} from "socket.io-client"
+import OTPActivation from "./components/OTPActivation/OTPActivation";
 function App() {
   //context
   const {
@@ -259,6 +260,9 @@ function App() {
           path='/register'
           render={props => <Auth {...props} authRoute='register' />}
         />
+        <Route path={`/otp`}>
+            <OTPActivation />
+        </Route>
 
         <ProtectedRoute exact path="/" >
           <div className="App">
