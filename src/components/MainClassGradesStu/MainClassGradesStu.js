@@ -71,16 +71,25 @@ export const MainClassGradesStu = ({ classData }) => {
     let t = []
     let per = 0;
     let tong = 0;
+    console.log(gradeConstructor)
+
     for await (let item of gradeConstructor) {
-      console.log(item)
+      //console.log(gradeConstructor)
       await axios.get(`${apiUrl}/gradeStudent/viewGrade/${user[0].studentId}/${item._id}`)
         .then(
           results => {
             if (results.data.success) {
-              console.log(results)
+              if (results.data.successRview) {
+                t.push(
+                  createData(item.name + "(" + item.percentage + ")", results.data.gradeData, "you: "
+                    + results.data.messStu + "--teacher: " + results.data.messTea, item._id)
+                )
+              }
               t.push(
                 createData(item.name + "(" + item.percentage + ")", results.data.gradeData, "-", item._id)
               )
+              console.log("Trong for")
+              console.log(t)
               per += item.percentage;
               tong += results.data.gradeData * item.percentage;
               setTotal(tong / per)
@@ -95,24 +104,6 @@ export const MainClassGradesStu = ({ classData }) => {
           }
         )
     }
-    setGradeData(t)
-  };
-
-  const [rowsReview, setGradeReiew] = useState([]);
-  const fetchGradeReview = async () => {
-    let t = rows;
-    await axios.get(`${apiUrl}/Student/gradeReview`, { stuId: user[0].studentId, idclass: classData._id })
-      .then(
-        results => {
-          if (results.data.success) {
-            console.log(results)
-            results.data.data.forEach(element => {            });
-          }
-        }
-      ).catch(
-        function (error) {
-        }
-      )
     setGradeData(t)
   };
 
@@ -175,14 +166,21 @@ export const MainClassGradesStu = ({ classData }) => {
                         disabled>
                         Review
                       </Button>
-                      : <Button variant="contained"
-                        onClick={() => {
-                          handleSave({ _id: row.button, grade: row.grade, name: row.name })
-                            .then((d) => setCreateGradeReview(true));
-                        }}
-                        endIcon={<SendIcon />}>
-                        Review
-                      </Button>}
+                      : row.note === '-' ?
+                        <Button variant="contained"
+                          onClick={() => {
+                            handleSave({ _id: row.button, grade: row.grade, name: row.name })
+                              .then((d) => setCreateGradeReview(true));
+                          }}
+                          endIcon={<SendIcon />}>
+                          Review
+                        </Button>
+                        : <Button variant="contained"
+                          onClick={(e) => { alert(row.name) }}
+                          endIcon={<SendIcon />}
+                          disabled>
+                          Review
+                        </Button>}
                   </StyledTableCell>
                 </StyledTableRow>
               ))}
