@@ -38,7 +38,7 @@ const MainClassUser = ({ classData }) => {
 
     const fetchPosition = async () => {
         const type = await axios.get(`${apiUrl}/classroom/${classData._id}/${user[0].email}/getPosition`);
-        console.log(type.data.message)
+        //console.log(type.data.message)
         setPosition(type.data.message)
 
     };
@@ -126,175 +126,180 @@ const MainClassUser = ({ classData }) => {
     };
 
     return (
+
         <div className='divcenter'>
-            <Grid container spacing={2}>
-                <Grid item xs={10}>
-                    <h1>Teachers</h1>
-                </Grid>
-                <Grid item xs={2}>
-                    <div className='tf'>
-                        {position == "student" ? null : <IconButton color="primary" aria-label="invite teacher">
-                            <AddIcon onClick={handleInviteTeacher} />
-                        </IconButton>}
-                    </div>
-                </Grid>
-            </Grid>
-            <Divider />
-            <List sx={{ width: '100%', bgcolor: 'background.paper', margin: 2 }}>
-                {ownerClass ?
-                    <ListItem disablePadding >
-                        <ListItemButton role={undefined} dense>
-                            <ListItemAvatar>
-                                <Avatar />
-                            </ListItemAvatar>
-                            <ListItemText primary={ownerClass[0].username} />
-                        </ListItemButton>
-                    </ListItem>
-                    : null}
-                {coopOwner.map((item, value) => {
-                    const labelId = `checkbox-list-label-${value}`;
-                    return (
-                        <ListItem
-                            key={item}
-                            secondaryAction={
-                                <div>
-                                    <IconButton edge="end" aria-label="comments"
-                                        aria-controls="demo-positioned-menu"
-                                        aria-haspopup="true"
-                                        aria-expanded={open ? 'true' : undefined}
-                                        onClick={handleClick}>
-                                        {position == "student" ? null : <MoreVertIcon />}
-                                    </IconButton>
-                                    <Menu
-                                        id="demo-positioned-menu"
-                                        aria-labelledby="demo-positioned-button"
-                                        anchorEl={anchorEl}
-                                        open={open}
-                                        onClose={handleClose}
-                                        anchorOrigin={{
-                                            vertical: 'top',
-                                            horizontal: 'left',
-                                        }}
-                                        transformOrigin={{
-                                            vertical: 'top',
-                                            horizontal: 'left',
-                                        }}
-                                    >
-                                        <MenuItem onClick={handleClose}>LeaveClass</MenuItem>
-                                        <MenuItem onClick={handleClose}>Delete</MenuItem>
-                                        <MenuItem onClick={handleClose}>Hide</MenuItem>
-                                    </Menu>
+            {position != null ?
+                <>
+                    <Grid container spacing={2}>
+                        <Grid item xs={10}>
+                            <h1>Teachers</h1>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <div className='tf'>
+                                {position == "student" ? null : <IconButton color="primary" aria-label="invite teacher">
+                                    <AddIcon onClick={handleInviteTeacher} />
+                                </IconButton>}
+                            </div>
+                        </Grid>
+                    </Grid>
+                    <Divider />
+                    <List sx={{ width: '100%', bgcolor: 'background.paper', margin: 2 }}>
+                        {ownerClass ?
+                            <ListItem disablePadding >
+                                <ListItemButton role={undefined} dense>
+                                    <ListItemAvatar>
+                                        <Avatar />
+                                    </ListItemAvatar>
+                                    <ListItemText primary={ownerClass[0].username} />
+                                </ListItemButton>
+                            </ListItem>
+                            : null}
+                        {coopOwner.map((item, value) => {
+                            const labelId = `checkbox-list-label-${value}`;
+                            return (
+                                <ListItem
+                                    key={item}
+                                    secondaryAction={
+                                        <div>
+                                            <IconButton edge="end" aria-label="comments"
+                                                aria-controls="demo-positioned-menu"
+                                                aria-haspopup="true"
+                                                aria-expanded={open ? 'true' : undefined}
+                                                onClick={handleClick}>
+                                                {position == "student" ? null : <MoreVertIcon />}
+                                            </IconButton>
+                                            <Menu
+                                                id="demo-positioned-menu"
+                                                aria-labelledby="demo-positioned-button"
+                                                anchorEl={anchorEl}
+                                                open={open}
+                                                onClose={handleClose}
+                                                anchorOrigin={{
+                                                    vertical: 'top',
+                                                    horizontal: 'left',
+                                                }}
+                                                transformOrigin={{
+                                                    vertical: 'top',
+                                                    horizontal: 'left',
+                                                }}
+                                            >
+                                                <MenuItem onClick={handleClose}>LeaveClass</MenuItem>
+                                                <MenuItem onClick={handleClose}>Delete</MenuItem>
+                                                <MenuItem onClick={handleClose}>Hide</MenuItem>
+                                            </Menu>
 
-                                </div>
-                            }
+                                        </div>
+                                    }
+                                    disablePadding
+                                >
+                                    <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
+                                        <ListItemAvatar>
+                                            <Avatar />
+                                        </ListItemAvatar>
+                                        <ListItemText id={labelId} primary={item.idUser.username} />
+                                    </ListItemButton>
+                                </ListItem>
+                            );
+                        })}
+                    </List>
+
+                    <Grid container spacing={2}>
+                        <Grid item xs={9}>
+                            <h1>Students</h1>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <div className='tf'>
+                                <h3>{createdClassesPeople.length} student</h3>
+                            </div>
+                        </Grid>
+                        <Grid item xs={1}>
+                            <div className='tf'>
+                                {position == "student" ? null : <IconButton color="primary" aria-label="invite teacher">
+                                    <AddIcon onClick={handleInviteStudent} />
+                                </IconButton>}
+                            </div>
+                        </Grid>
+                    </Grid>
+                    <Divider />
+
+                    <List sx={{ width: '100%', bgcolor: 'background.paper', margin: 2 }}>
+                        <ListItem
+                            //key={item}
                             disablePadding
                         >
-                            <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
-                                <ListItemAvatar>
-                                    <Avatar />
-                                </ListItemAvatar>
-                                <ListItemText id={labelId} primary={item.idUser.username} />
-                            </ListItemButton>
-                        </ListItem>
-                    );
-                })}
-            </List>
-
-            <Grid container spacing={2}>
-                <Grid item xs={9}>
-                    <h1>Students</h1>
-                </Grid>
-                <Grid item xs={2}>
-                    <div className='tf'>
-                        <h3>{createdClassesPeople.length} student</h3>
-                    </div>
-                </Grid>
-                <Grid item xs={1}>
-                    <div className='tf'>
-                        {position == "student" ? null : <IconButton color="primary" aria-label="invite teacher">
-                            <AddIcon onClick={handleInviteStudent} />
-                        </IconButton>}
-                    </div>
-                </Grid>
-            </Grid>
-            <Divider />
-
-            <List sx={{ width: '100%', bgcolor: 'background.paper', margin: 2 }}>
-                <ListItem
-                    //key={item}
-                    disablePadding
-                >
-                    <ListItemButton role={undefined} onClick={handleToggleall} dense>
-                        {position == "student" ? null : <ListItemIcon>
-                            <Checkbox
-                                edge="start"
-                                //checked={checked.indexOf(value) !== -1}
-                                tabIndex={-1}
-                                disableRipple
-                            //inputProps={{ 'aria-labelledby': labelId }}
-                            />
-                        </ListItemIcon>}
-                    </ListItemButton>
-                </ListItem>
-                {createdClassesPeople.map((item, value) => {
-                    const labelId = `checkbox-list-label-${value}`;
-                    return (
-                        <ListItem
-                            key={item}
-                            secondaryAction={
-                                <div>
-                                    <IconButton edge="end" aria-label="comments"
-                                        aria-controls="demo-positioned-menu"
-                                        aria-haspopup="true"
-                                        aria-expanded={open ? 'true' : undefined}
-                                        onClick={handleClick}>
-                                        {position == "student" ? null : <MoreVertIcon />}
-                                    </IconButton>
-                                    <Menu
-                                        id="demo-positioned-menu"
-                                        aria-labelledby="demo-positioned-button"
-                                        anchorEl={anchorEl}
-                                        open={open}
-                                        onClose={handleClose}
-                                        anchorOrigin={{
-                                            vertical: 'top',
-                                            horizontal: 'left',
-                                        }}
-                                        transformOrigin={{
-                                            vertical: 'top',
-                                            horizontal: 'left',
-                                        }}
-                                    >
-                                        <MenuItem onClick={handleClose}>Send Email</MenuItem>
-                                        <MenuItem onClick={handleClose}>Delete</MenuItem>
-                                        <MenuItem onClick={handleClose}>Hide</MenuItem>
-                                    </Menu>
-
-                                </div>
-                            }
-                            disablePadding
-                        >
-                            <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
+                            <ListItemButton role={undefined} onClick={handleToggleall} dense>
                                 {position == "student" ? null : <ListItemIcon>
                                     <Checkbox
                                         edge="start"
-                                        checked={checked.indexOf(value) !== -1}
+                                        //checked={checked.indexOf(value) !== -1}
                                         tabIndex={-1}
                                         disableRipple
-                                        inputProps={{ 'aria-labelledby': labelId }}
+                                    //inputProps={{ 'aria-labelledby': labelId }}
                                     />
                                 </ListItemIcon>}
-                                <ListItemAvatar>
-                                    <Avatar />
-                                </ListItemAvatar>
-                                <ListItemText id={labelId} primary={item.idUser.username} />
                             </ListItemButton>
                         </ListItem>
-                    );
-                })}
-            </List>
-            <InviteTeacher classData={classData} />
-            <InviteStudent classData={classData} />
+                        {createdClassesPeople.map((item, value) => {
+                            const labelId = `checkbox-list-label-${value}`;
+                            return (
+                                <ListItem
+                                    key={item}
+                                    secondaryAction={
+                                        <div>
+                                            <IconButton edge="end" aria-label="comments"
+                                                aria-controls="demo-positioned-menu"
+                                                aria-haspopup="true"
+                                                aria-expanded={open ? 'true' : undefined}
+                                                onClick={handleClick}>
+                                                {position == "student" ? null : <MoreVertIcon />}
+                                            </IconButton>
+                                            <Menu
+                                                id="demo-positioned-menu"
+                                                aria-labelledby="demo-positioned-button"
+                                                anchorEl={anchorEl}
+                                                open={open}
+                                                onClose={handleClose}
+                                                anchorOrigin={{
+                                                    vertical: 'top',
+                                                    horizontal: 'left',
+                                                }}
+                                                transformOrigin={{
+                                                    vertical: 'top',
+                                                    horizontal: 'left',
+                                                }}
+                                            >
+                                                <MenuItem onClick={handleClose}>Send Email</MenuItem>
+                                                <MenuItem onClick={handleClose}>Delete</MenuItem>
+                                                <MenuItem onClick={handleClose}>Hide</MenuItem>
+                                            </Menu>
+
+                                        </div>
+                                    }
+                                    disablePadding
+                                >
+                                    <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
+                                        {position == "student" ? null : <ListItemIcon>
+                                            <Checkbox
+                                                edge="start"
+                                                checked={checked.indexOf(value) !== -1}
+                                                tabIndex={-1}
+                                                disableRipple
+                                                inputProps={{ 'aria-labelledby': labelId }}
+                                            />
+                                        </ListItemIcon>}
+                                        <ListItemAvatar>
+                                            <Avatar />
+                                        </ListItemAvatar>
+                                        <ListItemText id={labelId} primary={item.idUser.username} />
+                                    </ListItemButton>
+                                </ListItem>
+                            );
+                        })}
+                    </List>
+                    <InviteTeacher classData={classData} />
+                    <InviteStudent classData={classData} />
+                </>
+                : <div>Wait...</div>}
         </div>
     )
 }

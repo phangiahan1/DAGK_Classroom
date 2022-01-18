@@ -1,5 +1,5 @@
 import { Avatar, Button, TextField } from "@material-ui/core";
-import React, { useState, useEffect , useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import "./style.css";
 import { useLocalContext } from "../../context/context";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -27,8 +27,8 @@ import ListItemText from '@mui/material/ListItemText';
 import { blue } from '@mui/material/colors';
 
 import axios from 'axios';
-import {AuthContext} from '../../context/AuthContext'
-import { apiUrl } from "../../context/constants" 
+import { AuthContext } from '../../context/AuthContext'
+import { apiUrl } from "../../context/constants"
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -45,6 +45,7 @@ export const MainClass = ({ classData }) => {
     let email = user[0].email
     const [showInput, setShowInput] = useState(false);
     const { createTabs, setCreateTabs } = useLocalContext();
+    setCreateTabs(true);
     //tab value
     const { tabValue, setTabValue } = useLocalContext()
     setTabValue(0)
@@ -55,7 +56,6 @@ export const MainClass = ({ classData }) => {
         const type = await axios.get(`${apiUrl}/classroom/${classData._id}/${user[0].email}/getPosition`);
         //console.log(type.data.message)
         setPosition(type.data.message)
-
     };
     ////1 owner
     ////2 coop
@@ -94,7 +94,6 @@ export const MainClass = ({ classData }) => {
     }, []
     );
 
-    setCreateTabs(true);
     return (
         <>
             <div className="main">
@@ -170,10 +169,12 @@ export const MainClass = ({ classData }) => {
                     </div>
                     <Card sx={{ width: 155 }}
                         onClick={() => {
-                            if(position == "student"){
-                                setShowGradeCons(false)
-                            }else{
-                                setShowGradeCons(true)
+                            if (position != null) {
+                                if (position == "student") {
+                                    setShowGradeCons(false)
+                                } else {
+                                    setShowGradeCons(true)
+                                }
                             }
                         }}
                     >
@@ -182,7 +183,7 @@ export const MainClass = ({ classData }) => {
                                 Grade Constructor
                             </Typography>
                             {gradeConstructor.map((item) => <ListItem>
-                                <ListItemText primary={item.name} secondary={item.percentage}/>
+                                <ListItemText primary={item.name} secondary={item.percentage} />
                             </ListItem>)}
                         </CardContent>
                     </Card>

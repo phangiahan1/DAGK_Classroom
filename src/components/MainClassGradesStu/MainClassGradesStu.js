@@ -68,6 +68,7 @@ export const MainClassGradesStu = ({ classData }) => {
   const fetchGradeData = async () => {
     let t = []
     for await (let item of gradeConstructor) {
+      console.log(item)
       await axios.get(`${apiUrl}/gradeStudent/viewGrade/${user[0].studentId}/${item._id}`)
         .then(
           results => {
@@ -84,6 +85,7 @@ export const MainClassGradesStu = ({ classData }) => {
             )
           }
         )
+
     }
     setGradeData(t)
   };
@@ -157,6 +159,14 @@ export const MainClassGradesStu = ({ classData }) => {
                   </StyledTableCell>
                 </StyledTableRow>
               ))}
+              <StyledTableRow key="total">
+                <StyledTableCell component="th" scope="row">
+                  Tổng kết
+                </StyledTableCell>
+                <StyledTableCell align="right">Điểm</StyledTableCell>
+                <StyledTableCell align="right"></StyledTableCell>
+                <StyledTableCell align="center"></StyledTableCell>
+              </StyledTableRow>
             </TableBody>
           </Table>
         </TableContainer>
