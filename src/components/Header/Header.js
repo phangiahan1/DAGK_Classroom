@@ -103,10 +103,10 @@ const Header = ({ classData }) => {
     // ////2 coop
     // ////3 student
     useEffect(() => {
-        fetchNotification();
-        fetchNotificationStudent();
-        fetchNotificationFinalDecision();
-        fetchNotificationTeacherReturn();
+        // fetchNotification();
+        // fetchNotificationStudent();
+        // fetchNotificationFinalDecision();
+        // fetchNotificationTeacherReturn();
         if (classData != null)
             fetchPosition();
     }, []

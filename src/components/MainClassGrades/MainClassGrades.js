@@ -164,6 +164,7 @@ export const MainClassGrades = ({ classData }) => {
   const rowBoardGrade = [];
   const rowTemplate = [];
   const fetchDataGrade = async () => {
+    if(RowTable.length>0){
     let fakeRow = RowTable
 
     //console.log(fakeRow)
@@ -204,8 +205,9 @@ export const MainClassGrades = ({ classData }) => {
           console.log(err)
         )
     })
-
+    
     setRowTable(fakeRow)
+  }
   }
 
   // const fetchDataOnTable = async () => {
