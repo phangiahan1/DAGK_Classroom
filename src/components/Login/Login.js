@@ -14,9 +14,6 @@ const Login = () => {
 
   let location = useLocation();
 
-  console.log("MET ROI A")
-  // const a = location.state
-  // console.log(a)
   let { from } = location.state || { from: { pathname: "/" } }
   let { fromAdmin } = {fromAdmin: {pathname: "/admin/user"} }
   //Context
