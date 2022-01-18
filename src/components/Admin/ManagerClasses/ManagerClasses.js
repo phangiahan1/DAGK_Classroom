@@ -77,7 +77,7 @@ export default function ManagerClasses() {
 
   return (
   <div>
-    <div style={{ height: 600, width: '100%' }}>
+    <div style={{ height: 600, width: '90%', marginInline: '5%' }}>
     <DataGrid
         rows={rows}
         columns={columns}

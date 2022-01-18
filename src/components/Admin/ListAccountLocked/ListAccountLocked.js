@@ -25,13 +25,13 @@ export default function ListAccountLocked() {
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'username', headerName: 'Name', width: 130 },
-    { field: 'email', headerName: 'Email', width: 130 },
+    { field: 'username', headerName: 'Name', width: 200 },
+    { field: 'email', headerName: 'Email', width: 300 },
     {
       field: 'studentId',
       headerName: 'Student Id',
       type: 'number',
-      width: 90,
+      width: 200,
     },
     // {
     //   field: 'fullName',
@@ -90,7 +90,7 @@ export default function ListAccountLocked() {
         <Button variant="outlined" onClick={handleLoadTable} startIcon={<LockOpenIcon />}>
             Unban
         </Button>
-        <div style={{ height: 600, width: '100%' }}>
+        <div style={{ height: 600, width: 870, marginInline: '20%' }}>
         <DataGrid
             rows={rows}
             columns={columns}

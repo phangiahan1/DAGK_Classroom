@@ -50,7 +50,7 @@ export default function AdminList() {
       { field: 'id', type: 'string', hide:true },
       { field: 'idAdmin', type: 'string' },
       { field: 'username', type: 'string' },
-      { field: 'email', type: 'string', width: 130 },
+      { field: 'email', type: 'string', width: 220 },
       {
         field: 'actions',
         type: 'actions',
@@ -68,7 +68,7 @@ export default function AdminList() {
   );
 
   return (
-    <div style={{ height: 300, width: '100%' }}>
+    <div style={{ height: 300, width: 500 , marginInline: '30%' }}>
       <DataGrid columns={columns} rows={rows} />
     </div>
   );

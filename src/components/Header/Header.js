@@ -78,7 +78,7 @@ const Header = ({ classData }) => {
         const data = await fetch(`${apiUrl}/gradeConstructor/true/returnData`);
         const items = await data.json();
         items.map( async(item)=>{
-            const dataGrade = await fetch(`${apiUrl}/gradeStudent/`+item._id);
+            const dataGrade = await fetch(`${apiUrl}/gradeStudent/`+item._id+`/grade`);
             const itemsGrades = await dataGrade.json();
             if(itemsGrades.length>0){
                 itemsGrades.map(i=>{
