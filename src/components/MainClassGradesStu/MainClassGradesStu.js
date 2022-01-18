@@ -84,7 +84,7 @@ export const MainClassGradesStu = ({ classData }) => {
                   createData(item.name + "(" + item.percentage + ")", results.data.gradeData, "you: "
                     + results.data.messStu + "--teacher: " + results.data.messTea, item._id)
                 )
-              }
+              }else
               t.push(
                 createData(item.name + "(" + item.percentage + ")", results.data.gradeData, "-", item._id)
               )
