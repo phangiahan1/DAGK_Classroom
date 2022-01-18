@@ -15,12 +15,8 @@ import HeaderAdminClassroom from "./components/Admin/HeaderAdminClassroom/Header
 import AdminList from "./components/Admin/AdminList/AdminList";
 import CreateAdmin from "./components/Admin/CreateAdmin/CreateAdmin";
 import AdminDetail from "./components/Admin/AdminDetail/AdminDetail";
-<<<<<<< HEAD
 import {io} from "socket.io-client"
 import OTPActivation from "./components/OTPActivation/OTPActivation";
-=======
-import { io } from "socket.io-client"
->>>>>>> 86e5d79c5fdee70370d931a26fe2e1c25dec9acf
 function App() {
   //context
   const {

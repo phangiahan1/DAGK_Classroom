@@ -8,6 +8,7 @@ import Button from '@mui/material/Button'
 import "./style.css";
 import { AuthContext } from '../../context/AuthContext'
 import { apiUrl } from "../../context/constants";
+import axios from "axios";
 
 const Login = () => {
 
@@ -128,6 +129,20 @@ const Login = () => {
     }
   }
 
+  const handleNewPass = async e => {
+    e.preventDefault();
+    const input = {
+      email : email,
+    };
+    console.log(email)
+    try{
+      axios.post(`${apiUrl}/send_mail_forgetpass`, input)
+          .then(response => console.log(response));
+      } catch(e){
+          console.log(e)
+      }
+  }
+
   return (
     <div>
       <div className="login">
@@ -159,9 +174,7 @@ const Login = () => {
               <Button variant="contained" type="submit">Login</Button>
               <br/>
               <div>Forgot password?
-                <Link to={`/register`} style={{ textDecoration: 'none' }}>
-                  <Button variant="contained">Send new password</Button>
-                </Link>
+                  <Button variant="contained" onClick={handleNewPass}>Send new password</Button>
               </div>
               <br/>
               <div>You haven't accout?
