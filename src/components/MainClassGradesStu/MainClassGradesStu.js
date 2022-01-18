@@ -65,30 +65,57 @@ export const MainClassGradesStu = ({ classData }) => {
 
   //fetch grade
   const [rows, setGradeData] = useState([]);
+  const [total, setTotal] = useState();
+  const [totalHide, setTotalHide] = useState(false);
   const fetchGradeData = async () => {
     let t = []
+    let per = 0;
+    let tong = 0;
     for await (let item of gradeConstructor) {
       console.log(item)
       await axios.get(`${apiUrl}/gradeStudent/viewGrade/${user[0].studentId}/${item._id}`)
         .then(
           results => {
             if (results.data.success) {
+              console.log(results)
               t.push(
-                createData(item.name, results.data.gradeData, "-", item._id)
+                createData(item.name + "(" + item.percentage + ")", results.data.gradeData, "-", item._id)
               )
+              per += item.percentage;
+              tong += results.data.gradeData * item.percentage;
+              setTotal(tong / per)
             }
           }
         ).catch(
           function (error) {
             t.push(
-              createData(item.name, "-", "-", item._id)
+              createData(item.name + "(" + item.percentage + ")", "-", "-", item._id)
             )
+            setTotalHide(true)
           }
         )
-
     }
     setGradeData(t)
   };
+
+  const [rowsReview, setGradeReiew] = useState([]);
+  const fetchGradeReview = async () => {
+    let t = rows;
+    await axios.get(`${apiUrl}/Student/gradeReview`, { stuId: user[0].studentId, idclass: classData._id })
+      .then(
+        results => {
+          if (results.data.success) {
+            console.log(results)
+            results.data.data.forEach(element => {            });
+          }
+        }
+      ).catch(
+        function (error) {
+        }
+      )
+    setGradeData(t)
+  };
+
   const { createGradeReview, setCreateGradeReview } = useLocalContext();
   const [data, setData] = useState({});
 
@@ -163,7 +190,8 @@ export const MainClassGradesStu = ({ classData }) => {
                 <StyledTableCell component="th" scope="row">
                   Tổng kết
                 </StyledTableCell>
-                <StyledTableCell align="right">Điểm</StyledTableCell>
+                {totalHide ? <StyledTableCell align="right">-</StyledTableCell>
+                  : <StyledTableCell align="right">{total}</StyledTableCell>}
                 <StyledTableCell align="right"></StyledTableCell>
                 <StyledTableCell align="center"></StyledTableCell>
               </StyledTableRow>
