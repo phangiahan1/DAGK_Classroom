@@ -196,10 +196,20 @@ export const Profile = () => {
                 <Button variant="contained" type="button" onClick={handleClick}>
                   {show ? 'Hide Change StudentID' : 'Change StudentID'}
                 </Button>
+                {(userApp.studentId!=null) ? (
+                    <div>StudentId only updated once
+                    <Box sx={{ p: 1, my: 1, border: '1px solid' }}>
+                      Student ID:{
+                        userApp.studentId
+                      }
+                    </Box></div>
+                    
+                  ):(
                 <Box sx={{ p: 1, my: 1, border: '1px solid' }}>
                   Student ID:{
                     userApp.studentId
                   }
+                  
                   {show ? (
                     <Portal container={container3.current}>
                       <input className="login_input_studentid" type="text" name="studentId" placeholder="studentId"
@@ -209,8 +219,10 @@ export const Profile = () => {
                       <Button variant="contained" onClick={addStudentId}>Update</Button>
                       {/* <input class="profile" type="submit" onClick={addStudentId} name="signup_submit" value="Add"/> */}
                     </Portal>
-                  ) : null}
+                  ) : null
+                  }
                 </Box>
+                )}
                 <Box sx={{ p: 1, my: 1, border: '1px solid' }} ref={container3} />
               </div>
               <div class="or">AND</div>
