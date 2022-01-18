@@ -1,5 +1,5 @@
 .notifications {
-    position: absolute;
+    position:absolute;
     top: 50px;
     right: 0;
     background-color: white;
@@ -11,8 +11,9 @@
   }
 
   .notification {
-    padding: 10px;
+    padding: 30px;
     font-size: 14px;
+    
   }
 
   .notification_unread {

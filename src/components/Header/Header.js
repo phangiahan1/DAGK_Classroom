@@ -103,10 +103,10 @@ const Header = ({ classData }) => {
     // ////2 coop
     // ////3 student
     useEffect(() => {
-        // fetchNotification();
-        // fetchNotificationStudent();
-        // fetchNotificationFinalDecision();
-        // fetchNotificationTeacherReturn();
+        fetchNotification();
+        fetchNotificationStudent();
+        fetchNotificationFinalDecision();
+        fetchNotificationTeacherReturn();
         if (classData != null)
             fetchPosition();
     }, []
@@ -165,24 +165,32 @@ const Header = ({ classData }) => {
     const handleClose3 = () => {
         setAnchorE3(null);
     };
+    const [anchorE4, setAnchorE4] = useState(null);
+    const open4 = Boolean(anchorE4);
+    const handleClick4 = (event) => {
+        setAnchorE4(event.currentTarget);
+    };
+    const handleClose4 = () => {
+        setAnchorE4(null);
+    };
     const [openNotification, setOpenNotification] = useState(false);
 
 
     function displayNotification(n) {
         return (
-            <span className="notification">{n.StudentId} have a review</span>
+            <MenuItem>{n.StudentId} have a review</MenuItem>
         )
     }
 
     function displayNotificationAnswer(n) {
         return (
-            <span className="notification">Teacher {n.idTeacher} replied to your review</span>
+            <MenuItem>Teacher {n.idTeacher} replied to your review</MenuItem>
         )
     }
 
     function displayNotificationsDecision(n) {
         return (
-            <span className="notification">Teacher {n.idTeacher} creates a final decision on a mark review</span>
+            <MenuItem>Teacher {n.idTeacher} creates a final decision on a mark review</MenuItem>
         )
     }
     const [name, setName] = useState("");
@@ -194,7 +202,7 @@ const Header = ({ classData }) => {
         // .catch(err=>console.log(err))
 
         return (
-            <span className="notification">Teacher finalizes a grade composition </span>
+            <MenuItem>Teacher finalizes a grade composition </MenuItem>
         )
     }
 
@@ -242,8 +250,20 @@ const Header = ({ classData }) => {
                          notificationsDecision.length + notificationsTeacherReturn.length} color="secondary"  className={classes.icon} onClick={() => setOpenNotification(!openNotification)}>
                             <NotificationsIcon/>
                         </Badge>
-                        {openNotification && (
-                            <div className="notifications">
+                        <Menu
+                            id="simple-menu"
+                            anchorEl={anchorE4}
+                            keepMounted
+                            open={openNotification}
+                            onClose={handleClose}
+                            onClick={() => setOpenNotification(!openNotification)}
+                        >
+                        {/* <Badge badgeContent={notifications.length + notificationsOfStudent.length +
+                         notificationsDecision.length + notificationsTeacherReturn.length} color="secondary"  className={classes.icon} onClick={() => setOpenNotification(!openNotification)}>
+                            <NotificationsIcon/>
+                        </Badge> */}
+                            {openNotification && (
+                            <div>
                                 {/* gọi list danh sách notification */}
                                 {notifications.length > 0 ?
                                     (
@@ -267,6 +287,8 @@ const Header = ({ classData }) => {
                                 </button> */}
                             </div>
                         )}
+
+                        </Menu>
                         <Menu
                             id="simple-menu"
                             anchorEl={anchorEl}
