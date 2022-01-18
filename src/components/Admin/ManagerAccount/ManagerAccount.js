@@ -47,19 +47,19 @@ export default function ManagerAccount() {
     () => [
         { field: 'id', headerName: 'ID', width: 70, hide:true },
         { field: 'idIndex', headerName: 'ID', width: 70 },
-        { field: 'username', headerName: 'Name', width: 130 },
-        { field: 'email', headerName: 'Email', width: 130 },
+        { field: 'username', headerName: 'Name', width: 300 },
+        { field: 'email', headerName: 'Email', width: 300 },
         {
           field: 'studentId',
           headerName: 'Student Id',
           type: 'number',
-          width: 90,
+          width: 100,
           
         },
         {
           field: 'actions',
           type: 'actions',
-          width: 80,
+          width: 60,
           getActions: (params) => [
             <GridActionsCellItem
               icon={<PageviewIcon />}
@@ -100,7 +100,7 @@ export default function ManagerAccount() {
         <Button variant="outlined" onClick={handleLoadTable} startIcon={<LockIcon />}>
             Ban
         </Button>
-        <div style={{ height: 600, width: '100%' }}>
+        <div style={{ height: 600, width: 900 , marginInline: '20%' }}>
         <DataGrid
             rows={rows}
             columns={columns}
