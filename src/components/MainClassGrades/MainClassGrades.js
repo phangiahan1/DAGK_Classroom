@@ -191,13 +191,16 @@ export const MainClassGrades = ({ classData }) => {
           for (let i = 0; i < gradesOfStudent.data.length; i++) {
             axios.get(`${apiUrl}/gradeConstructor/byId/` + gradesOfStudent.data[i].idGrade)
               .then(constructorOfGrade => {
-                console.log(constructorOfGrade)
-                totalGrade += gradesOfStudent.data[i].numberGrade * constructorOfGrade.data.percentage
-                per += constructorOfGrade.data.percentage
-                console.log(totalGrade / per)
-                rowBoardGradeItem["TotalGrade"] = totalGrade / per
-                rowBoardGradeItem[constructorOfGrade.data.name] = gradesOfStudent.data[i].numberGrade
+                if(constructorOfGrade.data.idClass===classData._id){
+                  console.log(constructorOfGrade)
+                  totalGrade += gradesOfStudent.data[i].numberGrade * constructorOfGrade.data.percentage
+                  per += constructorOfGrade.data.percentage
+                  rowBoardGradeItem["TotalGrade"] = totalGrade / per
+                  rowBoardGradeItem[constructorOfGrade.data.name] = gradesOfStudent.data[i].numberGrade
+                }
               })
+              .catch(error=> console.log(error))
+
 
           }
         })
@@ -235,7 +238,6 @@ export const MainClassGrades = ({ classData }) => {
         objrowBoardGrade[i.name] = 0;
       })
       rowBoardGrade.push(objrowBoardGrade)
-      //console.log(rowBoardGrade)
       rowTemplate.push(objrowTemplate)
     })
     setRowTable(rowBoardGrade);
